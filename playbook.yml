@@ -1,0 +1,49 @@
+---
+- hosts: all
+  user: ubuntu
+  vars:
+      nix_init: '. ~/.nix-profile/etc/profile.d/nix.sh'
+  tasks:
+
+  - name: ensure apt cache is up to date
+    apt: update_cache=yes
+    sudo: true
+
+  - name: ubuntu/vbox specific utils
+    sudo: true
+    apt: pkg="{{ item }}" state=latest
+    with_items:
+        - xfce4
+        - virtualbox-guest-dkms
+        - virtualbox-guest-utils
+        - virtualbox-guest-x11
+        # need a better font
+        - ttf-inconsolata
+
+  - stat: path=/nix
+    register: nixdir
+  #- debug: var=nixdir
+
+  - file:
+      path: /nix
+      state: directory
+      mode: 0755
+      owner: "{{ ansible_user_id }}"
+      group: "{{ ansible_user_id }}"
+      recurse: true
+    sudo: true
+
+  - name: install nix
+    shell: bash -c 'bash <(curl https://nixos.org/nix/install)'
+    when: nixdir.stat.exists == False
+
+  # this may require building the nix build chain,
+  # which is very slow (hours on a 2 core VM)
+  - name: install software
+    shell: "{{ nix_init }} && nix-env -i {{ item }} 2>>/tmp/install-{{ item }}.log"
+    with_items:
+        - tmux
+        - htop
+        - git
+        - vim
+        - emacs-25.1
