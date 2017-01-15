@@ -18,9 +18,10 @@
         - virtualbox-guest-utils
         - virtualbox-guest-x11
         - ttf-anonymous-pro
-        - ttf-dejavu-core
+        - fonts-dejavu-core
+        - fonts-dejavu-extra
         - ttf-bitstream-vera
-        - ttf-inconsolata
+        - fonts-inconsolata
 
   - stat: path=/nix
     register: nixdir
