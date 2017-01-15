@@ -17,7 +17,9 @@
         - virtualbox-guest-dkms
         - virtualbox-guest-utils
         - virtualbox-guest-x11
-        # need a better font
+        - ttf-anonymous-pro
+        - ttf-dejavu-core
+        - ttf-bitstream-vera
         - ttf-inconsolata
 
   - stat: path=/nix
@@ -47,3 +49,4 @@
         - git
         - vim
         - emacs-25.1
+        - zsh
