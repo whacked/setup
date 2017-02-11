@@ -51,3 +51,4 @@
         - vim
         - emacs-25.1
         - zsh
+        - singularity
