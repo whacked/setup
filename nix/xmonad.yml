@@ -1,0 +1,5 @@
+- name: install xmonad
+  shell: "{{ nix_init }} && {{ item }}"
+  with_items:
+      - cabal update
+      - cabal install xmonad

@@ -52,3 +52,6 @@
         - emacs-25.1
         - zsh
         - singularity
+
+  #- include: nix/haskell.yml
+  #- include: nix/xmonad.yml

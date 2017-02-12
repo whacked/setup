@@ -1,0 +1,11 @@
+# very slow (hours on a 2 core VM)
+
+- name: install ghc via nix
+  shell: "{{ nix_init }} && nix-env -i ghc 2>>/tmp/install-ghc.log"
+
+# haskell::cabal
+- name: install haskell subpackages
+  shell: "{{ nix_init }} && nix-env -f \"<nixpkgs>\" -iA {{ item }} 2>>/tmp/install-{{ item }}.log"
+  with_items:
+      - haskellPackages.cabal-install
+
