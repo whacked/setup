@@ -1,0 +1,65 @@
+# ubuntu only!
+- command: which emacs
+  register: which_emacs
+  ignore_errors: True
+
+- block:
+  - package:
+      name: emacs
+      state: build-dep
+  
+  - package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - build-essential
+      - libpng-dev
+      - libgif-dev
+      - libtiff5-dev
+      - imagemagick
+      - libmagickcore-dev
+      - libwebkitgtk-3.0-dev
+      - libgtk-3-dev
+      - libxpm-dev
+      - libxml2-dev
+      - libcairo2-dev
+      - libncurses5-dev
+      - libmagick++-dev
+  
+  - file:
+      path: "{{ src_directory }}/emacs-{{ emacs_version }}"
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  
+  # download emacs source
+  - get_url:
+      url: https://ftp.gnu.org/gnu/emacs/emacs-{{ emacs_version }}.tar.xz
+      dest: "{{ src_directory }}/emacs-{{ emacs_version }}.tar.xz"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  
+  # Unarchive a file that needs to be downloaded (added in 2.0)
+  - unarchive:
+      src: "{{ src_directory }}/emacs-{{ emacs_version }}.tar.xz"
+      dest: "{{ src_directory }}"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      remote_src: True
+
+  - name: configure & build emacs
+    shell: "{{ item }}"
+    args:
+      chdir: "{{ src_directory }}/emacs-{{ emacs_version }}"
+    become: yes
+    become_user: "{{ ansible_user }}"
+    with_items:
+        - ./configure --with-cairo --with-xwidgets --with-x-toolkit=gtk
+        - make -j$(nproc)
+
+  - name: install emacs
+    shell: "make install"
+    args:
+      chdir: "{{ src_directory }}/emacs-{{ emacs_version }}"
+
+  when: which_emacs|failed

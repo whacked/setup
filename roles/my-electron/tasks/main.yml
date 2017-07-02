@@ -1,0 +1,26 @@
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - npm
+    - nodejs-legacy
+    - libgtk2.0-0
+  
+- npm:
+    global: yes
+    name: "{{ item }}"
+  with_items:
+    - npm
+    - n
+  
+- shell: n stable
+
+# npm installers orz. this is the only one that works
+# https://github.com/electron-userland/electron-prebuilt/issues/139#issuecomment-245098956
+- shell: npm install -g electron --unsafe-perm=true --allow-root
+# electron fix
+# without it, you get
+# Xlib: extension "XInputExtension" missing on display ":1.0".
+# and electron doesn't start
+# ref: https://github.com/Microsoft/vscode/issues/3451#issuecomment-248398326
+- shell: sed -i 's/BIG-REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1

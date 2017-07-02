@@ -1,0 +1,16 @@
+# ubuntu packages
+- hosts: all
+  sudo: True
+
+  roles:
+    - my-emacs
+    - my-electron
+
+  tasks:
+  - package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+    - xfce4
+    - xfce4-goodies
+    - tightvncserver # vncserver -geometry 1920x1080
