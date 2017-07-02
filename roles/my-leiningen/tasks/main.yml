@@ -1,0 +1,14 @@
+- package:
+    name: maven
+    state: latest
+
+- name: download lein
+  get_url:
+      url: https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+      dest: /usr/bin/lein
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 777
+
+- name: run lein once
+  shell: LEIN_ROOT=1 /usr/bin/lein
