@@ -1,0 +1,26 @@
+* env all
+
+see ~/.nixpkgs/config.nix
+
+
+* nix setup
+using https://github.com/rycee/home-manager
+
+mkdir -p /nix/var/nix/{profiles,gcroots}/per-user/$USER
+
+
+HM_PATH=https://github.com/rycee/home-manager/archive/master.tar.gz
+
+
+mkdir ~/.config/nixpkgs
+
+
+cat > ~/.config/nixpkgs/home.nix <<EOF
+{
+  programs.home-manager.enable = true;
+  programs.home-manager.path = $HM_PATH;
+}
+EOF
+
+nix-shell $HM_PATH -A install
+
