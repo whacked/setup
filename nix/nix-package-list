@@ -1,0 +1,5 @@
+# nix-env -i $(cat nix-package-list | grep -v '^#')
+git
+htop
+tmux
+silver-searcher

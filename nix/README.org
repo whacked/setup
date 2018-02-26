@@ -1,0 +1,111 @@
+* nix setups
+
+  in the approaches here, we will build a base system up and until the
+  point we have a working /single user/ nix package manager
+
+  then we will provide a "pseudo-package" called "all", that will allow
+  setting up globally visible programs via running
+
+  #+BEGIN_SRC sh :eval never
+    nix-env -i all
+  #+END_SRC
+  
+  the definition of the "all" psuedo-package must reside in
+
+  =$HOME/.nixpkgs/config.nix=
+
+  Also note that =config.nix= will import other sibling files
+
+** poor man's package list
+
+   see [[file:nix-package-list]]
+
+** OSX
+
+   
+
+** singularity
+
+*** building from sandbox, in a dir
+
+    =sudo singularity build --sandbox example.dir/ docker://ubuntu:latest=
+
+**** manual build within the container
+
+     the main problem with Singularity here is that due to its overlay
+     use, it's easy to pollute the host =$HOME=.
+
+     Since the user permissions are propagated, the easy method is to
+     use =root= all the way; non-root users will need additional
+     plumbing to enable nix.
+
+#+BEGIN_SRC sh :eval never
+  # prerequisites for the nix installer
+  apt install -y sudo curl bzip2
+
+  # below is needed to prevent this error upon install `error: the group
+  # 'nixbld' specified in 'build-users-group' does not exist`
+  mkdir -p /etc/nix
+  echo "build-users-group =" > /etc/nix/nix.conf
+
+  # THEN, run the installer
+  curl https://nixos.org/nix/install | sh
+
+  # and make sure to source the env setup
+  echo '. $HOME/.nix-profile/etc/profile.d/nix.sh' >> $HOME/.bashrc
+  # note that in the container, while you are running bash
+  # it will not actually source the profile file, but if within
+  # the container you run `bash` it will enter a bash prompt
+  # that *will* source the profile file
+
+  # in case the overlay in singularity doesn't work,
+  # you need to create this directory to bind it via
+  # singularity shell --bind $HOME/dev/setup/nix:$HOME/.nixpkgs --writable example.dir
+  mkdir $HOME/.nixpkgs
+#+END_SRC
+
+
+** docker
+   
+   could not get the docker builder to work, resorting to a parity
+   build like Singularity / OSX that creates a minimally working nix
+   package manager environment. It works well enough.
+
+   on Ubuntu, on the *host*, if you get 
+
+   =Failed to start docker.service: Unit docker.service is masked.=
+
+   then you need to run:
+
+   #+BEGIN_SRC sh :eval never
+     systemctl unmask docker.service
+     systemctl unmask docker.socket
+     systemctl start docker.service
+   #+END_SRC
+
+   if you installed docker from in nix, and get an error when running
+
+   =sudo systemctl start docker.service=,
+   and run =journalctl -xe= by its suggestion,
+
+   and see =/usr/bin/dockerd missing=, you can try
+   
+   =sudo ln -s $(which dockerd) /usr/bin/=
+   
+   worked in my case.
+
+*** building
+
+    see accompanying Dockerile
+    
+    it will build a container with the non-root (but =sudo= enabled)
+    user =appuser=.
+    
+    =docker build -t nix-user-base .=
+
+*** run it after build
+    
+    this will allow using the native X11 server for GUI apps.
+    you may need to ~export DISPLAY=:0~ in the container
+
+    =docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix nix-user-base bash=
