@@ -6,6 +6,11 @@ with import <nixpkgs> {};
     hy
     leiningen
     meld
-    nodejs
+    nodejs-10_x
+
+    python3Full
+    python36Packages.pip
+
+    pipenv
     swftools
 ]
