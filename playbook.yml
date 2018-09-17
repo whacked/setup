@@ -14,6 +14,7 @@
     apt: pkg="{{ item }}" state=latest
     with_items:
         - xfce4
+        - xserver-xorg-legacy  # also for WM launch
         - virtualbox-guest-dkms
         - virtualbox-guest-utils
         - virtualbox-guest-x11
@@ -23,35 +24,27 @@
         - ttf-bitstream-vera
         - fonts-inconsolata
 
+  # fix for window manager launching with non-root
+  - lineinfile:
+      # NOTE: as of 2.3 this should be `path`;
+      # using `dest` because ubuntu is behind
+      dest: /etc/X11/Xwrapper.config
+      backup: yes
+      regexp: '^allowed_users='
+      line: 'allowed_users=anybody'
+
   - stat: path=/nix
     register: nixdir
-  #- debug: var=nixdir
-
-  - file:
-      path: /nix
-      state: directory
-      mode: 0755
-      owner: "{{ ansible_user_id }}"
-      group: "{{ ansible_user_id }}"
-      recurse: true
-    sudo: true
 
   - name: install nix
     shell: bash -c 'bash <(curl https://nixos.org/nix/install)'
     when: nixdir.stat.exists == False
 
-  # this may require building the nix build chain,
-  # which is very slow (hours on a 2 core VM)
-  - name: install software
-    shell: "{{ nix_init }} && nix-env -i {{ item }} 2>>/tmp/install-{{ item }}.log"
-    with_items:
-        - tmux
-        - htop
-        - git
-        - vim
-        - emacs-25.1
-        - zsh
-        - singularity
+  # DEPRECATE
+  ## manually install packages using nix-env; supersede with config.nix
+  #- name: install software
+  #  shell: "{{ nix_init }} && nix-env -i {{ item }} 2>>/tmp/install-{{ item }}.log"
+  #  with_items:
+  #      - tmux
+  #      - htop
 
-  #- include: nix/haskell.yml
-  #- include: nix/xmonad.yml
