@@ -1,5 +1,7 @@
 with import <nixpkgs> {};
 [
+    ansible
+
     autoconf
     automake
     bazaarTools
@@ -7,7 +9,6 @@ with import <nixpkgs> {};
     emacs
     ffmpeg
     git
-    git-cola
     htop
     imagemagick
     mercurial
