@@ -40,6 +40,7 @@ Vagrant.configure("2") do |config|
   
     # Customize the amount of memory on the VM:
     vb.memory = "3072"
+    vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional'] 
   end
 
   config.vm.provision "shell", inline: <<-SHELL
