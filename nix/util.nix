@@ -6,6 +6,7 @@ with import <nixpkgs> {};
     automake
     bazaarTools
     bzip2
+    dos2unix
     emacs
     ffmpeg
     git
@@ -17,10 +18,12 @@ with import <nixpkgs> {};
     pigz
     silver-searcher
     sqlite
+    squashfsTools
     subversion
     tcpdump
     tig
     tmux
     vim
     wget
+    zsh
 ]
