@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  user: ubuntu
+  connection: local
   vars:
       nix_init: '. ~/.nix-profile/etc/profile.d/nix.sh'
   tasks:
