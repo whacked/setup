@@ -74,4 +74,8 @@
     - apt: update_cache=yes
       become: true
     - apt: pkg=docker-ce state=present
+    - user:
+        name: '{{ ansible_user }}'
+        groups: docker
+        append: yes
 
