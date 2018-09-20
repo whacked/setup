@@ -12,6 +12,7 @@ with import <nixpkgs> {};
     git
     htop
     imagemagick
+    keychain
     mercurial
     moreutils
     mosh
@@ -23,6 +24,7 @@ with import <nixpkgs> {};
     tcpdump
     tig
     tmux
+    unzip
     vim
     wget
     zsh
