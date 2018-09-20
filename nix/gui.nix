@@ -1,7 +1,7 @@
 # desktop
 with import <nixpkgs> {};
 [
-    eog
+    gnome3.eog
     evince
     firefox
     git-cola
