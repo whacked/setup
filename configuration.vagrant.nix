@@ -41,6 +41,10 @@
           xterm.enable = false;
           xfce.enable = true;
       };
+      windowManager = {
+          xmonad.enable = true;
+          xmonad.enableContribAndExtras = true;
+      };
   };
 
   environment.variables.EDITOR = "vim";
@@ -94,7 +98,7 @@
   programs.zsh.ohMyZsh = {
     enable = true;
     plugins = [ "git" "python" "man" ];
-    theme = "cloud";
+    theme = "crunch";
   };
 
   programs.zsh.enable = true;
