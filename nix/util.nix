@@ -22,4 +22,6 @@ with import <nixpkgs> {};
     tmux
     vim
     wget
+    zsh
+    oh-my-zsh
 ]
