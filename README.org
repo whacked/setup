@@ -24,3 +24,14 @@ EOF
 
 nix-shell $HM_PATH -A install
 
+
+* vagrant setup
+
+vagrant init nixos/nixos-18.03-x86_64
+vagrant plugin install vagrant-disksize
+
+** nixos plugin
+
+probably skip this; the provisioner is not as reliable as directly running =nixos-rebuild switch=
+
+vagrant plugin install vagrant-nixos-plugin
