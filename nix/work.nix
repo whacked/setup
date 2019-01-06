@@ -1,0 +1,31 @@
+# other
+with import <nixpkgs> {};
+[
+    anki
+    audacity
+    sqliteman
+    chromium
+    gnome3.eog
+    evince
+    remmina
+    pdfmod
+    scrot
+    pinta
+    inkscape
+    gimp
+    keepassx
+    vlc
+    qjackctl
+    supercollider
+    terminator
+    tortoisehg
+    xournal
+    wireshark
+    thunderbird
+    firefox
+    aspell
+    cifs-utils
+    texinfo
+    texlive.combined.scheme-full
+    calibre
+]
