@@ -9,4 +9,5 @@ with import <nixpkgs> {};
     meld
     nodejs
     swftools
+    dos2unix
 ]

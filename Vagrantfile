@@ -67,6 +67,8 @@ Vagrant.configure(2) do |config|
       mv /etc/nixos/configuration.nix /etc/nixos/configuration.nix.orig
       mv /tmp/setup/configuration.vagrant.nix /etc/nixos/configuration.nix
       mv /tmp/setup/nix /etc/nixos/
+      dos2unix /etc/nixos/configuration.nix
+      dos2unix /etc/nixos/nix/*
       # sudo nixos-rebuild switch --upgrade
     EOF
   end
