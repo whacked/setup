@@ -55,6 +55,7 @@
     netcat
     nfs-utils
     rsync
+    linuxPackages.virtualboxGuestAdditions
   ]
   ++ (import ./nix/util.nix)
   ++ (import ./nix/dev.nix)
