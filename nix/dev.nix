@@ -7,7 +7,12 @@ with import <nixpkgs> {};
     jdk8
     leiningen
     meld
-    nodejs
+    nodejs-10_x
+
+    python3Full
+    python36Packages.pip
+
+    pipenv
     swftools
     dos2unix
 ]

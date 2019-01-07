@@ -1,13 +1,15 @@
 with import <nixpkgs> {};
 [
+    ansible
+
     autoconf
     automake
     bazaarTools
     bzip2
+    dos2unix
     emacs
     ffmpeg
     git
-    git-cola
     htop
     imagemagick
     keychain
@@ -17,10 +19,12 @@ with import <nixpkgs> {};
     pigz
     silver-searcher
     sqlite
+    squashfsTools
     subversion
     tcpdump
     tig
     tmux
+    unzip
     vim
     wget
     zsh

@@ -14,7 +14,7 @@
       name = "all";
       paths = (import ./util.nix)
            ++ (import ./dev.nix)
-         # ++ (import ./desktop.nix)  # example
+           ++ (import ./gui.nix)  # example
            ++ [
            # other custom packages
            # tortoisehg
