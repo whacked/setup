@@ -70,6 +70,13 @@ Vagrant.configure(2) do |config|
       nix-shell -p dos2unix --run "dos2unix /etc/nixos/configuration.nix"
       nix-shell -p dos2unix --run "dos2unix /etc/nixos/nix/*"
       # sudo nixos-rebuild switch --upgrade
+
+      if [ ! -e /swap ]; then
+        fallocate -l 4000M /swap
+        chmod 600 /swap
+        mkswap /swap
+        swapon /swap
+      fi
     EOF
   end
 end
