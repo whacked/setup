@@ -36,12 +36,11 @@
   nixpkgs.config.pulseaudio = true;
   services.xserver = {
       enable = true;
-      displayManager = {
-          # this seems to be responsible for the more featureful login screen
-          lightdm.enable = true;
-          sessionCommands = ''
-            ${pkgs.networkmanagerapplet}/bin/nm-applet &
-          '';
+      # (lightdm: more featureful login screen)
+      displayManager.lightdm = {
+          enable = true;
+          autoLogin.enable = true;
+          autoLogin.user = "vagrant";
       };
       desktopManager = {
           default = "xfce";
@@ -49,6 +48,7 @@
           xfce.enable = true;
       };
       windowManager = {
+          default = "xmonad";
           xmonad.enable = true;
           xmonad.enableContribAndExtras = true;
       };
