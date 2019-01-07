@@ -36,6 +36,13 @@
   nixpkgs.config.pulseaudio = true;
   services.xserver = {
       enable = true;
+      displayManager = {
+          # this seems to be responsible for the more featureful login screen
+          lightdm.enable = true;
+          sessionCommands = ''
+            ${pkgs.networkmanagerapplet}/bin/nm-applet &
+          '';
+      };
       desktopManager = {
           default = "xfce";
           xterm.enable = false;
