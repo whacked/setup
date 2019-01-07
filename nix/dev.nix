@@ -7,7 +7,7 @@ with import <nixpkgs> {};
     jdk8
     leiningen
     meld
-    nodejs-10_x
+    nodejs
 
     python3Full
     python36Packages.pip
