@@ -125,41 +125,43 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  config.vm.provision "shell", inline: <<-SHELL
-    USERNAME=#{config.ssh.username}
-    USERHOME=/home/$USERNAME
-    LOGFILE=$USERHOME/vagrant-provision.log
+  if config.vm.box.start_with? "ubuntu" then
+    config.vm.provision "shell", inline: <<-SHELL
+      USERNAME=#{config.ssh.username}
+      USERHOME=/home/$USERNAME
+      LOGFILE=$USERHOME/vagrant-provision.log
 
-    echo "=== CURRENT AUTHORIZED KEYS ==="
-    cat $USERHOME/.ssh/authorized_keys
-    echo "=== UPDATED AUTHORIZED KEYS ==="
+      echo "=== CURRENT AUTHORIZED KEYS ==="
+      cat $USERHOME/.ssh/authorized_keys
+      echo "=== UPDATED AUTHORIZED KEYS ==="
 
-    if [ -e /vagrant_data/authorized_keys ]; then
-      cat /vagrant_data/authorized_keys >> $USERHOME/.ssh/authorized_keys
-      rm /vagrant_data/authorized_keys
-    fi
+      if [ -e /vagrant_data/authorized_keys ]; then
+        cat /vagrant_data/authorized_keys >> $USERHOME/.ssh/authorized_keys
+        rm /vagrant_data/authorized_keys
+      fi
 
-    # nix setup
-    truncate -s 0 $LOGFILE
-    chown $USERNAME: $LOGFILE
-    echo '=== INSTALL NIX ===' >> $LOGFILE
-    su $USERNAME -c "cd $USERHOME && sh <(curl https://nixos.org/nix/install) --no-daemon >> $LOGFILE 2>&1"
-    # bootstrap from github:
-    # su $USERNAME -c "cd $USERHOME && git clone https://github.com/whacked/setup >> $LOGFILE 2>&1"
-    su $USERNAME -c "cd $USERHOME && ln -s setup/nix .nixpkgs"
-    echo '=== INSTALL PACKAGES ===' >> $LOGFILE
-    su $USERNAME -c ". $USERHOME/.nix-profile/etc/profile.d/nix.sh; nix-env -i all"
-    
-    which ansible
-    # install python "natively" for on-host execution
-    apt-get install -y python
+      # nix setup
+      truncate -s 0 $LOGFILE
+      chown $USERNAME: $LOGFILE
+      echo '=== INSTALL NIX ===' >> $LOGFILE
+      su $USERNAME -c "cd $USERHOME && sh <(curl https://nixos.org/nix/install) --no-daemon >> $LOGFILE 2>&1"
+      # bootstrap from github:
+      # su $USERNAME -c "cd $USERHOME && git clone https://github.com/whacked/setup >> $LOGFILE 2>&1"
+      su $USERNAME -c "cd $USERHOME && ln -s setup/nix .nixpkgs"
+      echo '=== INSTALL PACKAGES ===' >> $LOGFILE
+      su $USERNAME -c ". $USERHOME/.nix-profile/etc/profile.d/nix.sh; nix-env -i all"
+      
+      which ansible
+      # install python "natively" for on-host execution
+      apt-get install -y python
 
-    cd $USERHOME/setup
-    export ANSIBLE_HOST_KEY_CHECKING=False
-    cp playbook.yml playbook.yml.orig
-    cat playbook.yml.orig |
-      sed 's|user:.*|connection: local|' |
-      cat > playbook.yml
-    su $USERNAME -c '. /home/#{config.ssh.username}/.nix-profile/etc/profile.d/nix.sh; sudo $(which ansible-playbook) -i localhost, playbook.yml'
-  SHELL
+      cd $USERHOME/setup
+      export ANSIBLE_HOST_KEY_CHECKING=False
+      cp playbook.yml playbook.yml.orig
+      cat playbook.yml.orig |
+        sed 's|user:.*|connection: local|' |
+        cat > playbook.yml
+      su $USERNAME -c '. /home/#{config.ssh.username}/.nix-profile/etc/profile.d/nix.sh; sudo $(which ansible-playbook) -i localhost, playbook.yml'
+    SHELL
+  end
 end
