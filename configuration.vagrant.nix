@@ -70,6 +70,7 @@
   ]
   ++ (import ./nix/util.nix)
   ++ (import ./nix/dev.nix)
+  ++ (import ./nix/electron.nix)
   ++ (import ./nix/util.nix)
   ++ (import ./nix/desktop.nix)
   ++ (import ./nix/work.nix);
