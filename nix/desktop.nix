@@ -4,4 +4,5 @@ with import <nixpkgs> {};
     haskellPackages.xmonad-extras
     haskellPackages.xmonad-contrib
     xorg.xkbcomp
+    xorg.xmodmap
 ]

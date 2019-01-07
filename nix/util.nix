@@ -10,6 +10,7 @@ with import <nixpkgs> {};
     git-cola
     htop
     imagemagick
+    keychain
     mercurial
     moreutils
     mosh
