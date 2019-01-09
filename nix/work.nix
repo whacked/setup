@@ -1,6 +1,12 @@
 # other
 with import <nixpkgs> {};
 [
+    aspell
+    cifs-utils
+    texinfo
+    texlive.combined.scheme-full
+
+    # desktop
     anki
     audacity
     sqliteman
@@ -23,9 +29,6 @@ with import <nixpkgs> {};
     wireshark
     thunderbird
     firefox
-    aspell
-    cifs-utils
-    texinfo
-    texlive.combined.scheme-full
     calibre
+    zotero
 ]
