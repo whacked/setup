@@ -1,6 +1,14 @@
 # see https://github.com/nix-community/nixbox/blob/master/scripts/configuration.nix
 { config, pkgs, ... }:
 
+let
+  unstable = import (builtins.fetchTarball {
+    name = "nixos-unstable-2019-01-07";
+    url = https://github.com/nixos/nixpkgs/archive/eebd1a9263716a04689a37b6537e50801d376b5e.tar.gz;
+    # nix-prefetch-url --unpack https://github.com/... (from `url`)
+    sha256 = "1jg7g6cfpw8qvma0y19kwyp549k1qyf11a5sg6hvn6awvmkny47v";
+  }) {};
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -67,10 +75,10 @@
     nfs-utils
     rsync
     linuxPackages.virtualboxGuestAdditions
+    unstable.electron
   ]
   ++ (import ./nix/util.nix)
   ++ (import ./nix/dev.nix)
-  ++ (import ./nix/electron.nix)
   ++ (import ./nix/util.nix)
   ++ (import ./nix/desktop.nix)
   ++ (import ./nix/work.nix);
