@@ -62,7 +62,9 @@ Vagrant.configure(2) do |config|
     config.ssh.username = 'ubuntu'
   end
 
-  config.ssh.private_key_path = PKEY_PATH
+  if File.exists? PKEY_PATH then
+    config.ssh.private_key_path = PKEY_PATH
+  end
 
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
