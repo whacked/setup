@@ -1,5 +1,15 @@
 with import <nixpkgs> {};
 [
+    # from vagrant setup
+    findutils
+    gnumake
+    iputils
+    jq
+    nettools
+    netcat
+    nfs-utils
+    rsync
+
     ansible
 
     autoconf

@@ -58,14 +58,6 @@
 
   # Packages for Vagrant
   environment.systemPackages = with pkgs; [
-    findutils
-    gnumake
-    iputils
-    jq
-    nettools
-    netcat
-    nfs-utils
-    rsync
     linuxPackages.virtualboxGuestAdditions
   ]
   ++ (import ./nix/util.nix)
