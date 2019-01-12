@@ -11,7 +11,9 @@
 
   - name: ubuntu/vbox specific utils
     become: true
-    apt: pkg="{{ item }}" state=latest
+    package:
+        name: "{{ item }}"
+        state: latest
     with_items:
         - xfce4
         - xserver-xorg-legacy  # also for WM launch
