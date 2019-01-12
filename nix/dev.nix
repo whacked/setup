@@ -6,6 +6,7 @@ with import <nixpkgs> {};
     hy
     jdk8
     leiningen
+    maven
     meld
     nodejs
 
