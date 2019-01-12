@@ -47,16 +47,8 @@
     register: nixdir
 
   - name: install nix
-    shell: bash -c 'bash <(curl https://nixos.org/nix/install)'
+    shell: curl https://nixos.org/nix/install | sh
     when: nixdir.stat.exists == False
-
-  # DEPRECATE
-  ## manually install packages using nix-env; supersede with config.nix
-  #- name: install software
-  #  shell: "{{ nix_init }} && nix-env -i {{ item }} 2>>/tmp/install-{{ item }}.log"
-  #  with_items:
-  #      - tmux
-  #      - htop
 
   - name: install docker
     # see https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
