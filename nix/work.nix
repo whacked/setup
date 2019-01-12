@@ -19,6 +19,7 @@ with import <nixpkgs> {};
     pinta
     inkscape
     gimp
+    git-cola
     keepassx
     vlc
     qjackctl
