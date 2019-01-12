@@ -5,7 +5,6 @@ with import <nixpkgs> {};
     gnumake
     iputils
     jq
-    nettools
     netcat
     nfs-utils
     rsync
@@ -15,10 +14,13 @@ with import <nixpkgs> {};
     autoconf
     automake
     bazaarTools
+    binutils
     bzip2
+    dnsutils
     dos2unix
     emacs
     ffmpeg
+    file
     git
     htop
     imagemagick
@@ -26,6 +28,7 @@ with import <nixpkgs> {};
     mercurial
     moreutils
     mosh
+    nettools
     pigz
     silver-searcher
     sqlite
@@ -37,6 +40,7 @@ with import <nixpkgs> {};
     unzip
     vim
     wget
+    which
     zsh
     oh-my-zsh
 ]
