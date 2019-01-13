@@ -4,7 +4,7 @@ with import <nixpkgs> {};
     aspell
     cifs-utils
     texinfo
-    texlive.combined.scheme-full
+    texlive.combined.scheme-basic
 
     # desktop
     anki
