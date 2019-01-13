@@ -6,5 +6,4 @@ with import <nixpkgs> {};
     firefox
     git-cola
     terminator
-    (import ./electron.nix)
 ]
