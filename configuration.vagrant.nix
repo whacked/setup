@@ -79,6 +79,7 @@ in
   ]
   ++ (import ./nix/util.nix)
   ++ (import ./nix/dev.nix)
+  ++ (import ./nix/dev-heavy.nix)
   ++ [ (import ./nix/electron.nix) ]
   ++ (import ./nix/util.nix)
   ++ (import ./nix/desktop.nix)
@@ -109,7 +110,7 @@ in
     export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh/
 
     # Customize your oh-my-zsh options here
-    ZSH_THEME="cloud"
+    ZSH_THEME="crunch"
     plugins=(git)
 
     source $ZSH/oh-my-zsh.sh
