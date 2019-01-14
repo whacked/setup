@@ -25,11 +25,12 @@ with import <nixpkgs> {};
     qjackctl
     supercollider
     terminator
-    tortoisehg
     xournal
     wireshark
     thunderbird
     firefox
     calibre
     zotero
+    # this has a surprisingly large dependency tree
+    # tortoisehg
 ]
