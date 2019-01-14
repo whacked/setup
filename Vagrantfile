@@ -22,7 +22,7 @@ Vagrant.configure(2) do |config|
   # boxes at https://vagrantcloud.com/search.
   # config.vm.box = "nixos/nixos-18.03-x86_64"
   # old, but still largely compatible
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "ubuntu/bionic64"
 
   # config.vm.hostname = "vagrant-box"
   config.disksize.size = '40GB'
