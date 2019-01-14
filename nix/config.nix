@@ -27,7 +27,7 @@
            ++ (import ./dev.nix)
            ++ (import ./gui.nix)
            ++ (import ./dev-heavy.nix)
-           ++ [ (import ./electron.nix) ]
+           ++ (import ./electron.nix)
            ++ (import ./desktop.nix)
            ++ (import ./work.nix)
            ++ (import ./unfree.nix)
