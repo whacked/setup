@@ -95,7 +95,6 @@
   - name: post-install customization
     shell: "{{ nix_init }}; {{ item }}"
     with_items:
-        - NIXPKGS_ALLOW_UNFREE=1 nix-env -i my-custom-nixpkgs
         - ln -sf $HOME/.nix-profile/share/oh-my-zsh $HOME/.oh-my-zsh
         - sudo usermod -s $(which zsh) $USER
         # ensure Emacs keys are loaded by default for gtk apps

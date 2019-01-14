@@ -163,6 +163,7 @@ Vagrant.configure(2) do |config|
       # prevent "cannot allocate memory"
       # https://github.com/NixOS/nix/issues/421
       echo 1 > /proc/sys/vm/overcommit_memory
+      su - $MAINUSER -c '. $HOME/.nix-profile/etc/profile.d/nix.sh; NIXPKGS_ALLOW_UNFREE=1 nix-env -i my-custom-nixpkgs'
       
       which ansible
       # install python "natively" for on-host execution
