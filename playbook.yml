@@ -50,6 +50,21 @@
     shell: curl https://nixos.org/nix/install | sh
     when: nixdir.stat.exists == False
 
+  - name: update cabal
+    shell: "{{ nix_init }}; cabal update"
+  
+  - name: use nix's cabal to install xmonad
+    shell: |
+        {{ nix_init }}
+        nix-shell -p alsaLib pkgconfig xorg.libXext xorg.libXrandr xorg.libXinerama xorg.libXScrnSaver --run 'cabal install {{ item }}'
+    with_items:
+        - alex
+        - happy
+        - c2hs
+        - xmonad
+        - xmonad-contrib
+        - xmonad-extras
+
   - name: install docker
     # see https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
     become: true
@@ -76,4 +91,17 @@
         name: '{{ ansible_user }}'
         groups: docker
         append: yes
+
+  - name: post-install customization
+    shell: "{{ nix_init }}; {{ item }}"
+    with_items:
+        - NIXPKGS_ALLOW_UNFREE=1 nix-env -i my-custom-nixpkgs
+        - ln -sf $HOME/.nix-profile/share/oh-my-zsh $HOME/.oh-my-zsh
+        - sudo usermod -s $(which zsh) $USER
+        # ensure Emacs keys are loaded by default for gtk apps
+        - mkdir -p ~/.themes
+        - ln -sf $(find /nix/store -name gtk-keys.css | grep Emacs | head -1) ~/.themes/
+        - mkdir -p ~/.xmonad
+        - ln -sf ~/dot/xmonad.hs ~/.xmonad/
+        - ln -sf ~/dot/Xmodmap ~/.Xmodmap
 
