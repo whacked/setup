@@ -54,7 +54,9 @@
     # see https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
     become: true
     block:
-    - apt: pkg="{{ item }}" state=latest
+    - package:
+        name: "{{ item }}"
+        state: latest
       with_items:
           - apt-transport-https
           - ca-certificates
