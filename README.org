@@ -2,12 +2,11 @@
 
 see ~/.nixpkgs/config.nix
 
-
 * nix setup
+
 using https://github.com/rycee/home-manager
 
 mkdir -p /nix/var/nix/{profiles,gcroots}/per-user/$USER
-
 
 HM_PATH=https://github.com/rycee/home-manager/archive/master.tar.gz
 
@@ -24,14 +23,75 @@ EOF
 
 nix-shell $HM_PATH -A install
 
-
 * vagrant setup
 
+#+BEGIN_SRC sh :eval never
 vagrant init nixos/nixos-18.03-x86_64
 vagrant plugin install vagrant-disksize
+#+END_SRC
 
 ** nixos plugin
 
 probably skip this; the provisioner is not as reliable as directly running =nixos-rebuild switch=
 
 vagrant plugin install vagrant-nixos-plugin
+
+** unfree software, e.g. vscode
+
+1. enable 
+   #+BEGIN_EXAMPLE
+   nixpkgs.config.allowUnfree = true; # for nixos
+   #+END_EXAMPLE
+   
+   in file:/etc/nixos/configuration.nix; for non-nixos you should set
+
+   #+BEGIN_EXAMPLE
+   allowUnfre = true;
+   #+END_EXAMPLE
+
+   in file:~/.config/nixpkgs/config.nix
+
+2. =NIXPKGS_ALLOW_UNFREE=1 nix-env -qa | grep vscode=
+3. =NIXPKGS_ALLOW_UNFREE=1 nix-env -i vscode=
+
+* xfce configuration
+
+** turn capslock into second ctrl
+
+   one-shot command: =setxkbmap -option "ctrl:nocaps"=
+
+   via =xmodmap= with mapping =Alt_R= to =mod3=
+
+   #+BEGIN_EXAMPLE
+     clear mod3
+     remove mod1 = Alt_R
+     add mod3 = Alt_R
+   #+END_EXAMPLE
+
+** change default key theme to emacs
+
+   =xfconf-query -c xsettings -p /Gtk/KeyThemeName -s Emacs=
+
+** reloading xmonad with nix libraries
+
+   #+BEGIN_SRC sh :eval never
+   nix-shell -p alsaLib pkgconfig x11 xorg.libXrandr xorg.libXinerama xorg.libXScrnSaver --run 'xmonad --recompile'
+   nix-shell -p alsaLib pkgconfig x11 xorg.libXrandr xorg.libXinerama xorg.libXScrnSaver --run 'xmonad --restart'
+   #+END_SRC
+
+** change xfwm4 to xmonad
+
+   =xfconf-query -c xfce4-session -p /sessions/Failsafe/Client0_Command -t string -sa xmonad=
+
+** Gtk warnings in gui apps
+
+running e.g. firefox from the command line spits out a lot of
+warnings.  in particular, *theme* warnings can be fixed with:
+
+=export GTK_THEME=Adwaita firefox=
+
+** emacs keybindings in Gtk apps installed by nix
+
+   ref https://github.com/NixOS/nixpkgs/issues/25838
+
+   see linking of Emacs theme in circa file:playbook.yml::103
