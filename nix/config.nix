@@ -6,20 +6,32 @@
     # or:
     #  $ nix-env -iA nixos.all
 
+    # required to build packages in unfree.nix
+    allowUnfree = true;
+
+    # fixes installation failure due to package binary symlink
+    # conflicts; in particular:
+    # - mercurial <> tortoisehg
+    # however, it causes an extremely large compilation overhead.
+    # you should check whether the conflicts have been resolved
+    # and/or new conflicts have arisen
+    # ignoreCollisions = true;
+
     # using this method seems to cause conflicts at every package that
     # was installed separately via nix-env -i $package; in doing so
     # you need to uninstall ecach of those indpependently installed
     # packages, to get this pseudo-package to work
     all = with pkgs; buildEnv {
-      name = "all";
+      name = "my-custom-nixpkgs";
       paths = (import ./util.nix)
            ++ (import ./dev.nix)
-           ++ (import ./gui.nix)  # example
-           ++ [
-           # other custom packages
-           # tortoisehg
-           # synergy-1.7.6
-      ];
+           ++ (import ./gui.nix)
+           ++ (import ./dev-heavy.nix)
+           ++ [ (import ./electron.nix) ]
+           ++ (import ./desktop.nix)
+           ++ (import ./work.nix)
+           ++ (import ./unfree.nix)
+           ;
     };
   };
 }
