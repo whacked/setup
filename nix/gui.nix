@@ -5,5 +5,5 @@ with import <nixpkgs> {};
     evince
     firefox
     git-cola
-    terminator
+    tilix
 ]
