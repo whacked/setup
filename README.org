@@ -95,3 +95,10 @@ warnings.  in particular, *theme* warnings can be fixed with:
    ref https://github.com/NixOS/nixpkgs/issues/25838
 
    see linking of Emacs theme in circa file:playbook.yml::103
+
+
+* to use nix setup on a new machine
+
+1. link setup/nix to $HOME/.nixpkgs
+2. nix-env -i my-custom-nixpkgs
+
