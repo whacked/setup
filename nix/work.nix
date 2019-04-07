@@ -20,7 +20,7 @@ with import <nixpkgs> {};
     inkscape
     gimp
     git-cola
-    keepassx
+    keepassx2
     vlc
     qjackctl
     supercollider

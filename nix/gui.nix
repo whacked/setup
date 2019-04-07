@@ -6,4 +6,5 @@ with import <nixpkgs> {};
     firefox
     git-cola
     tilix
+    veracrypt
 ]
