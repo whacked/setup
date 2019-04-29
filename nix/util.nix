@@ -19,6 +19,7 @@ with import <nixpkgs> {};
     dnsutils
     dos2unix
     emacs
+    fdupes
     ffmpeg
     file
     git
@@ -30,7 +31,7 @@ with import <nixpkgs> {};
     mosh
     nettools
     pigz
-    silver-searcher
+    ripgrep
     sqlite
     squashfsTools
     subversion
