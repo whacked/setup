@@ -4,6 +4,7 @@ with import <nixpkgs> {};
     glibcLocales
 
     haskellPackages.ghc
+    xmonad-with-packages
     ## leave this to cabal for now
     # haskellPackages.xmonad
     # haskellPackages.xmonad-extras
