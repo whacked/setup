@@ -2,6 +2,8 @@
 with import <nixpkgs> {};
 [
     R
+    cairo
+    gcc
     go
     hy
     jdk8
@@ -9,6 +11,7 @@ with import <nixpkgs> {};
     maven
     meld
     nodejs
+    poppler
 
     python3Full
     python36Packages.pip
