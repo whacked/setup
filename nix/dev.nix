@@ -19,4 +19,7 @@ with import <nixpkgs> {};
     pipenv
     swftools
     dos2unix
+    cargo
+    rustc
+    watchexec
 ]
