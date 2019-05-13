@@ -15,6 +15,7 @@ with import <nixpkgs> {};
 
     python3Full
     python36Packages.pip
+    python36Packages.ipython
 
     pipenv
     swftools
