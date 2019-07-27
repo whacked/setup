@@ -25,6 +25,7 @@
       name = "my-custom-nixpkgs";
       paths = (import ./util.nix)
            ++ (import ./dev.nix)
+           ++ (import ./cloud.nix)
            ++ (import ./gui.nix)
            ++ (import ./dev-heavy.nix)
            ++ (import ./electron.nix)
