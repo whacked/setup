@@ -12,7 +12,6 @@ with import <nixpkgs> {};
     sqliteman
     chromium
     gnome3.eog
-    evince
     remmina
     pdfmod
     scrot
@@ -21,7 +20,6 @@ with import <nixpkgs> {};
     gimp
     git-cola
     keepassx2
-    vlc
     qjackctl
     supercollider
     terminator

@@ -9,5 +9,6 @@ with import <nixpkgs> {};
     git-cola
     tilix
     veracrypt
+    vlc
     xclip
 ]
