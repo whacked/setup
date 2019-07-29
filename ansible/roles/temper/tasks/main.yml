@@ -1,0 +1,24 @@
+- shell: command -v temper-poll >/dev/null 2>&1
+  register: check_temper_python_installed
+
+- when: check_temper_python_installed.rc == 1
+  block: 
+
+  - tempfile:
+      state: directory
+    register: build_dir
+  
+  - git:
+      repo: https://github.com/whacked/temper-python.git
+      dest: "{{ build_dir.path }}"
+  
+  - shell: cp "{{ build_dir.path }}/etc/99-tempsensor.rules" /etc/udev/rules.d/
+  
+  - shell: python3 setup.py install
+    args:
+      chdir: "{{ build_dir.path }}"
+  
+  - file:
+      path: "{{ build_dir.path }}"
+      state: absent
+
