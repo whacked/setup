@@ -169,7 +169,7 @@ Vagrant.configure(2) do |config|
       # install python "natively" for on-host execution
       apt-get install -y python
 
-      su - $MAINUSER -c '. $HOME/.nix-profile/etc/profile.d/nix.sh; ansible-playbook -i localhost, $HOME/setup/playbook.yml'
+      su - $MAINUSER -c '. $HOME/.nix-profile/etc/profile.d/nix.sh; ansible-playbook -i localhost, $HOME/setup/ansible/playbook.yml'
     SHELL
   end
   # </old>
