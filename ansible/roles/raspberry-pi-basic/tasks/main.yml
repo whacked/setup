@@ -16,7 +16,7 @@
     - rustc
     - sqlite3
     - tcpdump
-    - tilix
+    - terminator
     - tmux
 
 # for 4GB RAM, ansible returns
