@@ -1,7 +1,8 @@
 - shell: command -v temper-poll >/dev/null 2>&1
+  ignore_errors: yes
   register: check_temper_python_installed
 
-- when: check_temper_python_installed.rc == 1
+- when: check_temper_python_installed.rc != 0
   block: 
 
   - tempfile:
