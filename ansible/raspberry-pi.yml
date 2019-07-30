@@ -3,48 +3,6 @@
 - hosts: raspberry-pi
   become: true
   roles:
+  - raspberry-pi-basic
   - temper
-  tasks:
-
-  - name: ensure apt cache is up to date
-    apt: update_cache=yes
-
-  - package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - cargo
-      - clojure
-      - emacs
-      - golang
-      - htop
-      - nodejs
-      - openjdk-11-jdk
-      - ripgrep
-      - rustc
-      - sqlite3
-      - tcpdump
-      - tilix
-      - tmux
-
-  # for 4GB RAM, ansible returns
-  # 3906, which is 4096*1024^2/1000^2;
-  # so 1GB is 1024*0.9765625^2 = 976
-  - when: ansible_memtotal_mb >= 976
-    block:
-    - group:
-        name: docker
-        state: present
-  
-    - user:
-        name: pi
-        groups: docker
-        append: true
-  
-    - shell: command -v docker >/dev/null 2>&1
-      register: check_docker_installed
-      ignore_errors: true
-
-    - shell: curl -sSL https://get.docker.com | sh
-      when: check_docker_installed.rc == 1
 
