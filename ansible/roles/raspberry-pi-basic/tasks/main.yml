@@ -11,7 +11,6 @@
     - golang
     - htop
     - nodejs
-    - ripgrep
     - default-jdk
     - rustc
     - sqlite3
@@ -19,6 +18,20 @@
     - terminator
     - tmux
 
+- block:
+  - shell: apt list ripgrep | grep ripgrep | wc -l
+    register: rg_match
+  
+  - when: rg_match.stdout == "0"
+    package:
+      name: silversearcher-ag
+      state: latest
+  
+  - when: rg_match.stdout != "0"
+    package:
+      name: ripgrep
+      state: latest
+  
 # for 4GB RAM, ansible returns
 # 3906, which is 4096*1024^2/1000^2;
 # so 1GB is 1024*0.9765625^2 = 976
