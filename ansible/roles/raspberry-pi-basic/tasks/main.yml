@@ -11,8 +11,8 @@
     - golang
     - htop
     - nodejs
-    - openjdk-11-jdk
     - ripgrep
+    - default-jdk
     - rustc
     - sqlite3
     - tcpdump
