@@ -30,6 +30,7 @@ with import <nixpkgs> {};
     moreutils
     mosh
     nettools
+    pdftk
     pigz
     ripgrep
     sqlite
