@@ -1,0 +1,23 @@
+- stat:
+    path: "{{ install_path }}"
+  register: enviroplus
+
+- file:
+    path: "{{ build_path }}"
+    owner: pi
+    group: pi
+    state: directory
+
+- when: enviroplus.stat.exists == False
+  become: yes
+  become_user: pi
+  block: 
+
+  - git:
+      repo: https://github.com/whacked/enviroplus-python
+      dest: "{{ build_path }}"
+  
+  - shell: sudo FORCE='-y' ./install.sh
+    args:
+      chdir: "{{ build_path }}"
+

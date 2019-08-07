@@ -5,6 +5,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
+    - build-essential
     - cargo
     - clojure
     - emacs
