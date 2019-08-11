@@ -9,6 +9,7 @@
     - cargo
     - clojure
     - emacs
+    - vim
     - golang
     - htop
     - nodejs
