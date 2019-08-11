@@ -30,6 +30,7 @@ with import <nixpkgs> {};
     moreutils
     mosh
     nettools
+    nmap
     pdftk
     pigz
     ripgrep
