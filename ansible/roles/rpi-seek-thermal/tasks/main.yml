@@ -1,0 +1,54 @@
+- shell: pip install "{{ item }}"
+  with_items:
+  - pyusb
+  become: true
+
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-libusb1
+    - python-opencv
+    - python-numpy
+    - python-scipy
+    - python-matplotlib
+    - python-imaging-tk
+    - imagemagick
+    - cmake
+    - libboost-program-options-dev
+    - libusb-dev
+    - libusb-1.0-0-dev
+    - libopencv-dev
+
+- git:
+    repo: https://github.com/maartenvds/libseek-thermal
+    dest: /opt/libseek-thermal
+
+- name: chown -R
+  file:
+    path: /opt/libseek-thermal
+    recurse: yes
+    owner: pi
+    group: pi
+
+- name: build libseek-thermal
+  shell: "{{ item }}"
+  args:
+    chdir: /opt/libseek-thermal
+  become: yes
+  become_user: pi
+  with_items:
+    - mkdir build
+    - cd build && cmake ..
+    - cd build && make
+
+- name: create udev rule for Seek Thermal Compact
+  become: yes
+  copy:
+    dest: /etc/udev/rules.d/99-seekthermal.rules
+    content: |
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="289d", ATTRS{idProduct}=="0010", MODE="0666", GROUP="users"
+
+- name: reload udev rules
+  become: yes
+  shell: udevadm control --reload-rules && udevadm trigger

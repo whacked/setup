@@ -1,8 +1,10 @@
 # ansible-playbook -i hosts $0
 ---
 - hosts: raspberry-pi
+  user: pi
   become: true
   roles:
+  # - rpi-seek-thermal
   - raspberry-pi-basic
   - temper
   - pimoroni
