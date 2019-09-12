@@ -1,0 +1,28 @@
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libudev-dev
+    - libusb-dev
+    - libusb-1.0-0-dev
+    - libhidapi-dev
+    - libhidapi-libusb0
+
+- name: create udev rule for Seek Thermal Compact
+  become: yes
+  copy:
+    dest: /etc/udev/rules.d/98-co2mon.rules
+    content: |
+      KERNEL=="hidraw*", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052", GROUP="plugdev", MODE="0666"
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052", GROUP="plugdev", MODE="0666"
+
+- name: reload udev rules
+  become: yes
+  shell: udevadm control --reload-rules && udevadm trigger
+
+- shell: pip install "{{ item }}"
+  with_items:
+  - hidapi
+  - co2meter
+  become: true
+
