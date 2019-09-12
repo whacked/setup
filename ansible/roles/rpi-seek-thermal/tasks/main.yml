@@ -21,8 +21,10 @@
     - libopencv-dev
 
 - git:
-    repo: https://github.com/maartenvds/libseek-thermal
+    # repo: https://github.com/maartenvds/libseek-thermal
     dest: /opt/libseek-thermal
+    repo: https://github.com/hoehermann/libseek-thermal
+    version: temp-info_compact
 
 - name: chown -R
   file:
