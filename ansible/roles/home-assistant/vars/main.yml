@@ -1,0 +1,6 @@
+manager_user: homeassistant
+install_root: /srv
+install_directory: "{{ install_root }}/homeassistant"
+
+# needed to make become+become_user work properly
+ansible_ssh_pipelining: true

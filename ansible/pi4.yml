@@ -1,0 +1,14 @@
+# ansible-playbook -i hosts $0
+---
+- hosts: pi4
+  user: pi
+  become: true
+  roles:
+  - raspberry-pi-basic
+  - temper
+  - pimoroni
+  - rpi-seek-thermal
+  - rpi-co2meter
+  - python-miio
+  - home-assistant
+
