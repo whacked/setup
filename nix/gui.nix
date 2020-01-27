@@ -12,4 +12,5 @@ with import <nixpkgs> {};
     veracrypt
     vlc
     xclip
+    xsel
 ]
