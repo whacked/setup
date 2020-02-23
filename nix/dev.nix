@@ -8,6 +8,7 @@ with import <nixpkgs> {};
     hy
     jdk8
     leiningen
+    libpng
     maven
     meld
     nodejs
@@ -23,4 +24,5 @@ with import <nixpkgs> {};
     cargo
     rustc
     watchexec
+    zlib
 ]
