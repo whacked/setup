@@ -32,6 +32,7 @@
            ++ (import ./desktop.nix)
            ++ (import ./work.nix)
            ++ (import ./unfree.nix)
+           ++ (import ./containerization.nix)
            ;
     };
   };
