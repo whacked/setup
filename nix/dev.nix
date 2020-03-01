@@ -6,7 +6,7 @@ with import <nixpkgs> {};
     gcc
     go
     hy
-    jdk8
+    jdk
     leiningen
     libpng
     maven
