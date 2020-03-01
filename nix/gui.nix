@@ -5,6 +5,7 @@ with import <nixpkgs> {};
     hack-font
     gnome3.eog
     gnome3.nautilus
+    graphviz
     evince
     firefox
     git-cola
