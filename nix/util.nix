@@ -34,6 +34,7 @@ with import <nixpkgs> {};
     pdftk
     pigz
     ripgrep
+    skim
     sqlite
     squashfsTools
     subversion
