@@ -4,7 +4,7 @@
 { lib, stdenv, fetchurl,
   opencv3, ant, adoptopenjdk-bin,
   gcc-unwrapped, pythonPackages,
-  glibcLocales
+  glibcLocales, jython
 }:
 
 let
@@ -29,14 +29,18 @@ in stdenv.mkDerivation rec {
     url="https://launchpad.net/sikuli/sikulix/${version}/+download/sikulixide-${version}.jar";
     sha256 = "0pq0d58h4svkgnw3h5qv27bzmap2cgx0pkhmq824nq4rdj9ivphi";
   };
-  # TODO: remove this
+
+  # NOTE: looks like this does not need to colocate with sikulix.jar
   # it works ok with nix-provided jython (v2.7.2b3)
   # but regardless of which version you use it MUST be symlinked in
   # $HOME/.Sikulix/Extensions/jython.jar --> original_path
-  jython_jar = fetchurl {
-    url="https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.1/jython-standalone-2.7.1.jar";
-    sha256 = "0jwc4ly75cna78blnisv4q8nfcn5s0g4wk7jf4d16j0rfcd0shf4";
-  };
+  # at Sikulix launch time
+  # this is the README-recommended jar:
+  # jython_jar = fetchurl {
+  #   url="https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.1/jython-standalone-2.7.1.jar";
+  #   sha256 = "0jwc4ly75cna78blnisv4q8nfcn5s0g4wk7jf4d16j0rfcd0shf4";
+  # };
+
   dontUnpack = true;
 
   buildInputs = [
@@ -44,19 +48,21 @@ in stdenv.mkDerivation rec {
     adoptopenjdk-bin
     glibcLocales
     gcc-unwrapped
+    jython
   ];
   installPhase = ''
     mkdir -p $out/bin/
     mv ${src} $out/bin/sikulix.jar
-    # this step is most likely unnecessary
-    mv $jython_jar $out/bin/jython.jar
 
     ln -s ${opencv3_with_java.out}/share/OpenCV/java/libopencv_java348.so $out/bin/libopencv_java.so
 
     cat > $out/bin/sikulix <<EOF
+    _sikulix_extensions_dir=\$HOME/.Sikulix/Extensions
+    if [ ! -e \$_sikulix_extensions_dir/jython.jar ]; then
+        mkdir -p \$_sikulix_extensions_dir
+        ln -s ${jython}/jython.jar \$_sikulix_extensions_dir/jython.jar
+    fi
     export LD_LIBRARY_PATH=${gcc-unwrapped.lib}/lib
-    # this step does not affect runnability (.Sikulix is more important)
-    export CLASSPATH=$out/bin/jython.jar
     ${adoptopenjdk-bin}/bin/java -jar $out/bin/sikulix.jar \$@
     EOF
     chmod +x $out/bin/sikulix
