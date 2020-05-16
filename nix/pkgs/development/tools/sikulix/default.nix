@@ -12,8 +12,8 @@ let
     buildInputs = oldAttrs.buildInputs ++ [
       ant
       adoptopenjdk-bin
-    ] ++ lib.optional true pythonPackages.python;
-    propagatedBuildInputs = lib.optional true pythonPackages.numpy;
+    ] ++ [ pythonPackages.python ];
+    propagatedBuildInputs = [ pythonPackages.numpy ];
     cmakeFlags = oldAttrs.cmakeFlags ++ [
       "-DBUILD_opencv_java=ON"
       "-DBUILD_JAVA=ON"
@@ -51,10 +51,12 @@ in stdenv.mkDerivation rec {
     jython
   ];
   installPhase = ''
-    mkdir -p $out/bin/
+    mkdir -p $out/bin/ $out/lib/
     mv ${src} $out/bin/sikulix.jar
 
-    ln -s ${opencv3_with_java.out}/share/OpenCV/java/libopencv_java348.so $out/bin/libopencv_java.so
+    lib_version_string=$(echo ${opencv3_with_java.version}|tr -d '.')
+    shared_library_path=${opencv3_with_java.out}/share/OpenCV/java/libopencv_java$lib_version_string.so
+    ln -s $shared_library_path $out/lib/libopencv_java.so
 
     cat > $out/bin/sikulix <<EOF
     _sikulix_extensions_dir=\$HOME/.Sikulix/Extensions
@@ -62,7 +64,7 @@ in stdenv.mkDerivation rec {
         mkdir -p \$_sikulix_extensions_dir
         ln -s ${jython}/jython.jar \$_sikulix_extensions_dir/jython.jar
     fi
-    export LD_LIBRARY_PATH=${gcc-unwrapped.lib}/lib
+    export LD_LIBRARY_PATH=${gcc-unwrapped.lib}/lib:$out/lib
     ${adoptopenjdk-bin}/bin/java -jar $out/bin/sikulix.jar \$@
     EOF
     chmod +x $out/bin/sikulix
