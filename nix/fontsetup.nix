@@ -9,23 +9,28 @@ stdenv.mkDerivation rec {
 
     buildInputs = [
         dejavu_fonts
-        inconsolata
         fontconfig
+        inconsolata
+        ubuntu_font_family
     ];
 
     shellHook = ''
       function setup-fonts() {
-          mkdir -p $HOME/.fonts
-          _font_dirs=(
-            ${pkgs.dejavu_fonts.out}/share/fonts/truetype/
-            ${pkgs.inconsolata.out}/share/fonts/truetype/
-          )
-          for fpath in $(find ''${_font_dirs[@]} -name '*.ttf'); do
-              fontfile=$(basename $fpath)
-              target=$HOME/.fonts/$fontfile
-              ln -s $fpath $target 2>/dev/null || true
-          done
-          fc-cache -fv
+        _fonts_dir=$HOME/.local/share/fonts
+        mkdir -p $_fonts_dir
+        if [ ! -e $_fonts_dir/fonts.conf ]; then
+            cp ${fontconfig.out}/etc/fonts/fonts.conf $_fonts_dir/fonts.conf
+        fi
+        export FONTCONFIG_FILE=$_fonts_dir/fonts.conf
+        _ttf_dirs=(
+          ${dejavu_fonts.out}/share/fonts/truetype/
+          ${inconsolata.out}/share/fonts/truetype/
+          ${ubuntu_font_family.out}/share/fonts/ubuntu/
+        )
+        for fpath in $(find ''${_ttf_dirs[@]} -name '*.ttf'); do
+          ln -s $fpath $_fonts_dir/$(basename $fpath) 2>/dev/null || true
+        done
+        fc-cache -fv
       }
     '';
 }
