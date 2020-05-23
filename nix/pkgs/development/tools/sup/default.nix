@@ -4,7 +4,7 @@
 { stdenv, fetchurl }:
 
 stdenv.mkDerivation rec {
-  pname = "stackup";
+  pname = "sup";
   version="0.5.3";
 
   src = fetchurl (if stdenv.isLinux then {
@@ -29,7 +29,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with stdenv.lib; {
-    description = ''stackup / sup'';
+    description = ''pressly Stack Up'';
     platforms = with platforms; linux ++ darwin;
     downloadPage = "https://github.com/pressly/sup";
     inherit version;
