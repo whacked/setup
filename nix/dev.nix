@@ -6,7 +6,7 @@ with import <nixpkgs> {};
     gcc
     go
     hy
-    jdk
+    jdk11
     leiningen
     libpng
     maven
@@ -15,10 +15,8 @@ with import <nixpkgs> {};
     poppler
 
     python3Full
-    python36Packages.pip
-    python36Packages.ipython
+    python37Packages.ipython
 
-    pipenv
     swftools
     dos2unix
     cargo
