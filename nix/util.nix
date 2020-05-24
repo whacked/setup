@@ -16,6 +16,7 @@ with import <nixpkgs> {};
     bazaarTools
     binutils
     bzip2
+    direnv
     dnsutils
     dos2unix
     emacs
