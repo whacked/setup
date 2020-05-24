@@ -17,9 +17,6 @@
     with_items:
         - xfce4
         - xserver-xorg-legacy  # also for WM launch
-        - virtualbox-guest-dkms
-        - virtualbox-guest-utils
-        - virtualbox-guest-x11
         - ttf-anonymous-pro
         - fonts-dejavu-core
         - fonts-dejavu-extra
