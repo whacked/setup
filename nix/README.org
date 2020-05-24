@@ -18,7 +18,9 @@
 
 ** poor man's package list
 
-   see [[file:nix-package-list]]
+#+BEGIN_SRC sh :eval never
+  nix-env -i $(util.nix | grep '^ \+[^# ]\+$')
+#+END_SRC
 
 ** OSX
 
