@@ -20,6 +20,7 @@ with import <nixpkgs> {};
     dnsutils
     dos2unix
     emacs
+    fasd
     fdupes
     ffmpeg
     file
