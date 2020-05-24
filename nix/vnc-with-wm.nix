@@ -38,6 +38,48 @@ in stdenv.mkDerivation {
       source $ZSH/oh-my-zsh.sh
     ';
 
+    function start-vncserver() {
+        if [ $# -lt 1 ]; then
+            echo 'need <resolution> [password]'
+            return
+        fi
+        if [ "x$DISPLAY" == "x" ]; then
+            echo "export the DISPLAY variable before running this function"
+            return
+        fi
+    
+        _geometry=$1
+        _force_password=$2
+        if [ $(vncserver -list | awk '/X DISPLAY/ {getline; print $0}' | head -1 | awk '{print $1}') == "$DISPLAY" ]; then
+            echo "$DISPLAY appears to be active. run 'vncserver -kill $DISPLAY' to terminate. exiting..."
+            return
+        fi
+    
+        mkdir -p $HOME/.vnc
+        (cat <<'      EOF_XSTARTUP'
+          #!/bin/sh
+          unset SESSION_MANAGER
+          unset DBUS_SESSION_BUS_ADDRESS
+          if [ -x /etc/X11/xinit/xinitrc ]; then
+            exec /etc/X11/xinit/xinitrc
+          fi
+          if [ -f /etc/X11/xinit/xinitrc ]; then
+            exec sh /etc/X11/xinit/xinitrc
+          fi
+          [ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+          xsetroot -solid grey
+          icewm &
+          EOF_XSTARTUP
+        ) | sed 's|^      ||' | cat > $HOME/.vnc/xstartup
+        chmod +x $HOME/.vnc/xstartup
+        if [ "x$_force_password" != "x" ]; then
+            echo $_force_password | vncpasswd -f > $HOME/.vnc/passwd
+            chmod 0600 $HOME/.vnc/passwd
+        fi
+        echo "geometry=$_geometry" > $HOME/.vnc/config
+        vncserver -geometry $_geometry $DISPLAY
+    }
+
     # when run as-is without a config, as of picom 7.5
     # supplied in nixpkgs as of this commit, picom emits
     # a deluge of errors like
