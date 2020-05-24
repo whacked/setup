@@ -2,12 +2,16 @@
 # vi: set ft=ruby :
 
 load 'Vagrant_common.rb'
+USERNAME = "vagrant"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure(2) do |config|
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
 
   if false then
     required_plugins = %w( vagrant-vbguest vagrant-disksize vagrant-guest_ansible )
@@ -19,18 +23,23 @@ Vagrant.configure(2) do |config|
   end
   
   # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
+  # boxes at https://atlas.hashicorp.com/search.
   # config.vm.box = "nixos/nixos-18.03-x86_64"
-  # old, but still largely compatible
   config.vm.box = "ubuntu/bionic64"
-
   # config.vm.hostname = "vagrant-box"
-  config.disksize.size = '40GB'
+
+  config.ssh.username = USERNAME
+  config.disksize.size = '100GB'
+
+  # if ARGV[0] == "ssh" then
+  #   config.ssh.username = ENV['USER']
+  # end
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 5901, host: 5901
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -39,35 +48,42 @@ Vagrant.configure(2) do |config|
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-  # config.vm.network "public_network"
+  config.vm.network "public_network"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  if File.exists? "../shared"
-    config.vm.synced_folder "../shared", "/vagrant_data"
+  $default_vagrant_mount_candidates = [
+    "shared",
+    "data",
+  ]
+  for candidate in $default_vagrant_mount_candidates do
+      local_candidate_path = File.join("..", candidate)
+      if File.exists? local_candidate_path then
+          vagrant_sync_path = "/vagrant_#{candidate}"
+          puts("setting vagrant synced path: #{candidate} => #{vagrant_sync_path}")
+          config.vm.synced_folder local_candidate_path, vagrant_sync_path
+      end
   end
 
-  if ARGV[0] == "ssh" and File.exists? PKEY_PATH then
-    config.ssh.username = ENV['USER']
-    config.ssh.private_key_path = PKEY_PATH
-  end
-
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
-
-  # private network with host-only access to the machine by IP
-  # config.vm.network "private_network", ip: "192.168.33.10";
-  # or use bridged network:
-  config.vm.network "public_network"
-
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
+    vb.cpus = 4
   
     # Customize the amount of memory on the VM:
-    vb.memory = "3072"
-    vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional'] 
+    vb.memory = "#{1024 * 8}"
+    vb.customize [
+      'modifyvm', :id,
+      '--vram', '64',
+      '--clipboard', 'bidirectional',
+      '--draganddrop', 'bidirectional',
+    ]
   end
   
   if config.vm.box.start_with? "ubuntu" then
@@ -94,7 +110,8 @@ Vagrant.configure(2) do |config|
         USERHOME=/home/$MAINUSER
         mkdir -p $USERHOME/.ssh
         chmod 700 $USERHOME/.ssh
-        cat > $USERHOME/.ssh/authorized_keys <<EOF\n#{pubkeys}\nEOF
+        cat >> $USERHOME/.ssh/authorized_keys <<EOF\n#{pubkeys}\nEOF
+        cat authorized_keys /tmp/authorized_keys /tmp/vagrant-authorized_keys $(find /vagrant* -name authorized_keys) 2>/dev/null | sort -u >> $USERHOME/.ssh/authorized_keys
         chmod 644 $USERHOME/.ssh/authorized_keys
         chown -R $MAINUSER: $USERHOME/.ssh
 
@@ -129,26 +146,34 @@ Vagrant.configure(2) do |config|
   if File.exists? "../shared/authorized_keys"
     config.vm.provision :file do |file|
       file.source = "../shared/authorized_keys"
-      file.destination = "/home/#{ENV['USER']}/vagrant-authorized_keys"
+      file.destination = "/tmp/vagrant-authorized_keys"
     end
   end
 
   if config.vm.box.start_with? "ubuntu" then
     config.vm.provision "shell", inline: <<-SHELL
+      apt-get update && apt-get upgrade -y
+      apt-get install -y virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+      apt-get install -y libavcodec-extra
+      # apt-get install xserver-xorg-legacy
+      # apt-get install -y ubuntu-desktop
+      
+      cat > /etc/X11/Xwrapper.config <<EOF
+        allowed_users=anybody
+        needs_root_rights=yes
+      EOF
+      
       MAINUSER=#{ENV['USER']}
       USERHOME=/home/$MAINUSER
       LOGFILE=/tmp/$MAINUSER-vagrant-provision.log
-
+      
       echo "=== CURRENT AUTHORIZED KEYS ==="
       cat $USERHOME/.ssh/authorized_keys
-
-      if [ -e /vagrant_data/authorized_keys ]; then
-        cat /vagrant_data/authorized_keys >> $USERHOME/.ssh/authorized_keys
-        rm /vagrant_data/authorized_keys
-      fi
+      
+      cat authorized_keys /tmp/authorized_keys /tmp/vagrant-authorized_keys $(find /vagrant* -name authorized_keys) 2>/dev/null | sort -u >> $USERHOME/.ssh/authorized_keys
       echo "=== UPDATED AUTHORIZED KEYS ==="
       cat $USERHOME/.ssh/authorized_keys
-
+      
       # nix setup
       su - $MAINUSER -c "rsync -az /tmp/setup/ $USERHOME/setup/"
       su - $MAINUSER -c 'ln -sf $HOME/setup/nix $HOME/.nixpkgs'
@@ -168,7 +193,7 @@ Vagrant.configure(2) do |config|
       which ansible
       # install python "natively" for on-host execution
       apt-get install -y python
-
+      
       su - $MAINUSER -c '. $HOME/.nix-profile/etc/profile.d/nix.sh; ansible-playbook -i localhost, $HOME/setup/ansible/playbook.yml'
     SHELL
   end
