@@ -1,0 +1,22 @@
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - ccrypt
+    - libffi-dev
+    - libssl-dev
+
+- file:
+    path: "{{ install_path }}"
+    owner: pi
+    group: pi
+    state: directory
+
+- shell: python3 -m venv venv
+  args:
+    chdir: "{{ install_path }}"
+
+- pip:
+    name: ["setuptools", "python-miio"]
+    virtualenv: "{{ install_path }}/venv"
+
