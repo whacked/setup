@@ -1,3 +1,5 @@
+- apt: update_cache=yes
+
 - package:
     name: "{{ item }}"
     state: latest

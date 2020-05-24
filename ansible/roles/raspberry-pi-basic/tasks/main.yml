@@ -6,6 +6,7 @@
     state: latest
   with_items:
     - build-essential
+    - moreutils
     - cargo
     - clojure
     - emacs
