@@ -6,4 +6,5 @@ with import <nixpkgs> {};
     resilio-sync
     jetbrains.pycharm-professional
     jetbrains.idea-community
+    android-studio
 ]

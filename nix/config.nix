@@ -1,5 +1,17 @@
 # ~/.nixpkgs/config.nix
 {
+  includeDefaultPackages = (import ./util.nix)
+                        ++ (import ./dev.nix)
+                        ++ (import ./cloud.nix)
+                        ++ (import ./gui.nix)
+                        ++ (import ./dev-heavy.nix)
+                        ++ (import ./electron.nix)
+                        ++ (import ./desktop.nix)
+                        ++ (import ./work.nix)
+                        ++ (import ./containerization.nix)
+                        ;
+  includeUnfreePackages = (import ./unfree.nix)
+                          ;
   packageOverrides = defaultPkgs: with defaultPkgs; {
     # To install below "pseudo-package", run:
     #  $ nix-env -i all
@@ -23,17 +35,7 @@
     # packages, to get this pseudo-package to work
     all = with pkgs; buildEnv {
       name = "my-custom-nixpkgs";
-      paths = (import ./util.nix)
-           ++ (import ./dev.nix)
-           ++ (import ./cloud.nix)
-           ++ (import ./gui.nix)
-           ++ (import ./dev-heavy.nix)
-           ++ (import ./electron.nix)
-           ++ (import ./desktop.nix)
-           ++ (import ./work.nix)
-           ++ (import ./unfree.nix)
-           ++ (import ./containerization.nix)
-           ;
+      paths = includeDefaultPackages ++ includeUnfreePackages;
     };
   };
 }

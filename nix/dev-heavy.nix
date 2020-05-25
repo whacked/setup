@@ -5,6 +5,5 @@ with import <nixpkgs> {};
     tabula
     
     brackets
-    android-studio
     keybase
 ]
