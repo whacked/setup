@@ -1,3 +1,7 @@
+if [ $DEBUG_LEVEL -gt 0 ]; then
+    echo "[level:$DEBUG_LEVEL] SOURCING $BASH_SOURCE FROM $@..."
+fi
+
 DATABASE_DIRECTORY=${DATABASE_DIRECTORY-$PWD/database}
 export DATABASE_NAME=${DATABASE_NAME-project_data}
 DATABASE_USER=${DATABASE_USER-$USER}
@@ -13,7 +17,7 @@ alias connect-database="psql -h $POSTGRES_SOCKET_DIRECTORY -d $DATABASE_NAME"
 
 function ensure-database-directory() {
   if [ ! -e $DATABASE_DIRECTORY ]; then
-      echo creating database directory in ${DATABASE_DIRECTORY}...
+      echo " - creating database directory in ${DATABASE_DIRECTORY}..."
       mkdir -p $DATABASE_DIRECTORY
   fi
   mkdir -p $POSTGRES_SOCKET_DIRECTORY $POSTGRES_DATA_DIRECTORY
@@ -30,4 +34,3 @@ function create-database-user() {
     createuser -h $POSTGRES_SOCKET_DIRECTORY $DATABASE_USER
 }
 
-echo-shortcuts $BASH_SOURCE
