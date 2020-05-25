@@ -33,6 +33,7 @@ with import <nixpkgs> {};
     mosh
     nettools
     nmap
+    pdfdiff
     pdftk
     pigz
     ripgrep
@@ -47,6 +48,7 @@ with import <nixpkgs> {};
     vim
     wget
     which
+    xdotool
     zsh
     oh-my-zsh
 ]
