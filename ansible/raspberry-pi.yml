@@ -4,8 +4,9 @@
   user: pi
   become: true
   roles:
-  # - rpi-seek-thermal
+  - rpi-seek-thermal
   - raspberry-pi-basic
   - temper
   - pimoroni
+  - rpi-co2meter
 
