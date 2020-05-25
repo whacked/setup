@@ -1,4 +1,5 @@
-if [ $DEBUG_LEVEL -gt 0 ]; then
+DEBUG_LEVEL=${DEBUG_LEVEL-0}
+if [ "$DEBUG_LEVEL" -gt 0 ]; then
     echo "[level:$DEBUG_LEVEL] SOURCING $BASH_SOURCE FROM $@..."
 fi
 
