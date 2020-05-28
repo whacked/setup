@@ -25,8 +25,8 @@ function ensure-venv() {
         echo " - using existing virtualenv in $VIRTUAL_ENV..."
         _new_venv=false
     else
-        echo " - setting up virtualenv in $VIRTUAL_ENV..."
-        python -m venv $VIRTUAL_ENV
+        echo " - setting up virtualenv in $VIRTUAL_ENV using $(which python3)..."
+        python3 -m venv $VIRTUAL_ENV
         _new_venv=true
     fi
     source $VIRTUAL_ENV/bin/activate
