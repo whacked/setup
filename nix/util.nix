@@ -1,6 +1,5 @@
 with import <nixpkgs> {};
 [
-    # from vagrant setup
     findutils
     gnumake
     iputils
@@ -9,8 +8,9 @@ with import <nixpkgs> {};
     nfs-utils
     rsync
 
+    bat
+    broot
     ansible
-
     autoconf
     automake
     bazaarTools
@@ -28,6 +28,7 @@ with import <nixpkgs> {};
     htop
     imagemagick
     keychain
+    mc
     mercurial
     moreutils
     mosh
@@ -36,6 +37,7 @@ with import <nixpkgs> {};
     pdfdiff
     pdftk
     pigz
+    rclone
     ripgrep
     skim
     sqlite
