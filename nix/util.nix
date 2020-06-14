@@ -1,4 +1,7 @@
 with import <nixpkgs> {};
+let
+  vim = (vim_configurable.override { python = python3; });
+in
 [
     findutils
     gnumake
