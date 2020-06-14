@@ -1,4 +1,5 @@
 # ~/.nixpkgs/config.nix
+with import <nixpkgs> {};
 {
   includeDefaultPackages = (import ./util.nix)
                         ++ (import ./dev.nix)
@@ -9,7 +10,9 @@
                         ++ (import ./desktop.nix)
                         ++ (import ./work.nix)
                         ++ (import ./containerization.nix)
-                        ;
+                        ++ [
+                          (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
+                        ];
   includeUnfreePackages = (import ./unfree.nix)
                           ;
   packageOverrides = defaultPkgs: with defaultPkgs; {
