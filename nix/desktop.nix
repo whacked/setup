@@ -24,4 +24,8 @@ with import <nixpkgs> {};
     xorg.xkbcomp
     xorg.xmodmap
     xorg.xmessage
+
+    acpi
+    cinnamon.nemo
+    xfce.thunar
 ]
