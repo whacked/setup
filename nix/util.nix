@@ -10,19 +10,22 @@ in
     netcat
     nfs-utils
     rsync
+    glibcLocales
 
     bat
     broot
     ansible
     autoconf
     automake
-    bazaarTools
+    # deprecate
+    #bazaarTools
     binutils
     bzip2
     direnv
     dnsutils
     dos2unix
     emacs
+    expect
     fasd
     fdupes
     ffmpeg
