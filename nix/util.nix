@@ -21,6 +21,7 @@ in
     #bazaarTools
     binutils
     bzip2
+    crudini  # ini file CRUD
     direnv
     dnsutils
     dos2unix
