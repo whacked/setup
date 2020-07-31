@@ -41,3 +41,38 @@ function activate-direnv() {
     echo  - activating direnv...
     eval "$(direnv hook $(ps -p $$ -ocomm=))"
 }
+
+function create-default-nix-skeleton() {
+    if [ -e default.nix ]; then
+        echo "ERROR: default.nix already exists; doing nothing"
+        return
+    fi
+    if [ $# -eq 1 ]; then
+        _name=$1
+    else
+        _name_default=$(basename $(pwd))
+        echo -n "name [$_name_default]: "
+        read _name
+        if [ -z "${_name}" ]; then
+            _name=$_name_default
+        fi
+    fi
+    cat > default.nix<<EOF
+with import <nixpkgs> {};
+
+let
+in stdenv.mkDerivation rec {
+  name = "$_name";
+  env = buildEnv {
+    name = name;
+    paths = buildInputs;
+  };
+  buildInputs = [
+  ];
+  nativeBuildInputs = [
+  ];
+  shellHook = ''
+  '';
+}
+EOF
+}
