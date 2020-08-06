@@ -7,6 +7,7 @@ in
     gnumake
     iputils
     jq
+    jsonnet
     netcat
     nfs-utils
     rsync
