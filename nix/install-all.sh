@@ -4,4 +4,6 @@ echo "=== MATCHING FILES ==="
 echo $_matching_files
 echo "=== PACKAGES ==="
 echo $_packages | tr ' ' '\n'
-nix-env -i $_packages
+for package in $_packages; do
+    nix-env -i $package
+done

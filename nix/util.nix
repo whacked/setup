@@ -42,7 +42,8 @@ in
     mosh
     nettools
     nmap
-    pdfdiff
+    # now marked insecure
+    #pdfdiff
     pdftk
     pigz
     rclone
