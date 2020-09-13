@@ -13,7 +13,6 @@ in
     rsync
     glibcLocales
 
-    babashka
     bat
     broot
     ansible

@@ -1,9 +1,8 @@
 with import <nixpkgs> {};
 [
-    hdfview
-
-    tabula
-    
+    babashka
     brackets
+    hdfview
     keybase
+    tabula
 ]
