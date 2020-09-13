@@ -54,6 +54,7 @@ in
     subversion
     tcpdump
     tig
+    tokei
     tmux
     unzip
     vim
