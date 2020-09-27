@@ -9,8 +9,12 @@ stdenv.mkDerivation rec {
 
   src = fetchzip {
     url="https://github.com/gitwatch/gitwatch/archive/master.zip";
-    sha256="17hbg0qrhh2l060c03d4a1f7s5afwjp3w57hy8lgpzbz72hyj4ca";
+    sha256="0f3chr23sa7nz25wzka5d4zxnsfddf2s1psi0df9rm9xrq0b2qx0";
   };
+
+  buildInputs = [
+    inotify-tools
+  ];
 
   installPhase = ''
     find .
