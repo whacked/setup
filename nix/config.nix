@@ -13,6 +13,7 @@ with import <nixpkgs> {};
                         ++ [
                           (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
                           (callPackage (import ./pkgs/development/tools/babashka-prebuilt/default.nix) {})
+                          (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
                         ];
   includeUnfreePackages = (import ./unfree.nix)
                           ;
