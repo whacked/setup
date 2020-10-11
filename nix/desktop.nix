@@ -21,6 +21,7 @@ with import <nixpkgs> {};
     xorg.libXScrnSaver
     haskellPackages.cabal-install
 
+    rofi
     shutter
     xorg.xkbcomp
     xorg.xmodmap
