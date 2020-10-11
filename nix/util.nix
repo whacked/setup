@@ -48,6 +48,7 @@ in
     pigz
     rclone
     ripgrep
+    rlwrap
     skim
     sqlite
     squashfsTools
