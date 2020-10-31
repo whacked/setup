@@ -41,6 +41,7 @@ in
     moreutils
     mosh
     nettools
+    nix-index
     nmap
     # now marked insecure
     #pdfdiff
