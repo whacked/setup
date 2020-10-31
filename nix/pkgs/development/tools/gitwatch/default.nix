@@ -1,7 +1,7 @@
 # for nix-shell
 # with import <nixpkgs> {};
 
-{ stdenv, fetchzip }:
+{ stdenv, fetchzip, inotify-tools, makeWrapper }:
 
 stdenv.mkDerivation rec {
   pname = "gitwatch";
@@ -13,7 +13,7 @@ stdenv.mkDerivation rec {
   };
 
   buildInputs = [
-    inotify-tools
+    makeWrapper
   ];
 
   installPhase = ''
@@ -21,9 +21,8 @@ stdenv.mkDerivation rec {
     mkdir -p $out/bin
     chmod +x gitwatch.sh
     mv gitwatch.sh $out/bin/
-  '';
-
-  postInstallCheck = ''
+    makeWrapper $out/bin/gitwatch.sh $out/bin/gitwatch \
+        --prefix PATH : ${inotify-tools}/bin
   '';
 
   meta = with stdenv.lib; {
