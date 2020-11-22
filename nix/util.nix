@@ -40,6 +40,7 @@ in
     mercurial
     moreutils
     mosh
+    navi
     nettools
     nix-index
     nmap
