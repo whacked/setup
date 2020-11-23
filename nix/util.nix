@@ -3,67 +3,89 @@ let
   vim = (vim_configurable.override { python = python3; });
 in
 [
-    findutils
-    gnumake
-    iputils
-    jq
-    jsonnet
-    netcat
-    nfs-utils
-    rsync
-    glibcLocales
-
-    bat
-    broot
     ansible
+    ansifilter
+    atop
     autoconf
     automake
-    # deprecate
-    #bazaarTools
+    bashplotlib
+    bat
+    # bazaarTools  # deprecated
     binutils
+    bpytop
+    broot
     bzip2
     crudini  # ini file CRUD
+    curlie
     direnv
     dnsutils
     dos2unix
     emacs
     expect
     fasd
+    fd
     fdupes
     ffmpeg
     file
+    findutils
     git
+    gitAndTools.diff-so-fancy
+    glances
+    glibcLocales
+    gnumake
+    grc
     htop
+    httpie
+    icdiff
     imagemagick
+    iotop
+    iputils
+    jq
+    jsonnet
     keychain
+    lsd
     mc
     mercurial
     moreutils
     mosh
     navi
+    ncdu
+    netcat
     nettools
+    nfs-utils
     nix-index
     nmap
-    # now marked insecure
-    #pdfdiff
+    nnn
+    oh-my-zsh
+    # pdfdiff  # now marked insecure
     pdftk
     pigz
+    procs
+    ranger
     rclone
     ripgrep
     rlwrap
+    rq
+    rsync
     skim
     sqlite
     squashfsTools
     subversion
+    sysstat  # provides sar
     tcpdump
     tig
-    tokei
+    tldr
     tmux
+    tmux-xpanes
+    tokei
+    ttyplot
     unzip
+    vifm
     vim
     wget
     which
+    wuzz
     xdotool
+    yq
     zsh
-    oh-my-zsh
 ]
