@@ -20,6 +20,7 @@ with import <nixpkgs> {};
     xorg.libXinerama
     xorg.libXScrnSaver
     haskellPackages.cabal-install
+    nerdfonts
 
     rofi
     shutter
