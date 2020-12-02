@@ -15,6 +15,7 @@ with import <nixpkgs> {};
                           (callPackage (import ./pkgs/development/tools/babashka-prebuilt/default.nix) {})
                           (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
                           (callPackage (import ./pkgs/development/tools/gitwatch/default.nix) {})
+                          (callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
                         ];
   includeUnfreePackages = (import ./unfree.nix)
                           ;
