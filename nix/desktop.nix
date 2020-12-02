@@ -30,5 +30,6 @@ with import <nixpkgs> {};
 
     acpi
     cinnamon.nemo
+    wmctrl
     xfce.thunar
 ]
