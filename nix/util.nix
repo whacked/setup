@@ -43,6 +43,7 @@ in
     jq
     jsonnet
     keychain
+    libtool
     lsd
     mc
     mercurial
