@@ -5,14 +5,12 @@ in
 [
     ansible
     ansifilter
-    atop
     autoconf
     automake
     bashplotlib
     bat
     # bazaarTools  # deprecated
     binutils
-    bpytop
     broot
     bzip2
     crudini  # ini file CRUD
@@ -31,15 +29,12 @@ in
     git
     gitAndTools.diff-so-fancy
     glances
-    glibcLocales
     gnumake
     grc
     htop
     httpie
     icdiff
     imagemagick
-    iotop
-    iputils
     jq
     jsonnet
     keychain
@@ -53,13 +48,11 @@ in
     ncdu
     netcat
     nettools
-    nfs-utils
     nix-index
     nmap
     nnn
     oh-my-zsh
     # pdfdiff  # now marked insecure
-    pdftk
     pigz
     procs
     ranger
@@ -72,7 +65,6 @@ in
     sqlite
     squashfsTools
     subversion
-    sysstat  # provides sar
     tcpdump
     tig
     tldr
@@ -81,12 +73,26 @@ in
     tokei
     ttyplot
     unzip
-    vifm
     vim
     wget
     which
     wuzz
-    xdotool
     yq
     zsh
-]
+] ++ (
+  if stdenv.isLinux then [
+    atop
+    bpytop
+    glibcLocales
+    iotop
+    iputils
+    nfs-utils
+    pdftk
+    sysstat  # provides sar
+    vifm
+    xdotool
+  ] else [
+
+  ]
+)
+

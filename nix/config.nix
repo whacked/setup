@@ -2,21 +2,26 @@
 with import <nixpkgs> {};
 {
   includeDefaultPackages = (import ./util.nix)
-                        ++ (import ./dev.nix)
-                        ++ (import ./cloud.nix)
-                        ++ (import ./gui.nix)
-                        ++ (import ./dev-heavy.nix)
-                        ++ (import ./electron.nix)
-                        ++ (import ./desktop.nix)
-                        ++ (import ./work.nix)
-                        ++ (import ./containerization.nix)
-                        ++ [
-                          (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
-                          (callPackage (import ./pkgs/development/tools/babashka-prebuilt/default.nix) {})
-                          (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
-                          (callPackage (import ./pkgs/development/tools/gitwatch/default.nix) {})
-                          (callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
-                        ];
+  ++ (if stdenv.isLinux then (
+    []
+    ++ (import ./dev.nix)
+    ++ (import ./cloud.nix)
+    ++ (import ./gui.nix)
+    ++ (import ./dev-heavy.nix)
+    ++ (import ./electron.nix)
+    ++ (import ./desktop.nix)
+    ++ (import ./work.nix)
+    ++ (import ./containerization.nix)
+    ++ [
+      (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
+      (callPackage (import ./pkgs/development/tools/babashka-prebuilt/default.nix) {})
+      (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
+      (callPackage (import ./pkgs/development/tools/gitwatch/default.nix) {})
+      (callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
+    ])
+    else
+    [
+    ]);
   includeUnfreePackages = (import ./unfree.nix)
                           ;
   packageOverrides = defaultPkgs: with defaultPkgs; {
