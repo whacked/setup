@@ -13,6 +13,7 @@ in
     binutils
     broot
     bzip2
+    coreutils
     crudini  # ini file CRUD
     curlie
     direnv
