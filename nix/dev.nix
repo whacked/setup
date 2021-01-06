@@ -13,6 +13,7 @@ with import <nixpkgs> {};
     # contains a newer version of libvterm
     # in particular, the base "libvterm" cannot build vterm for emacs
     libvterm-neovim
+    lorri
     maven
     meld
     nodejs
