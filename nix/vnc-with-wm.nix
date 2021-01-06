@@ -19,11 +19,8 @@ in stdenv.mkDerivation {
     picom
     terminator
     tigervnc
+    xorg.xrandr
   ]
-  # ++ (import ./unfree.nix)
-  ++ (import ./util.nix)
-  ++ (import ./dev.nix)
-  ++ (import ./cloud.nix)
   ++ fontsetup.buildInputs;
   shellHook = fontsetup.shellHook + ''
 
@@ -37,6 +34,10 @@ in stdenv.mkDerivation {
       plugins=(git)
       source $ZSH/oh-my-zsh.sh
     ';
+
+    function resize-display() {
+        xrandr --fb $1
+    }
 
     function start-vncserver() {
         if [ $# -lt 1 ]; then
