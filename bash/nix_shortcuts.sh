@@ -76,3 +76,22 @@ in stdenv.mkDerivation rec {
 }
 EOF
 }
+
+function create-nix-shell-skeleton() {
+    # https://nixos.wiki/wiki/Development_environment_with_nix-shell
+    if [ -e shell.nix ]; then
+        echo "ERROR: shell.nix already exists; doing nothing"
+        return
+    fi
+    cat > shell.nix<<EOF
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell {
+  buildInputs = [
+  ];
+
+  shellHook = ''
+  '';
+}
+EOF
+}
+
