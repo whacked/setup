@@ -29,6 +29,7 @@ in
     findutils
     git
     gitAndTools.diff-so-fancy
+    gitAndTools.gitui
     glances
     gnumake
     grc

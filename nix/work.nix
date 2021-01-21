@@ -28,6 +28,7 @@ with import <nixpkgs> {};
     thunderbird
     firefox
     calibre
+    visidata
     zotero
     # this has a surprisingly large dependency tree
     # tortoisehg
