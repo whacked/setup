@@ -4,7 +4,7 @@ if [ "$DEBUG_LEVEL" -gt 0 ]; then
 fi
 
 function echo-shortcuts() {
-    target_file=$(realpath ${1-default.nix})
+    target_file=$(realpath ${1-*.nix})
     echo "=== shortcuts from $target_file ==="
     cat $target_file | grep --color '\<\(function\|alias\)\> .\+'
 }
