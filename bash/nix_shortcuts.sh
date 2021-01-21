@@ -83,13 +83,19 @@ function create-nix-shell-skeleton() {
         echo "ERROR: shell.nix already exists; doing nothing"
         return
     fi
-    cat > shell.nix<<EOF
+    cat > shell.nix<<'EOF'
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
   buildInputs = [
+    pkgs.direnv
+    pkgs.lorri
   ];
 
   shellHook = ''
+    eval "$(direnv hook bash)"
+    if [ ! -e .envrc ]; then
+        lorri init
+    fi
   '';
 }
 EOF
