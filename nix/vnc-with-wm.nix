@@ -2,6 +2,16 @@ with import <nixpkgs> {};
 
 let
   fontsetup = (import ./fontsetup.nix);
+  inherit (import <nixpkgs> {}) fetchFromGitHub;
+  altpkgs = import (fetchFromGitHub {
+    # https://releases.nixos.org/nixos/20.03/nixos-20.03.3324.929768261a3
+    owner  = "NixOS";
+    repo   = "nixpkgs-channels";
+    # https://releases.nixos.org/nixos/20.03/nixos-20.03.3324.929768261a3/git-revision
+    rev    = "929768261a3ede470eafb58d5b819e1a848aa8bf";
+    # get this empirically
+    sha256 = "0zi54vbfi6i6i5hdd4v0l144y1c8rg6hq6818jjbbcnm182ygyfa";
+  }) {};
 in stdenv.mkDerivation {
   name = "vnc-with-wm-env";
 
@@ -18,7 +28,7 @@ in stdenv.mkDerivation {
     icewm
     picom
     terminator
-    tigervnc
+    altpkgs.tigervnc
     xorg.xrandr
   ]
   ++ fontsetup.buildInputs;
