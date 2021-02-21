@@ -47,6 +47,14 @@ in stdenv.mkDerivation {
 
     function resize-display() {
         xrandr --fb $1
+        # ref https://askubuntu.com/a/377944
+        # ref https://askubuntu.com/a/1081971
+		RES="$(echo $1 | tr x ' ') 60"
+		DISP=$(xrandr | grep -e " connected [^(]" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
+		MODELINE=$(cvt $(echo $RES) | grep -e "Modeline [^(]" | sed -r 's/.*Modeline (.*)/\1/')
+		MODERES=$(echo $MODELINE | grep -o -P '(?<=").*(?=")')
+		xrandr --newmode $MODELINE
+		xrandr --addmode $DISP $MODERES
     }
 
     function start-vncserver() {
