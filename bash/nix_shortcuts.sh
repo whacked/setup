@@ -6,7 +6,7 @@ fi
 function echo-shortcuts() {
     target_file=$(realpath ${1-*.nix})
     echo "=== shortcuts from $target_file ==="
-    cat $target_file | grep --color '\<\(function\|alias\)\> .\+'
+    cat $target_file | grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|alias\|function\).\+'
 }
 
 function ensure-usercache() {
