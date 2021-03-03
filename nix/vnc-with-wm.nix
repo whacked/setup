@@ -30,6 +30,7 @@ in stdenv.mkDerivation {
     terminator
     altpkgs.tigervnc
     xorg.xrandr
+    xorg.xorgserver
   ]
   ++ fontsetup.buildInputs;
   shellHook = fontsetup.shellHook + ''
@@ -46,15 +47,19 @@ in stdenv.mkDerivation {
     ';
 
     function resize-display() {
-        xrandr --fb $1
+        widthxheight=$1
         # ref https://askubuntu.com/a/377944
         # ref https://askubuntu.com/a/1081971
-		RES="$(echo $1 | tr x ' ') 60"
-		DISP=$(xrandr | grep -e " connected [^(]" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
-		MODELINE=$(cvt $(echo $RES) | grep -e "Modeline [^(]" | sed -r 's/.*Modeline (.*)/\1/')
-		MODERES=$(echo $MODELINE | grep -o -P '(?<=").*(?=")')
-		xrandr --newmode $MODELINE
-		xrandr --addmode $DISP $MODERES
+        RES="$(echo $widthxheight | tr x ' ') 60"
+        DISP=$(xrandr | grep -e " connected [^(]" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
+        # the quotes from cvt are causing problems
+        # may need to strip quotes so "3000x2000..." becomes 3000x2000
+        # then pass that as-is to --addmode
+        MODELINE=$(cvt $(echo $RES) | grep -e "Modeline [^(]" | sed -r 's/.*Modeline (.*)/\1/')
+        MODERES=$(echo $MODELINE | grep -o -P '(?<=").*(?=")')
+        xrandr --newmode $MODELINE
+        xrandr --addmode $DISP $MODERES
+        xrandr --fb $widthxheight
     }
 
     function start-vncserver() {
