@@ -60,12 +60,20 @@ function stacktrace() {
     done
 }
 
+cfRESET='\033[0m'      # tput setaf sgr0
+cfBLACK='\033[0;30m'
+cfRED='\033[0;31m'    # tput setaf 2
+cfGREEN='\033[0;32m'
+cfYELLOW='\033[0;33m'
+cfBLUE='\033[0;34m'
+cfPURPLE='\033[0;35m'
+cfCYAN='\033[0;36m'
+cfWHITE='\033[0;37m'
+
 function assert-nargs() {
     parent_nargs=$(( $# - 1 ))
     if [ $parent_nargs -ne $1 ]; then
-        red=`tput setaf 1`
-        reset=`tput sgr0`
-        echo "ERROR:  $red${FUNCNAME[1]}()$reset  needs $1 arguments; got $parent_nargs"
+        echo -e "ERROR:  $cfRED${FUNCNAME[1]}()$cfRESET  needs $1 arguments; got $parent_nargs"
         echo "  stack (most recent call first)"
         stacktrace
         return -1
@@ -78,10 +86,17 @@ function export-var-or-default() {
     var_value=${!var_name}
     default_value=$2
     if [ "x$var_value" == "x" ]; then
-        echo "WARNING: using default value for variable: $(tput setaf 2)$var_name$(tput sgr0)=$default_value"
+        echo -e "WARNING: using default value for variable: ${cfGREEN}$var_name${cfRESET}=$default_value"
         export $var_name=$default_value
     else
         :
     fi
+}
+
+function echo-export() {
+    statement=$1
+    statement_split=($(echo $statement | sed 's/=/ /'))
+    echo -e "  ${cfYELLOW}export ${cfBLUE}${statement_split[0]}${cfRESET}=${cfCYAN}${statement_split[1]}${cfRESET}"
+    export "$statement"
 }
 
