@@ -12,3 +12,8 @@ with import <nixpkgs> {};
     skopeo
     slirp4netns
 ]
+
+# NOTE:
+#  - for podman to work, you will have to
+#    sudo chmod 4755 $(which newuidmap)
+#    sudo chmod 4755 $(which newgidmap)
