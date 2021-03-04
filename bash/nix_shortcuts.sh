@@ -3,10 +3,18 @@ if [ "$DEBUG_LEVEL" -gt 0 ]; then
     echo "[level:$DEBUG_LEVEL] SOURCING $BASH_SOURCE FROM $@..."
 fi
 
+_SHORTCUTS_HELP=${_SHORTCUTS_HELP-}
 function echo-shortcuts() {
     target_file=$(realpath ${1-*.nix})
-    echo "=== shortcuts from $target_file ==="
-    cat $target_file | grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|alias\|function\).\+'
+    help_string=
+    help_string="$help_string=== shortcuts from $target_file ===\n"
+    help_string="$help_string"'\033[0;33m'$(cat $target_file | grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|alias\|function\).\+')'\033[0m'
+    _SHORTCUTS_HELP="${_SHORTCUTS_HELP}$help_string\n"
+    echo -e "$help_string"
+}
+
+function shortcuts() {
+    echo -e "$_SHORTCUTS_HELP"
 }
 
 function ensure-usercache() {
