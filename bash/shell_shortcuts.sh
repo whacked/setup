@@ -72,7 +72,16 @@ cfWHITE='\033[0;37m'
 
 function assert-nargs() {
     parent_nargs=$(( $# - 1 ))
-    if [ $parent_nargs -ne $1 ]; then
+    _error=false
+
+    if [[ "$1" == *+ ]]; then
+        if [ "$parent_nargs" -lt "${1%+}" ]; then
+            _error=true
+        fi
+    elif [ "$parent_nargs" -ne "$1" ]; then
+        _error=true
+    fi
+    if [ $_error = true ]; then
         echo -e "ERROR:  $cfRED${FUNCNAME[1]}()$cfRESET  needs $1 arguments; got $parent_nargs"
         echo "  stack (most recent call first)"
         stacktrace
