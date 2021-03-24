@@ -88,6 +88,7 @@ in
     glibcLocales
     iotop
     iputils
+    kpcli
     nfs-utils
     pdftk
     sysstat  # provides sar

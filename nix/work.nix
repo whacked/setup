@@ -27,7 +27,8 @@ with import <nixpkgs> {};
     wireshark
     thunderbird
     firefox
-    calibre
+    # calibre
+    calibre-py2
     visidata
     zotero
     # this has a surprisingly large dependency tree
