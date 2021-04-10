@@ -1,7 +1,7 @@
 # for nix-shell
 # with import <nixpkgs> {};
 
-{ stdenv, fetchzip, inotify-tools, makeWrapper }:
+{ lib, stdenv, fetchzip, inotify-tools, makeWrapper }:
 
 stdenv.mkDerivation rec {
   pname = "gitwatch";
@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
         --prefix PATH : ${inotify-tools}/bin
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = ''gitwatch'';
     downloadPage = "https://github.com/gitwatch/gitwatch";
     inherit version;

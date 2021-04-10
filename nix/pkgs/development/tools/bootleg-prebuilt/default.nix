@@ -1,7 +1,7 @@
 # for nix-shell
 # with import <nixpkgs> {};
 
-{ stdenv, fetchurl }:
+{ lib, stdenv, fetchurl }:
 
 stdenv.mkDerivation rec {
   pname = "bootleg-prebuilt";
@@ -26,7 +26,7 @@ stdenv.mkDerivation rec {
     $bin/bootleg --version >/dev/null
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = ''bootleg by retrogradeorbit'';
     platforms = with platforms; linux;
     downloadPage = "https://github.com/retrogradeorbit/bootleg";

@@ -28,7 +28,7 @@ pkgs.stdenv.mkDerivation rec {
     $bin/sup --version >/dev/null
   '';
 
-  meta = with pkgs.stdenv.lib; {
+  meta = with pkgs.lib; {
     description = ''pressly Stack Up'';
     platforms = with platforms; linux ++ darwin;
     downloadPage = "https://github.com/pressly/sup";

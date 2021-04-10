@@ -1,7 +1,7 @@
 # for nix-shell
 # with import <nixpkgs> {};
 
-{ stdenv, fetchgit }:
+{ lib, stdenv, fetchgit }:
 
 stdenv.mkDerivation rec {
   pname = "zsh-histdb";
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
     ln -s $src $out
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = ''zsh-histdb'';
     downloadPage = "https://github.com/larkery/zsh-histdb";
     inherit version;

@@ -1,7 +1,7 @@
 # for nix-shell
 # with import <nixpkgs> {};
 
-{ stdenv, fetchzip }:
+{ lib, stdenv, fetchzip }:
 
 stdenv.mkDerivation rec {
   pname = "jet";
@@ -26,7 +26,7 @@ stdenv.mkDerivation rec {
     $bin/jet --version >/dev/null
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = ''borkdude/jet CLI json/edn/transit'';
     platforms = with platforms; linux ++ darwin;
     downloadPage = "https://github.com/borkdude/jet";

@@ -33,7 +33,7 @@ pkgs.stdenv.mkDerivation rec {
     $bin/bb --version >/dev/null
   '';
 
-  meta = with pkgs.stdenv.lib; {
+  meta = with pkgs.lib; {
     description = ''babashka by borkdude'';
     platforms = with platforms; linux;
     downloadPage = "https://github.com/borkdude/babashka";
