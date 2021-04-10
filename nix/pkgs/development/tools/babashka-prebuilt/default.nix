@@ -6,11 +6,11 @@
 
 pkgs.stdenv.mkDerivation rec {
   pname = "babashka-prebuilt";
-  version="0.2.0";
+  version="0.3.2";
 
   src = pkgs.fetchzip (if pkgs.stdenv.isLinux then {
-    url="https://github.com/borkdude/babashka/releases/download/v${version}/babashka-${version}-linux-static-amd64.zip";
-    sha256="035rbwjxphw0k1ay94v91zk6xndq0rff9sq54jn2fmhvww2ws6qn";
+    url="https://github.com/borkdude/babashka/releases/download/v${version}/babashka-${version}-linux-static-amd64.tar.gz";
+    sha256="08sb5ydrzrnlrl8j83kbz28s0ilqqx7s6nkyrxd6yvgpm4w0ghza";
   } else {
     # fail
   });
