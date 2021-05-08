@@ -70,6 +70,12 @@ cfPURPLE='\033[0;35m'
 cfCYAN='\033[0;36m'
 cfWHITE='\033[0;37m'
 
+function echo-colored() {
+    _color=$1
+    shift
+    echo -e "${_color}$*${cfRESET}"
+}
+
 function assert-nargs() {
     parent_nargs=$(( $# - 1 ))
     _error=false
