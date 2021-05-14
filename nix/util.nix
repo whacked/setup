@@ -79,7 +79,7 @@ in
     wget
     which
     wuzz
-    yq
+    yq-go
     zsh
 ] ++ (
   if stdenv.isLinux then [
