@@ -111,3 +111,15 @@ pkgs.mkShell {
 EOF
 }
 
+#  PS1 for nix-shell bash when liquidprompt is available
+if [[ -n "$IN_NIX_SHELL" ]]; then
+    LP_HOSTNAME_ALWAYS=1
+    LP_ENABLE_TIME=1
+    if [ "${name}" == "nix-shell" ]; then
+        LP_MARK_PREFIX="\n\[\033[1;32m\][nix-shell]\[\033[0m\]"
+        :
+    else
+        LP_MARK_PREFIX="\n\[\033[1;32m\][nsh:${name}]\[\033[0m\]"
+        :
+    fi
+fi
