@@ -3,5 +3,4 @@ with import <nixpkgs> {};
 [
     awscli
     doctl
-    terraform
 ]
