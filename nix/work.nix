@@ -19,7 +19,7 @@ with import <nixpkgs> {};
     inkscape
     gimp
     git-cola
-    keepassx2
+    keepassxc
     qjackctl
     supercollider
     terminator
