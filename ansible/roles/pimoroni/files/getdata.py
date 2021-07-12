@@ -1,4 +1,32 @@
 #!/usr/bin/env python
+import sys
+import os
+import subprocess as subp
+
+
+def write_stderr(s):
+    sys.stderr.write('{}\n'.format(s))
+    sys.stderr.flush()
+
+def write_stdout(s):
+    sys.stdout.write('{}\n'.format(s))
+    sys.stdout.flush()
+
+
+def terminate_other_runners():
+    write_stderr('terminating other runners...')
+    my_pid = os.getpid()
+    proc = subp.Popen(['ps', 'ax'], stdout=subp.PIPE)
+    out, err = proc.communicate()
+    for line in out.splitlines():
+        tokens = line.split()
+        if 'python' in tokens and __file__ in tokens:
+            pid = int(tokens[0])
+            if pid == my_pid:
+                continue
+            write_stderr('- {}'.format(line.strip()))
+            os.kill(pid, 2)
+
 
 import time
 from pms5003 import PMS5003, ReadTimeoutError
@@ -27,6 +55,10 @@ class CachedWriter:
     @classmethod
     def flush_all(cls):
         for writer in cls._to_flush:
+            write_stderr('flushing {} remaining records to {}'.format(
+                len(writer.buffer),
+                writer.path,
+            ))
             writer.flush()
 
     @property
@@ -90,6 +122,7 @@ time.sleep(1.0)
 
 
 if __name__ == '__main__':
+    terminate_other_runners()
 
     pms_buffer = CachedWriter('pms.jsonl')
     bme_buffer = CachedWriter('bme.jsonl')

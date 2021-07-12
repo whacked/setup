@@ -21,3 +21,17 @@
     args:
       chdir: "{{ build_path }}"
 
+- name: copy getdata.py
+  ansible.builtin.copy:
+    src: files/getdata.py
+    dest: "{{ getdata_path }}"
+    owner: pi
+    group: pi
+
+- name: set up getdata.py crontab
+  ansible.builtin.cron:
+    name: "restart getdata"
+    minute: "*"
+    hour: "*/4"
+    user: pi
+    job: "cd /home/pi/Desktop; python {{ getdata_path }}"
