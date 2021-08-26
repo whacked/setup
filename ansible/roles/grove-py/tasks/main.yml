@@ -1,0 +1,34 @@
+# ref https://github.com/Seeed-Studio/grove.py/blob/master/doc/INSTALL.md#install-dependencies
+
+- ansible.builtin.lineinfile:
+    create: yes
+    line: deb https://seeed-studio.github.io/pi_repo/ stretch main
+    regexp: ^deb https://seeed-studio.github.io/pi_repo/
+    path: /etc/apt/sources.list.d/seeed.list
+
+- name: add seeed pubkey
+  shell: curl https://seeed-studio.github.io/pi_repo/public.key | sudo apt-key add -
+
+- apt: update_cache=yes
+  become: true
+
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+      - python3-mraa
+      - python3-upm
+
+- name: install rpi_ws281x for RPi
+  pip:
+    name: rpi_ws281x
+    executable: pip3
+
+- git:
+    repo: https://github.com/Seeed-Studio/grove.py
+    dest: "{{ build_path }}"
+  
+- shell: sudo FORCE='-y' pip3 install .
+  args:
+    chdir: "{{ build_path }}"
+
