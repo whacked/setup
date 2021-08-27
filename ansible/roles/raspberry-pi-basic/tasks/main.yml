@@ -6,20 +6,22 @@
     state: latest
   with_items:
     - build-essential
-    - moreutils
     - cargo
     - clojure
+    - default-jdk
     - emacs
-    - vim
+    - gnuplot
     - golang
     - htop
+    - jq
+    - moreutils
     - nodejs
-    - default-jdk
     - rustc
     - sqlite3
     - tcpdump
     - terminator
     - tmux
+    - vim
 
 - block:
   - shell: apt list ripgrep | grep ripgrep | wc -l
