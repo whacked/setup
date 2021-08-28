@@ -5,6 +5,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
+    - bluetooth
     - build-essential
     - cargo
     - clojure
@@ -16,6 +17,7 @@
     - jq
     - moreutils
     - nodejs
+    - python-pexpect  # note on rpi3 this is python2
     - rustc
     - sqlite3
     - tcpdump
