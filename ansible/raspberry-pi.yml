@@ -5,9 +5,9 @@
   become: true
   roles:
   - grove-py
+  - onewire
   - pimoroni
   - raspberry-pi-basic
   - rpi-co2meter
   - rpi-seek-thermal
   - temper
-

@@ -1,0 +1,63 @@
+# ref https://www.maximintegrated.com/en/design/technical-documents/app-notes/5/5917.html
+
+- apt: update_cache=yes
+  become: true
+
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+      - libusb-dev
+      - build-essential
+      - default-jdk
+
+- file:
+    path: "{{ install_directory }}"
+    owner: pi
+    group: pi
+    state: directory
+
+- name: get onewireviewer archive
+  ansible.builtin.unarchive:
+    src: https://www.maximintegrated.com/design/tools/appnotes/5917/OneWireViewer-Linux.zip
+    dest: "{{ install_directory }}"
+    remote_src: yes
+    owner: pi
+    group: pi
+
+- name: Build the default target
+  community.general.make:
+    chdir: "{{ install_directory }}/OneWireViewer-Linux/PDKAdapterUSB"
+  environment:
+    C_INCLUDE_PATH: /usr/lib/jvm/java-11-openjdk-armhf/include:/usr/lib/jvm/java-11-openjdk-armhf/include/linux
+
+- name: set run file to be executable
+  ansible.builtin.file:
+    path: "{{ install_directory }}/OneWireViewer-Linux/OneWireViewer/run.sh"
+    mode: '0757'
+
+- ansible.builtin.lineinfile:
+    path: "{{ install_directory }}/OneWireViewer-Linux/OneWireViewer/run.sh"
+    regexp: ^ONEWIRELIB=
+    line: ONEWIRELIB="{{ install_directory }}/OneWireViewer-Linux/PDKAdapterUSB"
+
+- name: create modprobe blacklist
+  copy:
+    content: |
+        # Prevent ds2490 module from loading for OneWireViewer with libusb
+        blacklist ds2490
+    dest: /etc/modprobe.d/blacklist-ds2490.conf
+    force: no
+
+#ATTRS{idVendor}=="04fa", ATTRS{idProduct}=="2490", GROUP="pi", MODE="0664", SYMLINK+="ttyUSB0"
+- name: create udev rule
+  copy:
+    content: |
+        ATTRS{idVendor}=="04fa", ATTRS{idProduct}=="2490", GROUP="pi", MODE="0664"
+    dest: /etc/udev/rules.d/98-onewire-ds2490.rules
+    force: no
+
+- name: reload rules
+  become: yes
+  shell: modprobe -r ds2490 && udevadm control --reload-rules && udevadm trigger
+
