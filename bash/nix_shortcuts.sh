@@ -5,8 +5,8 @@ fi
 
 _SHORTCUTS_HELP=${_SHORTCUTS_HELP-}
 function echo-shortcuts() {
-    target_file=$(realpath ${1-*.nix})
-    target_relpath=$(realpath --relative-to=$PWD $target_file)
+    target_file=$(realpath "${1-*.nix}")
+    target_relpath=$(realpath --relative-to="$PWD" $target_file)
     help_string=
     help_string="$help_string=== shortcuts from $target_relpath ===\n"
     help_string="$help_string"'\033[0;33m'$(cat $target_file | grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|function [a-zA-Z]\).\+')'\033[0m'
