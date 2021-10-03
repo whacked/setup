@@ -1,0 +1,19 @@
+- apt: update_cache=yes
+  become: true
+
+- package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+      - libatlas-base-dev  # provides libf77blas.so.3 which is needed for numpy
+
+- name: install common pypi packages
+  pip:
+    executable: pip3
+    name: "{{ item }}"
+    executable: pip3
+  with_items:
+    - scipy
+    - matplotlib
+    - numpy
+
