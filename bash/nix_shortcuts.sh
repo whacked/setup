@@ -4,7 +4,7 @@ if [ "$DEBUG_LEVEL" -gt 0 ]; then
 fi
 
 _SHORTCUTS_HELP=${_SHORTCUTS_HELP-}
-function echo-shortcuts() {
+function echo-shortcuts() {  # usually: echo-shortcuts ${__curPos.file}
     target_file=$(realpath "${1-*.nix}")
     target_relpath=$(realpath --relative-to="$PWD" $target_file)
     help_string=
@@ -78,11 +78,11 @@ in stdenv.mkDerivation rec {
     paths = buildInputs;
   };
   buildInputs = [
-  ];
+  ];  # join lists with ++
   nativeBuildInputs = [
   ];
   shellHook = ''
-  '';
+  '';  # join strings with +
 }
 EOF
 }
@@ -99,14 +99,14 @@ pkgs.mkShell {
   buildInputs = [
     pkgs.direnv
     pkgs.lorri
-  ];
+  ];  # join lists with ++
 
   shellHook = ''
     eval "$(direnv hook bash)"
     if [ ! -e .envrc ]; then
         lorri init
     fi
-  '';
+  '';  # join strings with +
 }
 EOF
 }

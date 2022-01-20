@@ -7,6 +7,15 @@ activate-node-env() {
     fi
 }
 
+activate-yarn-env() {
+    export PATH=$(yarn bin):$PATH
+    if ! [ -e node_modules ]; then
+        if [ -e package.json ]; then
+            yarn install
+        fi
+    fi
+}
+
 diff-package-json() {
     assert-nargs 1+ $* || return
     # diff current package.json against the output of a package.json generator jsonnet file
