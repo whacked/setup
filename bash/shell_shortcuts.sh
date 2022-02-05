@@ -115,3 +115,41 @@ function echo-export() {
     export "$statement"
 }
 
+function run-all() {  # https://stackoverflow.com/a/10909842  https://unix.stackexchange.com/a/619159
+    start_time=$(date +%s.%N)
+    PID_LIST=()
+    CMD_LIST=()
+    for cmd in "$@"; do {
+        color_number=$(( ${#PID_LIST[@]} % 6 + 31 ))
+        echo "starting: \"\\033[0;${color_number}m${cmd}${cfRESET}\"";
+        CMD_LIST+=("$cmd")
+        eval $cmd > >(
+            sed -u $'s|^|\033[0m] |' |
+            sed -u $'s|^|\033[0;'$color_number'm'$cmd'|' |
+            sed -u  's|^|['$pid' |'
+        ) &
+        pid=$!
+        PID_LIST+=("$pid")
+    } done
+
+    function kill-subshells() {
+        echo "received interrupt..."
+        for i in {1..${#PID_LIST[@]}}; do
+            pid=${PID_LIST[$i]}
+            cmd=${CMD_LIST[$i]}
+            color_number=$(( $i % 6 + 30 ))
+            echo $color_number
+            echo "killing ${pid}: \\033[0;${color_number}m${cmd}${cfRESET}"
+            kill -- -$pid
+        done
+    }
+
+    trap kill-subshells SIGINT
+    echo "\\033[46m${#PID_LIST[@]} processes have started:${cfRESET} $PID_LIST";
+    for pid in "${PID_LIST[@]}"; do
+        wait "$pid"
+    done
+
+    end_time=$(date +%s.%N)
+    echo "\\033[43m*** ALL DONE ***${cfRESET} ($( echo $end_time - $start_time | bc ))";
+}
