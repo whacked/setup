@@ -195,7 +195,8 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
         echo $generator_file output is at parity with $package_file, nothing to edit
     else
         package_file_relpath=$(realpath --relative-to=$(dirname $generator_file) $package_file)
-        (echo "// (DELETE THIS COMMENT) output of this file should match $package_file_relpath" && cat $generator_file) |
+        auto_comment="// (DELETE THIS COMMENT) output of this file should match $package_file_relpath"
+        (echo $auto_comment && cat $generator_file | grep -v "$auto_comment") |
             sponge $generator_file  # this prevents tee from clobbering
         # diff \
         #     --new-line-format="// %L" \
