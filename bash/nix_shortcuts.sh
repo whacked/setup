@@ -24,8 +24,18 @@ function echo-shortcuts() {  # usually: echo-shortcuts ${__curPos.file}
     fi
     help_string=
     help_string="$help_string=== shortcuts from $show_path ===\n"
-    help_string="$help_string"'\033[0;33m'$(cat $target_file | grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|function [a-zA-Z]\).\+')'\033[0m'
-    help_string="$help_string"'\n\033[0;35m'$(cat $target_file | grep --color '^\s*\(alias\).\+')'\033[0m'
+    help_string="$help_string"'\033[0;33m'$(
+        cat $target_file |
+        grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|function [a-zA-Z]\).\+' |
+        sed 's/^\s*/  /' |
+        sed 's/#\s*\(.*\)$/\t\\033\[0;37m\1\\033[0;33m/' |  # replace comment string with <tab> delimiter; set to white, then back to yellow
+        column -t -s $'\t'  # print in columns using <tab> as delimiter
+    )'\033[0m'
+    help_string="$help_string"'\n\033[0;35m'$(
+        cat $target_file |
+        grep --color '^\s*\(alias\).\+' |
+        sed 's/^\s*/  /'
+    )'\033[0m'
     _SHORTCUTS_HELP="${_SHORTCUTS_HELP}$help_string\n"
     echo -e "$help_string"
 }
