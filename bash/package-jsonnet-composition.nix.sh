@@ -66,7 +66,7 @@ diff-against-head() {
         "latest $file_path" "$(cat $file_path)"
 }
 
-_test-jsonnet-in-parity() {
+_test-jsonnet-at-parity() {
     diff <(jsonnet $1) <(jsonnet $2) > /dev/null
 }
 
@@ -77,7 +77,7 @@ create-package-template-file() {
     regenerate-package-jsonnet
 }
 
-check-package-template() {  # detect + show changes in package json/jsonnet; when in doubt, run this
+check-package-template() {  # detect + show changes in package json/jsonnet; when in doubt, run this ℹ️
     package_json_path=package.json
     jsonnet_template_path=$(_get-jsonnet-path)
 
@@ -95,22 +95,33 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
     maybe_changed_package=$(git ls-files -m $package_json_path | sed 's/.*/package/')
     maybe_changed_jsonnet=$(git ls-files -m $jsonnet_template_path | sed 's/.*/template/')
 
+    if [ -e yarn.lock ]; then
+        package_lock_file=yarn.lock
+        package_update_command='yarn'
+    else
+        package_lock_file=package.json.lock
+        package_update_command='npm install'
+    fi
     case "$maybe_changed_package,$maybe_changed_jsonnet" in
         ,)
             ;;
         package,template)
-            echo -e 'both '$(echoc yellow $package_json_path)' and '$(echoc yellow $jsonnet_template_path)' are modified'
-            _test-jsonnet-in-parity $package_json_path $jsonnet_template_path
+            echo -n -e 'both '$(echoc yellow $package_json_path)' and '$(echoc yellow $jsonnet_template_path)' are different from git HEAD'
+            _test-jsonnet-at-parity $package_json_path $jsonnet_template_path
+
             if [ $? -eq 0 ]; then
-                echo "$ICON_OK  they are at parity"
+                echo " ($ICON_OK they are at parity)"
                 recommend \
-                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path) $(echoc green '&& git commit -v')"
+                    "maybe run $(echoc greenyellow $package_update_command)" \
+                    "maybe run $(echoc greenyellow regenerate-package-json)" \
+                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
             else
+                echo " ($ICON_WARN  they are NOT at parity)"
                 recommend \
                     "run $(echoc greenyellow jsonnet-parity-watcher) in one terminal" \
-                    "edit $(echoc orange $jsonnet_template_path) separately" \
-                    "run $(echoc greenyellow regenerate-package-json)" \
-                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path) $(echoc green '&& git commit -v')"
+                    "edit $(echoc orange $jsonnet_template_path) separately (e.g. $(echoc greenyellow edit-package-jsonnet))" \
+                    "maybe run $(echoc greenyellow regenerate-package-json) (to enforce package.json formatting)" \
+                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
             fi
 
             ##package_json_in_git=$(git rev-parse --show-prefix)$package_json_path
@@ -123,19 +134,27 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
             ;;
         package,)
             # echo "$ICON_WARN  $package_json_path is modified"
-            _show-json-diff \
-                "current jsonnet template" "$(jsonnet $jsonnet_template_path)" \
-                "$package_json_path" "$(cat $package_json_path)"
-            recommend \
-                "run $(echoc greenyellow jsonnet-parity-watcher $jsonnet_template_path $package_json_path) in one terminal" \
-                "run $(echoc greenyellow edit-package-jsonnet) in a separate terminal" \
-                "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path) $(echoc green '&& git commit -v')"
-                # "edit $(echoc yellow $(_get-jsonnet-path)) or run $(echoc green regenerate-package-jsonnet) to seed the template"
+            _test-jsonnet-at-parity $package_json_path $jsonnet_template_path
+            if [ $? -eq 0 ]; then
+                echo "$package_json_path updated; $ICON_OK at parity with $jsonnet_template_path"
+                recommend \
+                    "run $(echoc greenyellow git add $package_json_path) $(echoc green '&& git commit -v')"
+            else
+                _show-json-diff \
+                    "current jsonnet template" "$(jsonnet $jsonnet_template_path)" \
+                    "$package_json_path" "$(cat $package_json_path)"
+                recommend \
+                    "run $(echoc greenyellow jsonnet-parity-watcher $jsonnet_template_path $package_json_path) in one terminal" \
+                    "run $(echoc greenyellow edit-package-jsonnet) in a separate terminal" \
+                    "maybe run $(echoc greenyellow regenerate-package-json)" \
+                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
+                    # "edit $(echoc yellow $(_get-jsonnet-path)) or run $(echoc green regenerate-package-jsonnet) to seed the template"
+            fi
             ;;
         ,template)
             echo "$ICON_WARN  $jsonnet_template_path is modified"
             _show-json-diff \
-                "package json" "$(cat $package_json_path)" \
+                "package.json" "$(cat $package_json_path)" \
                 "$jsonnet_template_path" "$(jsonnet $jsonnet_template_path)"
             recommend "run $(echoc green regenerate-package-json) to regenerate $package_json_path from $jsonnet_template_path"
             ;;
@@ -176,7 +195,7 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
         echo $generator_file output is at parity with $package_file, nothing to edit
     else
         package_file_relpath=$(realpath --relative-to=$(dirname $generator_file) $package_file)
-        (echo "// output of this file needs to match $package_file_relpath" && cat $generator_file) |
+        (echo "// (DELETE THIS COMMENT) output of this file should match $package_file_relpath" && cat $generator_file) |
             sponge $generator_file  # this prevents tee from clobbering
         # diff \
         #     --new-line-format="// %L" \
@@ -235,7 +254,7 @@ jsonnet-parity-watcher() {
         return
     fi
 
-    _test-jsonnet-in-parity $baseline_file $contrast_file
+    _test-jsonnet-at-parity $baseline_file $contrast_file
     if [ $? -eq 0 ]; then
         echo "$ICON_OK  $(echoc orange $baseline_file) and $(echoc yellow $contrast_file) are at parity"
         return
