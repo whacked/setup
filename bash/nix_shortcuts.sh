@@ -5,10 +5,25 @@ fi
 
 _SHORTCUTS_HELP=${_SHORTCUTS_HELP-}
 function echo-shortcuts() {  # usually: echo-shortcuts ${__curPos.file}
-    target_file=$(realpath "${1-*.nix}")
+    input_file=$1
+    if [ "x$input_file" == "" ]; then
+        for candidate in shell.nix default.nix; do
+            if [ -e $candidate ]; then
+                input_file=$candidate
+                break
+            fi
+        done
+    fi
+    target_file=$(realpath "$input_file")
     target_relpath=$(realpath --relative-to="$PWD" $target_file)
+    # assume the shorter path is easier to read
+    if [ ${#target_relpath} -lt ${#target_file} ]; then
+        show_path=$target_relpath
+    else
+        show_path=$target_file
+    fi
     help_string=
-    help_string="$help_string=== shortcuts from $target_relpath ===\n"
+    help_string="$help_string=== shortcuts from $show_path ===\n"
     help_string="$help_string"'\033[0;33m'$(cat $target_file | grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|function [a-zA-Z]\).\+')'\033[0m'
     help_string="$help_string"'\n\033[0;35m'$(cat $target_file | grep --color '^\s*\(alias\).\+')'\033[0m'
     _SHORTCUTS_HELP="${_SHORTCUTS_HELP}$help_string\n"
@@ -78,10 +93,17 @@ in stdenv.mkDerivation rec {
     paths = buildInputs;
   };
   buildInputs = [
+    direnv
+    lorri
   ];  # join lists with ++
   nativeBuildInputs = [
+    ~/setup/bash/nix_shortcuts.sh
   ];
   shellHook = ''
+    eval "\$(direnv hook bash)"
+    if [ ! -e .envrc ]; then
+        lorri init
+    fi
   '';  # join strings with +
 }
 EOF
@@ -97,15 +119,14 @@ function create-nix-shell-skeleton() {
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
   buildInputs = [
-    pkgs.direnv
-    pkgs.lorri
   ];  # join lists with ++
 
+  nativeBuildInputs = [
+    ~/setup/bash/nix_shortcuts.sh
+  ];
+
   shellHook = ''
-    eval "$(direnv hook bash)"
-    if [ ! -e .envrc ]; then
-        lorri init
-    fi
+    echo-shortcuts ${__curPos.file}
   '';  # join strings with +
 }
 EOF

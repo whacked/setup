@@ -1,4 +1,4 @@
-record-output-change() {
+function record-output-change() {
     # a function like `watch` but cares about
     # if and when the command output changed.
     # record-output-change -n <interval> [-o (output to file)] <command ...>
