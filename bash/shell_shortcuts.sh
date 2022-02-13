@@ -149,3 +149,10 @@ function run-all() {  # https://stackoverflow.com/a/10909842  https://unix.stack
     end_time=$(date +%s.%N)
     echo -e "\\033[43m*** ALL DONE ***${cfRESET} ($( echo $end_time - $start_time | bc ))";
 }
+
+function append-prompt-command() {
+    func=$1
+    cleaned_command=$(echo $PROMPT_COMMAND | tr ';' '\n' | grep -v $func | paste -s -d ';' -)
+    export PROMPT_COMMAND=$cleaned_command${cleaned_command:+;}$func
+}
+
