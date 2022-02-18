@@ -120,7 +120,7 @@ function run-all() {  # https://stackoverflow.com/a/10909842  https://unix.stack
     PID_LIST=()
     CMD_LIST=()
     for cmd in "$@"; do {
-        color_number=$(( ${#PID_LIST[@]} % 6 + 31 ))
+        color_number=$(( 6 - ${#PID_LIST[@]} % 6 + 30 ))
         echo -e "starting: \"\\033[0;${color_number}m${cmd}${cfRESET}\"";
         CMD_LIST+=("$cmd")
         eval $cmd &> >( sed -u $'s|^|\033[0m] |' | sed -u $'s|^|\033[0;'$color_number'm'"$cmd"'|' | sed -u $'s|^|[|') &
