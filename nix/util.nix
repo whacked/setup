@@ -68,6 +68,7 @@ in
     squashfsTools
     subversion
     tcpdump
+    termtosvg
     tig
     tldr
     tmux

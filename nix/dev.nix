@@ -30,7 +30,7 @@ in
     poppler
 
     python3Full
-    python37Packages.ipython
+    python39Packages.ipython
 
     swftools
     dos2unix

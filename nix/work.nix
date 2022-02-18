@@ -13,7 +13,7 @@ with import <nixpkgs> {};
     chromium
     gnome3.eog
     remmina
-    pdfmod
+    pdfarranger
     scrot
     pinta
     inkscape
