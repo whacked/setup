@@ -1,10 +1,36 @@
-DEBUG_LEVEL=${DEBUG_LEVEL-0}
+/*/bin/true --BEGIN-polyglot-hack-- 2>/dev/null
+# TODO: rename this to .nix.sh?
+
+# COMMENTARY:
+# 
+# this file needs to be `import`-ed into another nix expression to be added to
+# a nix shell environment.  it exposes these properties:
+# .shellHook    # the bash-compatible logic
+# .buildInputs  # the dependencies for the shellHook
+# 
+# but since this file is almost entirely bash, we use a polyglot-hack to make
+# this file nix- and bash- compatible.  You can thus `source $this_file` to
+# include the functions in any bash environment -- provided that you have all
+# the declared dependencies
+# 
+# TO USE:
+#   let nixShortcutsPath = path/to/nix_shortcuts.sh;
+#   let nixShortcuts = (import nixShortcutsPath);
+# THEN:
+# buildInputs = [ ... ] ++ nixShortcuts.buildInputs;
+# nativeBuildInputs = [ ... nixShortcutsPath ... ];
+# OR:
+# shellHook = nixShortcuts.shellHook + ...
+# 
+# */ rec { buildInputs = (with import <nixpkgs>{}; [ unixtools.column ]); shellHook = ". ${__curPos.file}"; ignore = ''
+
+DEBUG_LEVEL=''${DEBUG_LEVEL-0}
 if [ "$DEBUG_LEVEL" -gt 0 ]; then
     echo "[level:$DEBUG_LEVEL] SOURCING $BASH_SOURCE FROM $@..."
 fi
 
-_SHORTCUTS_HELP=${_SHORTCUTS_HELP-}
-function echo-shortcuts() {  # usually: echo-shortcuts ${__curPos.file}
+_SHORTCUTS_HELP=''${_SHORTCUTS_HELP-}
+function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     input_file=$1
     if [ "x$input_file" == "" ]; then
         for candidate in shell.nix default.nix; do
@@ -17,7 +43,7 @@ function echo-shortcuts() {  # usually: echo-shortcuts ${__curPos.file}
     target_file=$(realpath "$input_file")
     target_relpath=$(realpath --relative-to="$PWD" $target_file)
     # assume the shorter path is easier to read
-    if [ ${#target_relpath} -lt ${#target_file} ]; then
+    if [ ''${#target_relpath} -lt ''${#target_file} ]; then
         show_path=$target_relpath
     else
         show_path=$target_file
@@ -36,7 +62,7 @@ function echo-shortcuts() {  # usually: echo-shortcuts ${__curPos.file}
         grep --color '^\s*\(alias\).\+' |
         sed 's/^\s*/  /'
     )'\033[0m'
-    _SHORTCUTS_HELP="${_SHORTCUTS_HELP}$help_string\n"
+    _SHORTCUTS_HELP="''${_SHORTCUTS_HELP}$help_string\n"
     echo -e "$help_string"
 }
 
@@ -45,7 +71,7 @@ function shortcuts() {
 }
 
 function ensure-usercache() {
-    USERCACHE=${USERCACHE-/tmp/cache}
+    USERCACHE=''${USERCACHE-/tmp/cache}
     if [ -e $USERCACHE ]; then
         echo " - using USERCACHE from $USERCACHE"
     else
@@ -88,10 +114,11 @@ function create-default-nix-skeleton() {
         _name_default=$(basename $(pwd))
         echo -n "name [$_name_default]: "
         read _name
-        if [ -z "${_name}" ]; then
+        if [ -z "''${_name}" ]; then
             _name=$_name_default
         fi
     fi
+    II="'""'"
     cat > default.nix<<EOF
 with import <nixpkgs> {};
 
@@ -109,12 +136,12 @@ in stdenv.mkDerivation rec {
   nativeBuildInputs = [
     ~/setup/bash/nix_shortcuts.sh
   ];
-  shellHook = ''
+  shellHook = $II
     eval "\$(direnv hook bash)"
     if [ ! -e .envrc ]; then
         lorri init
     fi
-  '';  # join strings with +
+  $II;  # join strings with +
 }
 EOF
 }
@@ -125,7 +152,8 @@ function create-nix-shell-skeleton() {
         echo "ERROR: shell.nix already exists; doing nothing"
         return
     fi
-    cat > shell.nix<<'EOF'
+    II="'""'"
+    cat > shell.nix<<EOF
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
   buildInputs = [
@@ -135,9 +163,9 @@ pkgs.mkShell {
     ~/setup/bash/nix_shortcuts.sh
   ];
 
-  shellHook = ''
-    echo-shortcuts ${__curPos.file}
-  '';  # join strings with +
+  shellHook = $II
+    echo-shortcuts \${__curPos.file}
+  $II;  # join strings with +
 }
 EOF
 }
@@ -146,11 +174,13 @@ EOF
 if [[ -n "$IN_NIX_SHELL" ]]; then
     LP_HOSTNAME_ALWAYS=1
     LP_ENABLE_TIME=1
-    if [ "${name}" == "nix-shell" ]; then
+    if [ "''${name}" == "nix-shell" ]; then
         LP_MARK_PREFIX="\n\[\033[1;32m\][nix-shell]\[\033[0m\]"
         :
     else
-        LP_MARK_PREFIX="\n\[\033[1;32m\][nsh:${name}]\[\033[0m\]"
+        LP_MARK_PREFIX="\n\[\033[1;32m\][nsh:''${name}]\[\033[0m\]"
         :
     fi
 fi
+
+# --END-polyglot-hack-- ''; }
