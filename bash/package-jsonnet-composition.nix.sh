@@ -258,8 +258,7 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
                       grep '[|<>]' |
                       cut -c 3- |
                       gron --ungron |
-                      cut -c 3- |
-                      grep -v '^$'
+                      jsonnetfmt -
             ) \
             -c 'wincmd r' \
             -c 'wincmd j' \
