@@ -172,8 +172,10 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                     "$package_json_path" "$(cat $package_json_path)"
                 ALTERNATIVE_RECOMMENDATION="run $(echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(echoc greenyellow edit-package-jsonnet) in another terminal"
                 if [ "x$IS_VIM_TERMINAL_AVAILABLE" == "x" ]; then
+                    RECOMMENDED_COMMAND="edit-package-jsonnet"
                     VIM_WATCHER_RECOMMENDATION=
                 else
+                    RECOMMENDED_COMMAND="edit-package-jsonnet --vim-watcher"
                     VIM_WATCHER_RECOMMENDATION="run $(echoc greenyellow edit-package-jsonnet --vim-watcher)"
                     ALTERNATIVE_RECOMMENDATION="OR $ALTERNATIVE_RECOMMENDATION"
                 fi
@@ -182,9 +184,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                     "$ALTERNATIVE_RECOMMENDATION" \
                     "maybe run $(echoc greenyellow regenerate-package-json)" \
                     "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
-                    # "edit $(echoc yellow $(_get-jsonnet-path)) or run $(echoc green regenerate-package-jsonnet) to seed the template"
-                # TODO add recommendation command?
-                # _set-recommendation-command ""
+                _set-recommendation-command "$RECOMMENDED_COMMAND"
             fi
             ;;
         ,template)
@@ -363,10 +363,10 @@ jsonnet-parity-watcher() {
             fswatch --latency=0.1 --one-event $baseline_file $contrast_file &>/dev/null
         done
         clear
-        echo "at parity!"
+        pastel paint white --on green "at parity!"
         echo "  $baseline_file"
         echo "  $contrast_file"
-        echo "save the changes and exit!"
+        pastel paint pink "save the changes and exit!"
     else
         _test-jsonnet-at-parity $baseline_file $contrast_file
         if [ $? -eq 0 ]; then
