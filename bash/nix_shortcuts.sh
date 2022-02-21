@@ -22,7 +22,9 @@
 # OR:
 # shellHook = nixShortcuts.shellHook + ...
 # 
-# */ rec { buildInputs = (with import <nixpkgs>{}; [ unixtools.column ]); shellHook = ". ${__curPos.file}"; ignore = ''
+# NOTE: it's unclear what's the benefit of doing this "source <filepath>" + long "ignore" string
+#       method rathern than simply using shellHook, except for a more compact shellHook string.
+# */ rec { buildInputs = (with import <nixpkgs>{}; [ unixtools.column ]); shellHook = ". ${__curPos.file};"; ignore = ''
 
 DEBUG_LEVEL=''${DEBUG_LEVEL-0}
 if [ "$DEBUG_LEVEL" -gt 0 ]; then
@@ -32,7 +34,7 @@ fi
 _SHORTCUTS_HELP=''${_SHORTCUTS_HELP-}
 function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     input_file=$1
-    if [ "x$input_file" == "" ]; then
+    if [ "x$input_file" == "x" ]; then
         for candidate in shell.nix default.nix; do
             if [ -e $candidate ]; then
                 input_file=$candidate
