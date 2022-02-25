@@ -11,7 +11,7 @@
 # include the functions in any bash environment -- provided that you have all
 # the declared dependencies
 # 
-# */ rec { buildInputs = (with import <nixpkgs>{}; [ pastel gron fswatch vim ]); shellHook = ''
+# */ rec { buildInputs = (with import <nixpkgs>{}; [ pastel gron fswatch vim icdiff jsonnet watchexec ]); shellHook = ''
 
 ICON_OK="🆗"
 ICON_WARN="⚠️"
@@ -20,7 +20,7 @@ JSONNET_TEMPLATES_DIRECTORY=generators/templates
 IS_VIM_TERMINAL_AVAILABLE=$(vim --version | fmt -w1 | grep '^+terminal$')
 
 echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
-    unbuffer pastel paint -- $*
+    pastel --force-color paint -- $*
 }
 
 print-recommendations() {
@@ -45,7 +45,7 @@ _recommendation_command_buffer=
 _set-recommendation-command() {
     _recommendation_command_buffer="$*"
     if [ "x$_recommendation_command_buffer" != "x" ]; then
-        echo "run $(echoc hotpink accept-recommendations) to run "$(echoc greenyellow "$*")
+        echo "run $(echoc hotpink accept-recommendations) to run $(echoc greenyellow $*)"
     fi
 }
 
