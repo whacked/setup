@@ -11,13 +11,34 @@
 # include the functions in any bash environment -- provided that you have all
 # the declared dependencies
 # 
-# */ rec { buildInputs = (with import <nixpkgs>{}; [ pastel gron fswatch vim icdiff jsonnet watchexec ]); shellHook = ''
+# */ let x = 1; in rec { buildInputs = (with import <nixpkgs>{}; [               /*
+# */   pastel gron fswatch icdiff jsonnet watchexec                              /*
+# */   (vimHugeX.customize {                                                     /*
+# */     name = "vim-with-jsonnet";                                              /*
+# */     vimrcConfig.packages.myVimPackage = with vimPlugins; {                  /*
+# */       start = [ vim-jsonnet ];                                              /*
+# */     };                                                                      /*
+# */     vimrcConfig.customRC = "set tabstop=2 | set shiftwidth=2 | syntax on";  /*
+# */   })                                                                        /*
+# */ ]); shellHook = ''
 
 ICON_OK="🆗"
 ICON_WARN="⚠️"
 
 JSONNET_TEMPLATES_DIRECTORY=generators/templates
-IS_VIM_TERMINAL_AVAILABLE=$(vim --version | fmt -w1 | grep '^+terminal$')
+
+if command -v vim-with-jsonnet &> /dev/null; then
+    # this should succeed when running in nix-shell
+    VIM_COMMAND=vim-with-jsonnet
+elif command -v vim &> /dev/null; then
+    # fallback for non-nix-shell, but has vim
+    VIM_COMMAND=vim
+else
+    # fallback for no vim
+    VIM_COMMAND=
+fi
+IS_VIM_TERMINAL_AVAILABLE=$($VIM_COMMAND --version 2>/dev/null | fmt -w1 | grep '^+terminal$')
+
 
 echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
     pastel --force-color paint -- $*
@@ -245,7 +266,7 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
         diff_size=$(icdiff <(jsonnet "$generator_file" | jq -S) <(cat "$package_file" | jq -S) | wc -l)
 
         echo "launching $EDITOR for $generator_file..."
-        vim \
+        $VIM_COMMAND \
             -c "ter nix-shell --run \"jsonnet-parity-watcher --vim-watcher\"" \
             -c "resize $(($diff_size + 4))" \
             -c 'wincmd p' \
