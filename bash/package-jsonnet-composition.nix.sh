@@ -25,7 +25,22 @@
 ICON_OK="🆗"
 ICON_WARN="⚠️"
 
-JSONNET_TEMPLATES_DIRECTORY=generators/templates
+echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
+    pastel --force-color paint -- $*
+}
+
+
+_SCRIPT_VERSION_=''${_SCRIPT_VERSION_-1}
+if [ "x$_SCRIPT_VERSION_" = "x" ]; then
+    pastel paint white --on red "WARNING: _SCRIPT_VERSION_ not set; setting to 1"
+    _SCRIPT_VERSION_=1
+fi
+case $_SCRIPT_VERSION_ in
+    1)
+        JSONNET_TEMPLATES_DIRECTORY=''${JSONNET_TEMPLATES_DIRECTORY-generators/templates}
+        ;;
+esac
+unset _SCRIPT_VERSION_
 
 if command -v vim-with-jsonnet &> /dev/null; then
     # this should succeed when running in nix-shell
@@ -39,10 +54,6 @@ else
 fi
 IS_VIM_TERMINAL_AVAILABLE=$($VIM_COMMAND --version 2>/dev/null | fmt -w1 | grep '^+terminal$')
 
-
-echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
-    pastel --force-color paint -- $*
-}
 
 print-recommendations() {
     if [ $# -eq 1 ]; then
