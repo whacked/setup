@@ -25,8 +25,13 @@
 ICON_OK="🆗"
 ICON_WARN="⚠️"
 
+if command -v pastel &> /dev/null; then
+    PASTEL_COMMAND="pastel --force-color paint -- "
+elif command -v vim &> /dev/null; then
+    PASTEL_COMMAND=echo
+fi
 echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
-    pastel --force-color paint -- $*
+    $PASTEL_COMMAND $*
 }
 
 
@@ -63,7 +68,7 @@ print-recommendations() {
     echoc magenta "recommendations:"
     counter=0
     while [ $# -gt 0 ]; do
-        if [ "x$1" == "x" ]; then
+        if [ "x$1" = "x" ]; then
             shift
             continue
         fi
@@ -82,7 +87,7 @@ _set-recommendation-command() {
 }
 
 accept-recommendations() {
-    if [ "x$_recommendation_command_buffer" == "x" ]; then
+    if [ "x$_recommendation_command_buffer" = "x" ]; then
         echo "there is no active recommendation"
     else
         echo "accepting recommendation: "$(echoc yellow "$_recommendation_command_buffer")
@@ -116,9 +121,11 @@ _show-json-diff() {  # <old-name> <old-json> <new-name> <new-json>
 diff-against-head() {
     file_path=$1
     file_path_in_git=$(git rev-parse --show-prefix)$file_path
-    echo _show-json-diff \
-        "$file_path_in_git in git" "$(git show HEAD:$file_path_in_git)" \
-        "latest $file_path" "$(cat $file_path)"
+    _show-json-diff \
+        "$file_path_in_git in git" \
+        "$(git show HEAD:$file_path_in_git | jsonnet -)" \
+        "(current) $file_path" \
+        "$(cat $file_path | jsonnet -)"
 }
 
 _test-jsonnet-at-parity() {
@@ -203,7 +210,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                     "current jsonnet template" "$(jsonnet $jsonnet_template_path)" \
                     "$package_json_path" "$(cat $package_json_path)"
                 ALTERNATIVE_RECOMMENDATION="run $(echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(echoc greenyellow edit-package-jsonnet) in another terminal"
-                if [ "x$IS_VIM_TERMINAL_AVAILABLE" == "x" ]; then
+                if [ "x$IS_VIM_TERMINAL_AVAILABLE" = "x" ]; then
                     RECOMMENDED_COMMAND="edit-package-jsonnet"
                     VIM_WATCHER_RECOMMENDATION=
                 else
@@ -247,7 +254,7 @@ regenerate-package-jsonnet() {  # update package.jsonnet so it matches package.j
     new_content=$(cat $source_file | jsonnet - | jsonnetfmt -)
     if [ ! -e $target_file ]; then
         echo "$new_content" | tee $target_file
-    elif [ "$new_content" == "$(cat $target_file)" ]; then
+    elif [ "$new_content" = "$(cat $target_file)" ]; then
         return
     else
         _update-with-patch "$target_file" "$new_content"
@@ -256,7 +263,7 @@ regenerate-package-jsonnet() {  # update package.jsonnet so it matches package.j
 
 edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and launch $EDITOR
     VIM_WATCHER_MODE=
-    if [ "$1" == "--vim-watcher" ]; then
+    if [ "$1" = "--vim-watcher" ]; then
         if [ "x$IS_VIM_TERMINAL_AVAILABLE" != "x" ]; then
             VIM_WATCHER_MODE=1
         else
@@ -268,9 +275,9 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
     generator_file=$(_get-jsonnet-path)
     old_content=$(cat $generator_file)
     new_content=$(cat $package_file | jsonnet - | jsonnetfmt -)
-    if [ "$new_content" == "$(cat $generator_file)" ]; then
+    if [ "$new_content" = "$(cat $generator_file)" ]; then
         echo $generator_file output is at parity with $package_file, nothing to edit
-    elif [ "$VIM_WATCHER_MODE" == "1" ]; then
+    elif [ "$VIM_WATCHER_MODE" = "1" ]; then
         generator_file_abspath=$(realpath $generator_file)
         package_file_abspath=$(realpath $package_file)
         # matches jsonnet-parity-watcher
@@ -296,7 +303,7 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
             -c 'wincmd j' \
             -c 'wincmd h' \
             -c 'wincmd h'
-    elif [ "$EDITOR" == "vim" ]; then
+    elif [ "$EDITOR" = "vim" ]; then
         diff --side-by-side --expand-tabs <(echo "$old_content") <(echo "$new_content") | grep '[|<>]' -C 3
         (
             echo "// output of $generator_file"
@@ -313,7 +320,7 @@ regenerate-package-json() {
     source_file=$(_get-jsonnet-path)
     target_file=package.json
     new_content=$(jsonnet $source_file | jq -S)
-    if [ "$new_content" == "$(cat $target_file)" ]; then
+    if [ "$new_content" = "$(cat $target_file)" ]; then
         return
     else
         _update-with-patch "$target_file" "$new_content"
@@ -349,7 +356,7 @@ jsonnet-parity-watcher() {
     if [ $# -gt 1 ]; then
         baseline_file=$1
         contrast_file=$2
-    elif [ "x$baseline_file" == "x" ] || [ "x$contrast_file" == "x" ]; then
+    elif [ "x$baseline_file" = "x" ] || [ "x$contrast_file" = "x" ]; then
         # by default, we want to use the earlier file as baseline, later file as contrast
         sorted_files=($(ls -1rt package.json $(_get-jsonnet-path)))
         if [ $# -eq 1 ]; then
@@ -379,11 +386,11 @@ jsonnet-parity-watcher() {
     fi
 
     DIFFCMD="icdiff -L '$baseline_file' -L '$contrast_file' -N <(jsonnet '$baseline_file' | jq -S) <(jsonnet '$contrast_file' | jq -S)"
-    if [ "x$IS_VIM_TERMINAL_AVAILABLE" == "x" ]; then
+    if [ "x$IS_VIM_TERMINAL_AVAILABLE" = "x" ]; then
         echo "WARNING: vim terminal feature not available" >&2
         VIM_WATCHER_MODE=
     fi
-    if [ "$VIM_WATCHER_MODE" == "1" ]; then
+    if [ "$VIM_WATCHER_MODE" = "1" ]; then
         while true; do
             diff_content=$(eval $DIFFCMD)
             if [ $(echo "$diff_content" | wc -l) -eq 1 ]; then
