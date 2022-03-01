@@ -186,6 +186,14 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
     fi
     case "$maybe_changed_package,$maybe_changed_jsonnet" in
         ,)
+            # maybe an imported file was changed
+            _test-jsonnet-at-parity $package_json_path $jsonnet_template_path
+            if [ $? -ne 0 ]; then
+                echo "$ICON_WARN package file and template unchanged, but template output has changed; maybe import files changed?"
+                print-recommendations \
+                    "edit $(echoc greenyellow $jsonnet_template_path) and verify import files for changes" \
+                    "run $(echoc greenyellow regenerate-package-json)"
+            fi
             ;;
         package,template)
             echo -n -e 'both '$(echoc yellow $package_json_path)' and '$(echoc yellow $jsonnet_template_path)' are different from git HEAD'
