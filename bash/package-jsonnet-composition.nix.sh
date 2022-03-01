@@ -30,7 +30,7 @@ if command -v pastel &> /dev/null; then
 elif command -v vim &> /dev/null; then
     PASTEL_COMMAND=echo
 fi
-echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
+_echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
     $PASTEL_COMMAND $*
 }
 
@@ -60,12 +60,12 @@ fi
 IS_VIM_TERMINAL_AVAILABLE=$($VIM_COMMAND --version 2>/dev/null | fmt -w1 | grep '^+terminal$')
 
 
-print-recommendations() {
+_print-recommendations() {
     if [ $# -eq 1 ]; then
-        echo $(echoc magenta "recommendation: ")" $1"
+        echo $(_echoc magenta "recommendation: ")" $1"
         return
     fi
-    echoc magenta "recommendations:"
+    _echoc magenta "recommendations:"
     counter=0
     while [ $# -gt 0 ]; do
         if [ "x$1" = "x" ]; then
@@ -82,15 +82,15 @@ _recommendation_command_buffer=
 _set-recommendation-command() {
     _recommendation_command_buffer="$*"
     if [ "x$_recommendation_command_buffer" != "x" ]; then
-        echo "run $(echoc hotpink accept-recommendations) to run $(echoc greenyellow $*)"
+        echo "run $(_echoc hotpink accept-recommendations) to run $(_echoc greenyellow $*)"
     fi
 }
 
-accept-recommendations() {
+accept-recommendations() {  # run the command stored in the "recommendation command buffer"
     if [ "x$_recommendation_command_buffer" = "x" ]; then
         echo "there is no active recommendation"
     else
-        echo "accepting recommendation: "$(echoc yellow "$_recommendation_command_buffer")
+        echo "accepting recommendation: "$(_echoc yellow "$_recommendation_command_buffer")
         eval $_recommendation_command_buffer
         _recommendation_command_buffer=
     fi
@@ -110,15 +110,21 @@ _show-json-diff() {  # <old-name> <old-json> <new-name> <new-json>
 
     if [ $(echo "$diff_content" | wc -l) -eq 1 ]; then
         echo -n "$ICON_OK  "
-        echoc lime "$old_name matches $new_name"
+        _echoc lime "$old_name matches $new_name"
     else
         echo -n "$ICON_WARN  "
-        echoc red "$new_name has diverged from $old_name"
+        _echoc red "$new_name has diverged from $old_name"
         echo "$diff_content"
     fi
 }
 
-diff-against-head() {
+show-package-json-vs-jsonnet() {  # convenience method to show icdiff between current package.json and current package.jsonnet
+    _show-json-diff \
+        "package.json" "$(cat package.json)" \
+        "package.jsonnet" "$(render-package-jsonnet)"
+}
+
+diff-rendered-jsonnet-against-head() {  # (<file-path>) show rendered jsonnet output of <file-path> against what is in git HEAD
     file_path=$1
     file_path_in_git=$(git rev-parse --show-prefix)$file_path
     _show-json-diff \
@@ -132,10 +138,10 @@ _test-jsonnet-at-parity() {
     diff <(jsonnet $1) <(jsonnet $2) > /dev/null
 }
 
-create-package-template-file() {
+create-package-template-file() {  # generate a new package.jsonnet file + directories from package.json
     jsonnet_template_path=$(_get-jsonnet-path)
     mkdir -p $(dirname $jsonnet_template_path)
-    echo "🏗️  $(echoc lime creating template file at $jsonnet_template_path)"
+    echo "🏗️  $(_echoc lime creating template file at $jsonnet_template_path)"
     regenerate-package-jsonnet
 }
 
@@ -146,12 +152,12 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
     jsonnet_template_path=$(_get-jsonnet-path)
 
     if [ ! -e $package_json_path ]; then
-        echo "$(echoc yellow no package file found at $package_json_path); nothing to check" >&2
+        echo "$(_echoc yellow no package file found at $package_json_path); nothing to check" >&2
         return
     fi
 
     if [ ! -e $jsonnet_template_path ]; then
-        echo "$(echoc yellow no template found at $jsonnet_template_path); run $(echoc greenyellow create-package-template-file) to seed from $package_json_path" >&2
+        echo "$(_echoc yellow no template found at $jsonnet_template_path); run $(_echoc greenyellow create-package-template-file) to seed from $package_json_path" >&2
         return
     fi
 
@@ -160,20 +166,21 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
     maybe_changed_jsonnet=$(git ls-files -m $jsonnet_template_path | sed 's/.*/template/')
 
     _print-parity-watcher-workflow-commands() {
-        ALTERNATIVE_RECOMMENDATION="run $(echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(echoc greenyellow edit-package-jsonnet) in another terminal"
+        ALTERNATIVE_RECOMMENDATION="run $(_echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(_echoc greenyellow edit-package-jsonnet) in another terminal"
         if [ "x$IS_VIM_TERMINAL_AVAILABLE" = "x" ]; then
             RECOMMENDED_COMMAND="edit-package-jsonnet"
             VIM_WATCHER_RECOMMENDATION=
         else
             RECOMMENDED_COMMAND="edit-package-jsonnet --vim-watcher"
-            VIM_WATCHER_RECOMMENDATION="run $(echoc greenyellow edit-package-jsonnet --vim-watcher)"
+            VIM_WATCHER_RECOMMENDATION="run $(_echoc greenyellow edit-package-jsonnet --vim-watcher)"
             ALTERNATIVE_RECOMMENDATION="OR $ALTERNATIVE_RECOMMENDATION"
         fi
-        print-recommendations \
+        _print-recommendations \
+            "run $(_echoc greenyellow show-package-json-vs-jsonnet) to inspect changes" \
             "$VIM_WATCHER_RECOMMENDATION" \
             "$ALTERNATIVE_RECOMMENDATION" \
-            "maybe run $(echoc greenyellow regenerate-package-json) (this also applies package.json formatting)" \
-            "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
+            "maybe run $(_echoc greenyellow regenerate-package-json) (also applies package.json reformatting)" \
+            "run $(_echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(_echoc green '&& git commit -v')"
         _set-recommendation-command "$RECOMMENDED_COMMAND"
     }
 
@@ -190,21 +197,21 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
             _test-jsonnet-at-parity $package_json_path $jsonnet_template_path
             if [ $? -ne 0 ]; then
                 echo "$ICON_WARN package file and template unchanged, but template output has changed; maybe import files changed?"
-                print-recommendations \
-                    "edit $(echoc greenyellow $jsonnet_template_path) and verify import files for changes" \
-                    "run $(echoc greenyellow regenerate-package-json)"
+                _print-recommendations \
+                    "edit $(_echoc greenyellow $jsonnet_template_path) and verify import files for changes" \
+                    "run $(_echoc greenyellow regenerate-package-json)"
             fi
             ;;
         package,template)
-            echo -n -e 'both '$(echoc yellow $package_json_path)' and '$(echoc yellow $jsonnet_template_path)' are different from git HEAD'
+            echo -n -e 'both '$(_echoc yellow $package_json_path)' and '$(_echoc yellow $jsonnet_template_path)' are different from git HEAD'
             _test-jsonnet-at-parity $package_json_path $jsonnet_template_path
 
             if [ $? -eq 0 ]; then
                 echo " ($ICON_OK they are at parity)"
-                print-recommendations \
-                    "maybe run $(echoc greenyellow $package_update_command)" \
-                    "maybe run $(echoc greenyellow regenerate-package-json)" \
-                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
+                _print-recommendations \
+                    "maybe run $(_echoc greenyellow $package_update_command)" \
+                    "maybe run $(_echoc greenyellow regenerate-package-json)" \
+                    "run $(_echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(_echoc green '&& git commit -v')"
                 _set-recommendation-command "$package_update_command; regenerate-package-json; git add $package_json_path $jsonnet_template_path $package_lock_file && git commit -v"
             else
                 echo " ($ICON_WARN  they are NOT at parity)"
@@ -215,17 +222,14 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
             ##_show-json-diff \
             ##    "package.json in git" "$(git show HEAD:$package_json_in_git)" \
             ##    "latest package.jsonnet" "$(jsonnet $jsonnet_template_path)"
-            ##_show-json-diff \
-            ##    "package.json" "$(cat $package_json_path)" \
-            ##    "package.jsonnet" "$(jsonnet $jsonnet_template_path)"
             ;;
         package,)
             # echo "$ICON_WARN  $package_json_path is modified"
             _test-jsonnet-at-parity $package_json_path $jsonnet_template_path
             if [ $? -eq 0 ]; then
                 echo "$package_json_path updated; $ICON_OK at parity with $jsonnet_template_path"
-                print-recommendations \
-                    "run $(echoc greenyellow git add $package_json_path) $(echoc green '&& git commit -v')"
+                _print-recommendations \
+                    "run $(_echoc greenyellow git add $package_json_path) $(_echoc green '&& git commit -v')"
                 _set-recommendation-command "git add $package_json_path && git commit -v"
             else
                 _show-json-diff \
@@ -239,7 +243,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
             _show-json-diff \
                 "package.json" "$(cat $package_json_path)" \
                 "$jsonnet_template_path" "$(jsonnet $jsonnet_template_path)"
-            print-recommendations "run $(echoc green regenerate-package-json) to regenerate $package_json_path from $jsonnet_template_path"
+            _print-recommendations "run $(_echoc green regenerate-package-json) to regenerate $package_json_path from $jsonnet_template_path"
             ;;
     esac
 }
@@ -249,10 +253,10 @@ _update-with-patch() {
     patch_content=$2
 
     patch_string=$(diff -u $target_file <(echo "$patch_content"))
-    echoc yellow "applying patch; copy-paste the command below to reverse it."
-    echoc orange "patch -R $target_file <<'EOF__UNDO_PATCH'"
+    _echoc yellow "applying patch; copy-paste the command below to reverse it."
+    _echoc orange "patch -R $target_file <<'EOF__UNDO_PATCH'"
     echo "$patch_string"
-    echoc orange "EOF__UNDO_PATCH"
+    _echoc orange "EOF__UNDO_PATCH"
     echo "$patch_string" | patch $target_file
 }
 
@@ -269,7 +273,7 @@ regenerate-package-jsonnet() {  # update package.jsonnet so it matches package.j
     fi
 }
 
-edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and launch $EDITOR
+edit-package-jsonnet() {  # [--vim-watcher] append the package.json diff to package.jsonnet and launch $EDITOR
     VIM_WATCHER_MODE=
     if [ "$1" = "--vim-watcher" ]; then
         if [ "x$IS_VIM_TERMINAL_AVAILABLE" != "x" ]; then
@@ -324,10 +328,13 @@ edit-package-jsonnet() {  # append the package.json diff to package.jsonnet and 
     fi
 }
 
-regenerate-package-json() {
-    source_file=$(_get-jsonnet-path)
+render-package-jsonnet() {  # convenience function to render package.jsonnet
+    jsonnet $(_get-jsonnet-path) | jq -S
+}
+
+regenerate-package-json() {  # overwrites package.json by rerendering from package.jsonnet
     target_file=package.json
-    new_content=$(jsonnet $source_file | jq -S)
+    new_content=$(render-package-jsonnet)
     if [ "$new_content" = "$(cat $target_file)" ]; then
         return
     else
@@ -335,7 +342,7 @@ regenerate-package-json() {
     fi
 }
 
-jsonnet-parity-watcher() {
+jsonnet-parity-watcher() {  # [--vim-watcher|--template|--package] [baseline-file] [contrast-file] show live diff watcher between baseline and contrast
 
     VIM_WATCHER_MODE=
     case $1 in
@@ -417,7 +424,7 @@ jsonnet-parity-watcher() {
     else
         _test-jsonnet-at-parity $baseline_file $contrast_file
         if [ $? -eq 0 ]; then
-            echo "$ICON_OK  $(echoc orange $baseline_file) and $(echoc yellow $contrast_file) are at parity"
+            echo "$ICON_OK  $(_echoc orange $baseline_file) and $(_echoc yellow $contrast_file) are at parity"
             return
         fi
         watchexec -c -w . "$DIFFCMD"
