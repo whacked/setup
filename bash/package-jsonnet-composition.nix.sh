@@ -159,6 +159,24 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
     maybe_changed_package=$(git ls-files -m $package_json_path | sed 's/.*/package/')
     maybe_changed_jsonnet=$(git ls-files -m $jsonnet_template_path | sed 's/.*/template/')
 
+    _print-parity-watcher-workflow-commands() {
+        ALTERNATIVE_RECOMMENDATION="run $(echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(echoc greenyellow edit-package-jsonnet) in another terminal"
+        if [ "x$IS_VIM_TERMINAL_AVAILABLE" = "x" ]; then
+            RECOMMENDED_COMMAND="edit-package-jsonnet"
+            VIM_WATCHER_RECOMMENDATION=
+        else
+            RECOMMENDED_COMMAND="edit-package-jsonnet --vim-watcher"
+            VIM_WATCHER_RECOMMENDATION="run $(echoc greenyellow edit-package-jsonnet --vim-watcher)"
+            ALTERNATIVE_RECOMMENDATION="OR $ALTERNATIVE_RECOMMENDATION"
+        fi
+        print-recommendations \
+            "$VIM_WATCHER_RECOMMENDATION" \
+            "$ALTERNATIVE_RECOMMENDATION" \
+            "maybe run $(echoc greenyellow regenerate-package-json) (this also applies package.json formatting)" \
+            "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
+        _set-recommendation-command "$RECOMMENDED_COMMAND"
+    }
+
     if [ -e yarn.lock ]; then
         package_lock_file=yarn.lock
         package_update_command='yarn'
@@ -182,11 +200,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                 _set-recommendation-command "$package_update_command; regenerate-package-json; git add $package_json_path $jsonnet_template_path $package_lock_file && git commit -v"
             else
                 echo " ($ICON_WARN  they are NOT at parity)"
-                print-recommendations \
-                    "run $(echoc greenyellow jsonnet-parity-watcher) in one terminal" \
-                    "edit $(echoc orange $jsonnet_template_path) separately (e.g. $(echoc greenyellow edit-package-jsonnet))" \
-                    "maybe run $(echoc greenyellow regenerate-package-json) (to enforce package.json formatting)" \
-                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
+                _print-parity-watcher-workflow-commands
             fi
 
             ##package_json_in_git=$(git rev-parse --show-prefix)$package_json_path
@@ -209,21 +223,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                 _show-json-diff \
                     "current jsonnet template" "$(jsonnet $jsonnet_template_path)" \
                     "$package_json_path" "$(cat $package_json_path)"
-                ALTERNATIVE_RECOMMENDATION="run $(echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(echoc greenyellow edit-package-jsonnet) in another terminal"
-                if [ "x$IS_VIM_TERMINAL_AVAILABLE" = "x" ]; then
-                    RECOMMENDED_COMMAND="edit-package-jsonnet"
-                    VIM_WATCHER_RECOMMENDATION=
-                else
-                    RECOMMENDED_COMMAND="edit-package-jsonnet --vim-watcher"
-                    VIM_WATCHER_RECOMMENDATION="run $(echoc greenyellow edit-package-jsonnet --vim-watcher)"
-                    ALTERNATIVE_RECOMMENDATION="OR $ALTERNATIVE_RECOMMENDATION"
-                fi
-                print-recommendations \
-                    "$VIM_WATCHER_RECOMMENDATION" \
-                    "$ALTERNATIVE_RECOMMENDATION" \
-                    "maybe run $(echoc greenyellow regenerate-package-json)" \
-                    "run $(echoc greenyellow git add $package_json_path $jsonnet_template_path $package_lock_file) $(echoc green '&& git commit -v')"
-                _set-recommendation-command "$RECOMMENDED_COMMAND"
+                _print-parity-watcher-workflow-commands
             fi
             ;;
         ,template)
