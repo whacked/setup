@@ -11,7 +11,22 @@
 # include the functions in any bash environment -- provided that you have all
 # the declared dependencies
 # 
-# */ let x = 1; in rec { buildInputs = (with import <nixpkgs>{}; [               /*
+# TO USE, in your .nix expression, add something like:
+#   let
+#     jsonGenerationShortcutsPath = path/to/this-file.sh;
+#     jsonGenerationShortcuts= (import nixShortcutsPath);
+# THEN:
+#     buildInputs = [ ... ] ++ jsonGenerationShortcuts.buildInputs;
+#     nativeBuildInputs = [ ... jsonGenerationShortcuts ... ];
+#   OR:
+#     shellHook = jsonGenerationShortcuts.shellHook + ...
+#   OR:
+#     shellHook = '' ... ${jsonGenerationShortcuts.shellHook} ... ''
+# ALSO CONSIDER:
+#     append-prompt-command check-package-template  # requires shell_shortcuts.sh
+#     echo-shortcuts ${jsonGenerationShortcutsPath} # requires nix_shortcuts.sh
+# 
+# */ let placeholder = 1; in rec { buildInputs = (with import <nixpkgs>{}; [     /*
 # */   pastel gron fswatch icdiff jsonnet watchexec                              /*
 # */   (vimHugeX.customize {                                                     /*
 # */     name = "vim-with-jsonnet";                                              /*
@@ -26,13 +41,15 @@ ICON_OK="🆗"
 ICON_WARN="⚠️"
 
 if command -v pastel &> /dev/null; then
-    PASTEL_COMMAND="pastel --force-color paint -- "
+    _echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
+        pastel --force-color paint -- $*
+    }
 elif command -v vim &> /dev/null; then
-    PASTEL_COMMAND=echo
+    _echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
+        shift
+        echo $*
+    }
 fi
-_echoc() {  # unbuffered pastel so it retains ascii control chars for pipes
-    $PASTEL_COMMAND $*
-}
 
 
 _SCRIPT_VERSION_=''${_SCRIPT_VERSION_-1}
@@ -57,8 +74,12 @@ else
     # fallback for no vim
     VIM_COMMAND=
 fi
-IS_VIM_TERMINAL_AVAILABLE=$($VIM_COMMAND --version 2>/dev/null | fmt -w1 | grep '^+terminal$')
 
+if [ "x$VIM_COMMAND" = "x" ]; then
+    IS_VIM_TERMINAL_AVAILABLE=
+else
+    IS_VIM_TERMINAL_AVAILABLE=$($VIM_COMMAND --version 2>/dev/null | fmt -w1 | grep '^+terminal$')
+fi
 
 _print-recommendations() {
     if [ $# -eq 1 ]; then
@@ -145,6 +166,18 @@ create-package-template-file() {  # generate a new package.jsonnet file + direct
     regenerate-package-jsonnet
 }
 
+git-add-package-files() {
+    if [ -e yarn.lock ]; then
+        package_lock_file=yarn.lock
+        package_update_command='yarn'
+    else
+        package_lock_file=package.json.lock
+        package_update_command='npm install'
+    fi
+
+    git add package.json $(_get-jsonnet-path) $package_lock_file
+}
+
 check-package-template() {  # detect + show changes in package json/jsonnet; when in doubt, run this ℹ️
     _set-recommendation-command  # reset on every check
 
@@ -229,6 +262,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
             if [ $? -eq 0 ]; then
                 echo "$package_json_path updated; $ICON_OK at parity with $jsonnet_template_path"
                 _print-recommendations \
+                    "maybe run $(_echoc greenyellow yarn)" \
                     "run $(_echoc greenyellow git add $package_json_path) $(_echoc green '&& git commit -v')"
                 _set-recommendation-command "git add $package_json_path && git commit -v"
             else
@@ -243,7 +277,10 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
             _show-json-diff \
                 "package.json" "$(cat $package_json_path)" \
                 "$jsonnet_template_path" "$(jsonnet $jsonnet_template_path)"
-            _print-recommendations "run $(_echoc green regenerate-package-json) to regenerate $package_json_path from $jsonnet_template_path"
+            _print-recommendations \
+                "run $(_echoc green regenerate-package-json) to regenerate $package_json_path from $jsonnet_template_path" \
+                "if everything is correct, run $(_echoc greenyellow git add $jsonnet_template_path) $(_echoc green '&& git commit -v')"
+            _set-recommendation-command "regenerate-package-json"
             ;;
     esac
 }
