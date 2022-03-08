@@ -334,6 +334,7 @@ edit-package-jsonnet() {  # [--vim-watcher] append the package.json diff to pack
 
         echo "launching $EDITOR for $generator_file..."
         $VIM_COMMAND \
+            -c 'set nowrap' \
             -c "ter nix-shell --run \"jsonnet-parity-watcher --vim-watcher\"" \
             -c "resize $(($diff_size + 4))" \
             -c 'wincmd p' \
