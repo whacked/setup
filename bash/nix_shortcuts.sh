@@ -33,7 +33,7 @@ fi
 
 _SHORTCUTS_HELP=''${_SHORTCUTS_HELP-}
 function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
-    input_file=$1
+    input_file="$*"
     if [ "x$input_file" == "x" ]; then
         for candidate in shell.nix default.nix; do
             if [ -e $candidate ]; then
@@ -43,24 +43,24 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
         done
     fi
     target_file=$(realpath "$input_file")
-    target_relpath=$(realpath --relative-to="$PWD" $target_file)
+    target_relpath=$(realpath --relative-to="$PWD" "$target_file")
     # assume the shorter path is easier to read
     if [ ''${#target_relpath} -lt ''${#target_file} ]; then
-        show_path=$target_relpath
+        show_path="$target_relpath"
     else
-        show_path=$target_file
+        show_path="$target_file"
     fi
     help_string=
     help_string="$help_string=== shortcuts from $show_path ===\n"
     help_string="$help_string"'\033[0;33m'$(
-        cat $target_file |
+        cat "$target_file" |
         grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|function [a-zA-Z]\).\+' |
         sed 's/^\s*/  /' |
         sed 's/#\s*\(.*\)$/\t\\033\[0;37m\1\\033[0;33m/' |  # replace comment string with <tab> delimiter; set to white, then back to yellow
         column -t -s $'\t'  # print in columns using <tab> as delimiter
     )'\033[0m'
     help_string="$help_string"'\n\033[0;35m'$(
-        cat $target_file |
+        cat "$target_file" |
         grep --color '^\s*\(alias\).\+' |
         sed 's/^\s*/  /'
     )'\033[0m'
