@@ -13,7 +13,7 @@ with import <nixpkgs> {};
     ## order is important :-(
     # cabal install alex happy c2hs
     alsaLib
-    x11
+    xlibsWrapper
     pkgconfig
     xorg.libXext
     xorg.libXrandr
