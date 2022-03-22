@@ -64,7 +64,7 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
         grep --color '^\s*\(alias\).\+' |
         sed 's/^\s*/  /'
     )'\033[0m'
-    _SHORTCUTS_HELP="''${_SHORTCUTS_HELP}$help_string\n"
+    _SHORTCUTS_HELP=''${_SHORTCUTS_HELP}"$help_string\n"
     echo -e "$help_string"
 }
 
