@@ -28,12 +28,15 @@ _GLOBAL_JSONNET_VENDOR_PATH=$USERCACHE/jsonnet-libs
 
 # set the JSONNET_PATH envvar globally so jsonnet will silently use it for --jpath
 # /vendor is ksonnet / jsonnet-bundler style
-export JSONNET_PATH=$_GLOBAL_JSONNET_VENDOR_PATH:$PWD/vendor''${JSONNET_PATH:+:}$JSONNET_PATH
+# file default prevents throwing in strict variable check
+export JSONNET_PATH=$PWD:$_GLOBAL_JSONNET_VENDOR_PATH:$PWD/vendor''${JSONNET_PATH:+:}''${JSONNET_PATH:-}
 
 if [ ! -e $_GLOBAL_JSONNET_VENDOR_PATH ]; then
     echo "INFO: creating jsonnet vendor directory at $_GLOBAL_JSONNET_VENDOR_PATH"
     mkdir -p $_GLOBAL_JSONNET_VENDOR_PATH
 fi
+
+\ls $_GLOBAL_JSONNET_VENDOR_PATH/github.com/*
 
 jsonnet-bundler-install() {  # install to global vendor path using jsonnet-bundler
     # this hacks jsonnet-bundler to install everything into our designated
