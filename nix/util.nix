@@ -16,6 +16,7 @@ in
     coreutils
     crudini  # ini file CRUD
     curlie
+    difftastic
     direnv
     dnsutils
     dos2unix
