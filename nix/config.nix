@@ -14,7 +14,6 @@ with import <nixpkgs> {};
     ++ (import ./containerization.nix)
     ++ [
       (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
-      (callPackage (import ./pkgs/development/tools/babashka-prebuilt/default.nix) {})
       (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
       (callPackage (import ./pkgs/development/tools/gitwatch/default.nix) {})
       (callPackage (import ./pkgs/development/tools/jet/default.nix) {})

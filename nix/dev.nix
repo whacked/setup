@@ -12,6 +12,7 @@ let
 in
 [
     R
+    babashka
     cairo
     cmake
     gcc
