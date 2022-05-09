@@ -65,24 +65,34 @@ jsonnet-repo-install() {  # install an arbitrary loadable jsonnet package
         return
     fi
     pushd $_GLOBAL_JSONNET_VENDOR_PATH >/dev/null
-        case $1 in
+        stripped_ext_path=''${1%.git}
+        case $stripped_ext_path in
             git@*)
-                repourl=$1
-                outdir=$(echo ''${1#git@} | tr ':' '/')
+                repourl=$stripped_ext_path
+                outdir=$(echo ''${stripped_ext_path#git@} | tr ':' '/')
                 ;;
 
             https)
-                repourl=$1
-                outdir=''${1#https://}
+                repourl=$stripped_ext_path
+                outdir=''${stripped_ext_path#https://}
                 ;;
 
             *)
-                repourl=https://$1
-                outdir=$1
+                repourl=https://$stripped_ext_path
+                outdir=$stripped_ext_path
                 ;;
         esac
-        echo "RUN: git clone $repourl $outdir"
-        git clone $repourl $outdir
+
+        if [ -e $outdir ]; then
+            echo "ERROR: already exists: $_GLOBAL_JSONNET_VENDOR_PATH/$outdir"
+        else
+            echo "RUN: git clone $repourl $outdir"
+            git clone --depth 1 $repourl $outdir
+            pushd $outdir > /dev/null
+                echo "removing non-jsonnet files"
+                find . -type f ! -path "./.git/*" ! -name "*.json*" -delete
+            popd > /dev/null
+        fi
     popd >/dev/null
 }
 
