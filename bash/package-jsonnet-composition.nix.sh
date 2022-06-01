@@ -81,7 +81,29 @@ else
     IS_VIM_TERMINAL_AVAILABLE=$($VIM_COMMAND --version 2>/dev/null | fmt -w1 | grep '^+terminal$')
 fi
 
+
+if [ "x$PROMPT_STYLE" = "x" ]; then
+    PROMPT_STYLE=full
+fi
+
+prompt-style() {
+    case $1 in
+        full)
+            PROMPT_STYLE=$1
+            ;;
+
+        minimal)
+            PROMPT_STYLE=$1
+            ;;
+
+        *)
+            echo "full or minimal? now: $PROMPT_STYLE"
+            ;;
+    esac
+}
+
 _print-recommendations() {
+    if [ "$PROMPT_STYLE" != "full" ]; then return; fi
     if [ $# -eq 1 ]; then
         echo $(_echoc magenta "recommendation: ")" $1"
         return
@@ -102,6 +124,7 @@ _print-recommendations() {
 _recommendation_command_buffer=
 _set-recommendation-command() {
     _recommendation_command_buffer="$*"
+    if [ "$PROMPT_STYLE" != "full" ]; then return; fi
     if [ "x$_recommendation_command_buffer" != "x" ]; then
         echo "run $(_echoc hotpink accept-recommendations) to run $(_echoc greenyellow $*)"
     fi
@@ -135,6 +158,7 @@ _show-json-diff() {  # <old-name> <old-json> <new-name> <new-json>
     else
         echo -n "$ICON_WARN  "
         _echoc red "$new_name has diverged from $old_name"
+        if [ "$PROMPT_STYLE" != "full" ]; then return; fi
         echo "$diff_content"
     fi
 }
@@ -199,6 +223,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
     maybe_changed_jsonnet=$(git ls-files -m $jsonnet_template_path | sed 's/.*/template/')
 
     _print-parity-watcher-workflow-commands() {
+        if [ "$PROMPT_STYLE" != "full" ]; then return; fi
         ALTERNATIVE_RECOMMENDATION="run $(_echoc greenyellow jsonnet-parity-watcher --template) in one terminal + $(_echoc greenyellow edit-package-jsonnet) in another terminal"
         if [ "x$IS_VIM_TERMINAL_AVAILABLE" = "x" ]; then
             RECOMMENDED_COMMAND="edit-package-jsonnet"
@@ -224,6 +249,7 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
         package_lock_file=package.json.lock
         package_update_command='npm install'
     fi
+
     case "$maybe_changed_package,$maybe_changed_jsonnet" in
         ,)
             # maybe an imported file was changed
@@ -233,6 +259,9 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                 _print-recommendations \
                     "edit $(_echoc greenyellow $jsonnet_template_path) and verify import files for changes" \
                     "run $(_echoc greenyellow regenerate-package-json)"
+            else
+                # nothing to print, break out
+                return
             fi
             ;;
         package,template)
@@ -281,6 +310,15 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
                 "run $(_echoc green regenerate-package-json) to regenerate $package_json_path from $jsonnet_template_path" \
                 "if everything is correct, run $(_echoc greenyellow git add $jsonnet_template_path) $(_echoc green '&& git commit -v')"
             _set-recommendation-command "regenerate-package-json"
+            ;;
+    esac
+
+    case $PROMPT_STYLE in
+        full)
+            echo "run "$(_echoc green "prompt-style minimal")" to show less"
+            ;;
+        minimal)
+            echo "run "$(_echoc green "prompt-style full")" to show more"
             ;;
     esac
 }
