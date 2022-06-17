@@ -7,3 +7,15 @@ help:
      | column -t  -s '###' \
      | grep -v '^help '
 
+print_var=$(info $(info $1 has $(words $($1)) values:) $(foreach F,$($1), $(info - $F)))
+
+define render_jsonnet
+	test -d $(dir $2) || mkdir -p $(dir $2)
+	jsonnet $1 | jq -S | tee $2
+endef
+
+define generate_ts_interface
+	test -d $(dir $2) || mkdir -p $(dir $2)
+	cat $1 | json2ts | cat | tee $2
+endef
+
