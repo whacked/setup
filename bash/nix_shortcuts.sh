@@ -33,6 +33,9 @@ fi
 
 _SHORTCUTS_HELP=''${_SHORTCUTS_HELP-}
 function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
+    if [ "x$SHOULD_SILENCE_SHORTCUTS" != "x" ]; then
+        return
+    fi
     input_file="$*"
     if [ "x$input_file" == "x" ]; then
         for candidate in shell.nix default.nix; do
