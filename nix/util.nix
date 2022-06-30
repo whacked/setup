@@ -1,6 +1,8 @@
 with import <nixpkgs> {};
 let
-  vim = (vim_configurable.override { python = python3; });
+  vim = (vim_configurable.override {
+    python = python3; # remove for remote
+  });
 in
 [
     ansible

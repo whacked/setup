@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
 
   src = fetchzip {
     url="https://github.com/gitwatch/gitwatch/archive/master.zip";
-    sha256="1n78iffrdpmzrkbr1hbip41g9ifcwi9f9gygfifdw19q7v842bqp";
+    sha256="1xjnwbiqmjv7lmcyinipvl45i81w039qb3784w1wf5gfjx7qsrkb";
   };
 
   buildInputs = [
