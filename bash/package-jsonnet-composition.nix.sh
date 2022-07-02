@@ -218,6 +218,10 @@ check-package-template() {  # detect + show changes in package json/jsonnet; whe
         return
     fi
 
+    if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != "true" ]; then
+        return
+    fi
+
     # detect updated files
     maybe_changed_package=$(git ls-files -m $package_json_path | sed 's/.*/package/')
     maybe_changed_jsonnet=$(git ls-files -m $jsonnet_template_path | sed 's/.*/template/')
