@@ -1,0 +1,46 @@
+- name: ensure group "docker" exists with correct gid
+  ansible.builtin.group:
+    name: "docker"
+    state: present
+    gid: 998  # from testing
+
+# from https://docs.docker.com/engine/install/ubuntu/
+- apt: update_cache=yes
+  become: true
+
+- shell: |
+     apt-get install -y ca-certificates curl gnupg lsb-release
+     mkdir -p /etc/apt/keyrings
+     if [ ! -e  /etc/apt/keyrings/docker.gpg ]; then curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg; fi
+     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+- apt: update_cache=yes
+  become: true
+
+- package:
+    name: "{{ item }}"
+    state: latest
+  ignore_errors: true
+  with_items:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+
+- name: ensure docker is running
+  service:
+    name: docker
+    state: started
+
+
+### sample playbook to apply
+#
+#---
+#- hosts: all
+#  user: ubuntu
+#  become: true
+#  roles:
+#  - docker-enabled
+#
+### to apply
+# ansible-playbook -i 1.2.3.4, --ask-become-pass test.yml

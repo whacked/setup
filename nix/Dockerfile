@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+# docker build . -t nix-ready-image-base
 
 FROM ubuntu:latest
 
