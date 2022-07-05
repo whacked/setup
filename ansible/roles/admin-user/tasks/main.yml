@@ -1,0 +1,26 @@
+- name: ensure group "{{ admin_group }}" exists with correct gid
+  ansible.builtin.group:
+    name: "{{ admin_group }}"
+    state: present
+    gid: 1000
+
+- name: Add the user "{{ admin_user }}" with a specific uid and a primary group
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    uid: 1000
+    group: "{{ admin_group }}"
+    groups: docker
+    shell: /bin/bash
+
+- name: allow passwordless sudo for admin_user
+  community.general.sudoers:
+    name: 100-admin-users
+    state: present
+    user: "{{ admin_user }}"
+    commands: ALL
+
+- name: allow public key login
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"
+    state: present
+    key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_ecdsa.pub') }}"
