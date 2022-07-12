@@ -1,0 +1,23 @@
+# https://tailscale.com/download
+- apt: update_cache=yes
+  become: true
+
+- shell: |
+    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+
+- apt: update_cache=yes
+  become: true
+
+- package:
+    name: "{{ item }}"
+    state: latest
+  ignore_errors: true
+  with_items:
+      - tailscale
+
+- name: ensure tailscaled is running
+  service:
+    name: tailscaled
+    state: started
+
