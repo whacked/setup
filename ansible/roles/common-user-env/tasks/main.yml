@@ -1,0 +1,6 @@
+- git:
+    repo: https://github.com/whacked/setup
+    dest: "/home/{{ admin_user }}/setup"
+  become: yes
+  become_user: "{{ admin_user }}"
+

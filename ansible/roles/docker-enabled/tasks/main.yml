@@ -2,7 +2,7 @@
   ansible.builtin.group:
     name: "docker"
     state: present
-    gid: 998  # from testing
+    gid: 999  # something that works from test run on ubuntu 22.04
 
 # from https://docs.docker.com/engine/install/ubuntu/
 - apt: update_cache=yes
@@ -24,6 +24,7 @@
   with_items:
       - docker-ce
       - docker-ce-cli
+      - docker-compose
       - containerd.io
       - docker-compose-plugin
 

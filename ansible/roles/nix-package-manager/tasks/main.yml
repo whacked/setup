@@ -1,8 +1,15 @@
+- name: ensure /nix directory exists
+  ansible.builtin.file:
+    path: /nix
+    state: directory
+    owner: "{{ admin_user }}"
+    group: "{{ admin_user }}"
+
 - name: install nix package manager
   become: true
   become_user: "{{ admin_user }}"
-    #ansible.builtin.shell: "sh <(curl -L https://nixos.org/nix/install) --daemon" executable=/bin/bash
+  # multi-user install
+  # ansible.builtin.shell: "sh <(curl -L https://nixos.org/nix/install) --daemon" executable=/bin/bash
   ansible.builtin.shell: sh <(curl -L https://nixos.org/nix/install) --no-daemon
   args:
     executable: /bin/bash
-
