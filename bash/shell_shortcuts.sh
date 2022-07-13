@@ -156,3 +156,9 @@ function append-prompt-command() {
     export PROMPT_COMMAND=$cleaned_command${cleaned_command:+;}$func
 }
 
+function append-to-path() {
+    path_var=$1
+    path_value=$2
+    export $path_var=$(echo -n ${!path_var}":$path_value" | tr ':' '\n' | awk '!x[$0]++' | paste -s -d':')
+}
+
