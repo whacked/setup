@@ -35,8 +35,9 @@ let
           nativeBuildInputs = [
             ~/setup/bash/nix_shortcuts.sh  # provides echo-shortcuts
           ] ++ (lhsEnv.nativeBuildInputs or []) ++ (rhsEnv.nativeBuildInputs or []);
-          shellHook = (lhsEnv.shellHook or "") + ''
-          '' + (rhsEnv.shellHook or "") + (
+          shellHook = "
+          " + (lhsEnv.shellHook or "") + "
+          " + (rhsEnv.shellHook or "") + (
             if (builtins.typeOf lhsArg) == "path" then ''
               echo-shortcuts ${lhsArg}
             '' else ""
