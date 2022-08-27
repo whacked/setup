@@ -29,12 +29,18 @@ let
         rhsEnv = composeEnvs (pkgs.lib.tail envs);
       in
         rhsEnv // {
-          typeType = builtins.typeOf {};
           buildInputs = [
           ] ++ (lhsEnv.buildInputs or []) ++ (rhsEnv.buildInputs or []);
           nativeBuildInputs = [
             ~/setup/bash/nix_shortcuts.sh  # provides echo-shortcuts
-          ] ++ (lhsEnv.nativeBuildInputs or []) ++ (rhsEnv.nativeBuildInputs or []);
+          ] ++ (
+            # ref https://discourse.nixos.org/t/debug-a-nix-expression-with-debug-trace-statements/691
+            lhsEnv.nativeBuildInputs or []
+            # builtins.trace lhsEnv.nativeBuildInputs (lhsEnv.nativeBuildInputs or [])
+          ) ++ (
+            rhsEnv.nativeBuildInputs or []
+            # builtins.trace rhsEnv.nativeBuildInputs (rhsEnv.nativeBuildInputs or [])
+          );
           shellHook = "
           " + (lhsEnv.shellHook or "") + "
           " + (rhsEnv.shellHook or "") + (
@@ -45,10 +51,18 @@ let
         }
     )
   );
+  helpers = {
+    composeEnvs = composeEnvs;
+    mkShell = env: pkgs.mkShell (helpers.composeEnvs [
+      ~/setup/bash/jsonnet_shortcuts.sh
+      ~/setup/bash/package-jsonnet-composition.nix.sh
+      env
+    ]);
+  };
 in {
   composeEnvs = composeEnvs;
-  mkShell = deps: env: pkgs.mkShell (
-    composeEnvs (deps ++ [
+  mkShell = deps: env: helpers.mkShell (
+    helpers.composeEnvs (deps ++ [
       env
     ])
   );
