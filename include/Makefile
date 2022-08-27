@@ -1,3 +1,10 @@
+# $(call print_var,my_variable_name)
+print_var=$(info $(info $1 has $(words $($1)) values:) $(foreach F,$($1), $(info - $F)))
+
+### also consider something like (using ascii 30 Record Separator)
+### sed 'N;s/\n/\x1e/' | sed -n 's/^# \(.*\)\x1e\(.*\):.*/\2 --- \1/p' | column -t -s ' --- '
+### may reduce readability during debug though.
+
 # helper target modified from: https://stackoverflow.com/a/59087509
 help:
 	@grep -B1 -h -E "^[a-zA-Z0-9_-]+\:([^\=]|$$)" $(MAKEFILE_LIST) \
@@ -6,8 +13,6 @@ help:
      | sed -n 's/^# \(.*\)###\(.*\):.*/\2###\1/p' \
      | column -t  -s '###' \
      | grep -v '^help '
-
-print_var=$(info $(info $1 has $(words $($1)) values:) $(foreach F,$($1), $(info - $F)))
 
 define render_jsonnet
 	test -d $(dir $2) || mkdir -p $(dir $2)
