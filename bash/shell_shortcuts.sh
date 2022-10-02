@@ -162,3 +162,24 @@ function append-to-path() {
     export $path_var=$(echo -n ${!path_var}":$path_value" | tr ':' '\n' | awk '!x[$0]++' | paste -s -d':')
 }
 
+function pip-add-require() {
+    assert-nargs 1 $* || return
+    package=$1
+    _pip_requirements_file=
+    for candidate in req.txt requirements.txt; do
+        if [ -e $candidate ]; then
+            _pip_requirements_file=$candidate
+            break
+        fi
+    done
+    if [ "x$_pip_requirements_file" = "x" ]; then
+        echo "ERROR: could not locate requirements file"
+        return
+    fi
+    pip install $package
+    if [ $? -eq 0 ]; then
+        ( cat $_pip_requirements_file| grep -v "$package.=" ; pip freeze | grep $package ) | sort | sponge $_pip_requirements_file
+    else
+        echo "ERROR: failed to install package $package"
+    fi
+}
