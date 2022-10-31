@@ -25,6 +25,9 @@
   (and (== (typeof o) "object")
        (not (sequential? o))))
 
+(defn empty? [coll]
+  (== 0 (get coll "length")))
+
 (defn range [end]
   (let [rtn []]
     (loop [i 0]
@@ -104,7 +107,7 @@
   ;; ONLY these usages now:
   ;; (into {:z 3} [[:a 1] [:b 2]])  --> {:z 3 :a 1 :b 2}
   ;; (into [:z] [[:a 1] [:b 2]])  --> [:z [:a 1] [:b 2]]
-  
+
   (let [out (-clone coll)]
     (cond (sequential? coll)
           (.concat out items)
@@ -124,3 +127,27 @@
                     value (last pair)]
                 (aset out key value)
                 (recur (inc i))))))))
+
+(defmacro ->
+  [& operations]
+  (reduce
+   (fn [form operation]
+     (cons (first operation)
+           (cons form (rest operation))))
+   (first operations)
+   (rest operations)))
+
+(defn map-indexed [func items]
+  (let [out []]
+    (loop [i 0]
+      (if (== i (get items "length"))  ;; strange, = is supposed to work
+        out
+        (let [item (get items i)]
+          (.push out (func i item))
+          (recur (+ 1 i)))))))
+
+(defn mod [num div]  ;; js compat. somehow in REPL (mod 3 5) works as-is, but in compile it emits mod(3, 5)
+  (- num (* div (Math.floor (/ num div)))))
+
+(defn merge [m1 m2]
+  (Object.assign (Object.assign {} m1) m2))
