@@ -19,6 +19,7 @@ help:
      | column -t  -s '###' \
      | grep -v '^help '
 
+# usage: $(call render_jsonnet,$<,$@)
 define render_jsonnet
 	test -d $(dir $2) || mkdir -p $(dir $2)
 	jsonnet $1 | jq -S | tee $2
