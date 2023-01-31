@@ -6,6 +6,11 @@ print_var=$(info $(info $1 has $(words $($1)) values:) $(foreach F,$($1), $(info
 ### may reduce readability during debug though.
 
 # helper target modified from: https://stackoverflow.com/a/59087509
+### note this will ONLY pick up entries with #-comments,
+### so if it's run on a Makefile with no commented entries,
+### make will show something like 
+### make: *** [.../Makefile:11: help] Error 1
+### to make a comment invisible to help, use ###
 help:
 	@grep -B1 -h -E "^[a-zA-Z0-9_-]+\:([^\=]|$$)" $(MAKEFILE_LIST) \
      | grep -v -- -- \
