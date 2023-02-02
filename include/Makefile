@@ -17,7 +17,8 @@ help:
      | sed 'N;s/\n/###/' \
      | sed -n 's/^# \(.*\)###\(.*\):.*/\2###\1/p' \
      | column -t  -s '###' \
-     | grep -v '^help '
+     | grep -v '^help ' \
+	 | cat
 
 # usage: $(call render_jsonnet,$<,$@)
 define render_jsonnet
