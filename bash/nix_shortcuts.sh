@@ -32,6 +32,8 @@ if [ "$DEBUG_LEVEL" -gt 0 ]; then
 fi
 
 _SHORTCUTS_HELP=''${_SHORTCUTS_HELP-}
+declare -A -g _SHORTCUTS_PATHS  # -g (global) makes the array available in functions
+
 function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     if [ "x$SHOULD_SILENCE_SHORTCUTS" != "x" ]; then
         return
@@ -53,6 +55,12 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     else
         show_path="$target_file"
     fi
+
+    if [ "${_SHORTCUTS_PATHS[$show_path]}" ]; then
+        return
+    fi
+    _SHORTCUTS_PATHS["$show_path"]=$(( ${#_SHORTCUTS_PATHS[@]} + 1 ))
+
     help_string=
     help_string="$help_string=== shortcuts from $show_path ===\n"
     help_string="$help_string"'\033[0;33m'$(
