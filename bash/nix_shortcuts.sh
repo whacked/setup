@@ -56,10 +56,11 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
         show_path="$target_file"
     fi
 
-    if [ "${_SHORTCUTS_PATHS[$show_path]}" ]; then
+    if [ $(echo x''${_SHORTCUTS_PATHS[$show_path]}) != "x" ]; then
         return
     fi
-    _SHORTCUTS_PATHS["$show_path"]=$(( ${#_SHORTCUTS_PATHS[@]} + 1 ))
+    _next_number=''${#_SHORTCUTS_PATHS[@]}
+    _SHORTCUTS_PATHS["$show_path"]=$(( $_next_number + 1 ))
 
     help_string=
     help_string="$help_string=== shortcuts from $show_path ===\n"
@@ -173,8 +174,7 @@ let
 in helpers.mkShell [
 ] {
   buildInputs = [
-  ]
-  ;  # join lists with ++
+  ];  # join lists with ++
 
   nativeBuildInputs = [
     ~/setup/bash/nix_shortcuts.sh
