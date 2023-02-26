@@ -16,6 +16,7 @@ in
     broot
     bzip2
     coreutils
+    croc  # machine to machine secure file transfer
     crudini  # ini file CRUD
     curlie
     difftastic
@@ -80,6 +81,7 @@ in
     ttyplot
     unzip
     vim
+    websocat
     wget
     which
     wuzz
