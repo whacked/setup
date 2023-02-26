@@ -168,9 +168,13 @@ function create-nix-shell-skeleton() {
     II="'""'"
     cat > shell.nix<<EOF
 { pkgs ? import <nixpkgs> {} }:
-pkgs.mkShell {
+let
+  helpers = import ~/setup/nix/helpers.nix;
+in helpers.mkShell [
+] {
   buildInputs = [
-  ];  # join lists with ++
+  ]
+  ;  # join lists with ++
 
   nativeBuildInputs = [
     ~/setup/bash/nix_shortcuts.sh
