@@ -23,6 +23,29 @@ EOF
 
 nix-shell $HM_PATH -A install
 
+* nix helpers
+
+a handful of opinionated utilities to facilitate working in a hybrid,
+(mostly) nix-managed development environment
+
+source bash/nix_shortcuts.sh in bash/zsh to add e.g. these functions:
+- =read-shortcuts <path-to-shell-script>= :: get overview of functions/aliases
+- =shortcuts= :: print full overview from previously read scripts
+- =create-nix-shell-skeleton= :: create a basic helper-enabled =shell.nix= file
+- =create-nix-flake-skeleton= :: create a basic helper-enabled =flake.nix= file
+
+** what the flake skeleton includes into the nix shell environment
+
+- loads the helper nix functions (=flake-helpers.nix=) from a pinned commit of this repo
+- shortcuts utilities from =nix_shortcuts.sh= (not printed)
+- shortcuts from =jsonnet_shortcuts.sh= (not printed)
+- shortcuts from =package-jsonnet-composition.nix.sh= (not printed)
+- source and run =echo-shortcuts= for scripts you add to the =includeScripts= array
+- add the =shellHook= of the flake to =echo-shortcuts=
+
+the motivation behind this per-projects shell shortcuts organization is
+introduced [[https://github.com/whacked/cow/blob/main/tools%20for%20remembering%20code%20projects.md#enter-the-project-get-a-tour-guide][here]]
+
 * vagrant setup
 
 #+BEGIN_SRC sh :eval never
