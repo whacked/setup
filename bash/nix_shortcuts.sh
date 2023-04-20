@@ -24,7 +24,8 @@
 # 
 # NOTE: it's unclear what's the benefit of doing this "source <filepath>" + long "ignore" string
 #       method rathern than simply using shellHook, except for a more compact shellHook string.
-# */ rec { buildInputs = (with import <nixpkgs>{}; [ unixtools.column ]); shellHook = ". ${__curPos.file};"; ignore = ''
+# */ { pkgs ? import <nixpkgs> }: /*
+# */ rec { buildInputs = [ pkgs.unixtools.column ]; shellHook = ". ${__curPos.file};"; ignore = ''
 
 DEBUG_LEVEL=''${DEBUG_LEVEL-0}
 if [ "$DEBUG_LEVEL" -gt 0 ]; then

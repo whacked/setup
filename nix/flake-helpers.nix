@@ -12,7 +12,7 @@ let
 
   jsonnetShortcutsPath = builtins.toPath (myDir + "/bash/jsonnet_shortcuts.sh");
   packageJsonnetCompositionShortcutsPath = builtins.toPath (myDir + "/bash/package-jsonnet-composition.nix.sh");
-  nixShortcuts = import (builtins.toPath (myDir + "/bash/nix_shortcuts.sh"));
+  nixShortcuts = (import (builtins.toPath (myDir + "/bash/nix_shortcuts.sh"))) { inherit pkgs; };
 
   ## pkgs = import ((import <nixpkgs> {}).fetchFromGitHub {
   ##   owner  = "nixos";
