@@ -73,8 +73,8 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     )'\033[0m'
     help_string="$help_string"'\n\033[0;35m'$(
         cat "$target_file" |
-        grep --color '^\s*\(alias\).\+' |
-        sed 's/^\s*/  /'
+        grep '^\s*\(alias\).\+' |
+        sed 's/^\s*alias\s*\([^=]\+\)/  \\033[0;35malias \\033[0;36m\1\\033[0m/'
     )'\033[0m'
     _SHORTCUTS_HELP=''${_SHORTCUTS_HELP}"$help_string\n"
     echo -e "$help_string"
