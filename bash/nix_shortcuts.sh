@@ -192,6 +192,52 @@ in helpers.mkShell [
 EOF
 }
 
+function create-nix-flake-skeleton() {
+    # https://nixos.wiki/wiki/Development_environment_with_nix-shell
+    if [ -e flake.nix ]; then
+        echo "ERROR: flake.nix already exists; doing nothing"
+        return
+    fi
+    II="'""'"
+    cat > flake.nix<<EOF
+{
+  description = "optional description";
+
+  nixConfig.bash-prompt = $II\033[1;32m\[[nix-develop:\[\033[36m\]\w\[\033[32m\]]\$\033[0m $II;
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/23.05-pre";
+    whacked-setup = {
+      url = "github:whacked/setup/5e1c55c9206a24edbc20f5b91ead51c1811ecf51";
+      flake = false;
+    };
+  };
+  outputs = { self, nixpkgs, whacked-setup }:
+    let
+      pkgs = nixpkgs.legacyPackages.x86_64-linux.pkgs;
+      whacked-helpers = import (whacked-setup + /nix/flake-helpers.nix) { inherit pkgs; };
+    in {
+      devShells.x86_64-linux.default = whacked-helpers.mkShell {
+        flakeFile = __curPos.file;  # used to forward current file to echo-shortcuts
+        includeScripts = [
+          # e.g. for node shortcuts
+          # (whacked-setup + /bash/node_shortcuts.sh)
+        ];
+      } {
+        buildInputs = [
+          # e.g.
+          # pkgs.nodejs
+        ];
+
+        shellHook = $II
+          alias dev='npm dev'
+        $II;
+      };
+    };
+}
+EOF
+}
+
 #  PS1 for nix-shell bash when liquidprompt is available
 if [[ -n "$IN_NIX_SHELL" ]]; then
     LP_HOSTNAME_ALWAYS=1
