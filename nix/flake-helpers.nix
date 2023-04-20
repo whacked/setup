@@ -1,3 +1,5 @@
+{ pkgs ? import <nixpkgs> }:
+
 let
   myDir = builtins.dirOf (builtins.dirOf __curPos.file);
 
@@ -5,16 +7,14 @@ let
   packageJsonnetCompositionShortcutsPath = builtins.toPath (myDir + "/bash/package-jsonnet-composition.nix.sh");
   nixShortcuts = import (builtins.toPath (myDir + "/bash/nix_shortcuts.sh"));
 
-  # pkgs = import ((import <nixpkgs> {}).fetchFromGitHub {
-  #   # this provides kubectl 1.11; 1.26 is latest as of this commit, and it doesn't work:
-  #   # error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
-  #   owner  = "nixos";
-  #   repo   = "nixpkgs";
-  #   rev    = "23.05-pre";
-  #   sha256 = "sha256-h0RTwZg+cGlV3RlH9jXBHdyA9xQfbxo2oCn1zFieE2A=";
-  # }) {};
+  ## pkgs = import ((import <nixpkgs> {}).fetchFromGitHub {
+  ##   owner  = "nixos";
+  ##   repo   = "nixpkgs";
+  ##   rev    = "23.05-pre";
+  ##   sha256 = "sha256-h0RTwZg+cGlV3RlH9jXBHdyA9xQfbxo2oCn1zFieE2A=";
+  ## }) {};
 
-  pkgs = import <nixpkgs> {};
+  # pkgs = import <nixpkgs> {};
   helpers = import ./helpers.nix;
   composeEnvs = envs: (
     if (builtins.length envs) == 0 then
