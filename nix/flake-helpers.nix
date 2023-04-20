@@ -2,6 +2,13 @@
 
 let
   myDir = builtins.dirOf (builtins.dirOf __curPos.file);
+  getEnvSet = envOrPath: (
+    if (builtins.typeOf envOrPath) == "set" then
+      envOrPath
+    else if (builtins.typeOf envOrPath) == "path" then (
+      import envOrPath
+    ) else {}
+  );
 
   jsonnetShortcutsPath = builtins.toPath (myDir + "/bash/jsonnet_shortcuts.sh");
   packageJsonnetCompositionShortcutsPath = builtins.toPath (myDir + "/bash/package-jsonnet-composition.nix.sh");
@@ -15,16 +22,15 @@ let
   ## }) {};
 
   # pkgs = import <nixpkgs> {};
-  helpers = import ./helpers.nix;
   composeEnvs = envs: (
     if (builtins.length envs) == 0 then
       {}
     else if (builtins.length envs) == 1 then
-      helpers.getEnvSet (pkgs.lib.last envs)
+      getEnvSet (pkgs.lib.last envs)
     else (
       let
         lhsArg = pkgs.lib.head envs;
-        lhsEnv = helpers.getEnvSet lhsArg;
+        lhsEnv = getEnvSet lhsArg;
         rhsEnv = composeEnvs (pkgs.lib.tail envs);
       in
         rhsEnv // {
