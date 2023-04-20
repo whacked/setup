@@ -81,6 +81,10 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     echo -e "$help_string"
 }
 
+function read-shortcuts() {
+    echo-shortcuts $* >/dev/null
+}
+
 function shortcuts() {
     echo -e "$_SHORTCUTS_HELP"
 }

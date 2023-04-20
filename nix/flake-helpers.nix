@@ -10,9 +10,12 @@ let
     ) else {}
   );
 
+  nixShortcutsPath = builtins.toPath (myDir + "/bash/nix_shortcuts.sh");
+  nixShortcuts = import nixShortcutsPath { inherit pkgs; };
   jsonnetShortcutsPath = builtins.toPath (myDir + "/bash/jsonnet_shortcuts.sh");
+  jsonnetShortcuts = import jsonnetShortcutsPath { inherit pkgs; };
   packageJsonnetCompositionShortcutsPath = builtins.toPath (myDir + "/bash/package-jsonnet-composition.nix.sh");
-  nixShortcuts = (import (builtins.toPath (myDir + "/bash/nix_shortcuts.sh"))) { inherit pkgs; };
+  packageJsonnetCompositionShortcuts = import packageJsonnetCompositionShortcutsPath { inherit pkgs; };
 
   ## pkgs = import ((import <nixpkgs> {}).fetchFromGitHub {
   ##   owner  = "nixos";
@@ -66,13 +69,20 @@ in {
     # (builtins.trace (builtins.typeOf deps)) (builtins.trace env) 
     pkgs.mkShell (composeEnvs (
       [
-        # manually stuff nixShortcuts to skip auto echo-shortcuts
-        {
-          buildInputs = nixShortcuts.buildInputs;
-          shellHook = nixShortcuts.shellHook;
-        }
-        jsonnetShortcutsPath
-        packageJsonnetCompositionShortcutsPath
+        # manually skip auto echo-shortcuts; use read-shortcuts to save paths
+        nixShortcuts
+        (jsonnetShortcuts // {
+          shellHook = jsonnetShortcuts.shellHook + ''
+
+            read-shortcuts ${jsonnetShortcutsPath}
+          '';
+        })
+        (packageJsonnetCompositionShortcuts // {
+          shellHook = packageJsonnetCompositionShortcuts.shellHook + ''
+
+            read-shortcuts ${packageJsonnetCompositionShortcutsPath}
+          '';
+        })
       ] ++ config.includeScripts ++ [
         env 
         {

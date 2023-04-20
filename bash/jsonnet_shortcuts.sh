@@ -20,9 +20,10 @@
 #     echo-shortcuts ${jsonnetShortcutsPath} # requires nix_shortcuts.sh
 # 
 # DEPENDENCES DECLARATION | NIX EXPRESSION:
-# */ rec { buildInputs = (with import <nixpkgs>{}; [     /*
-# */   jsonnet jsonnet-bundler                           /*
-# */ ]); shellHook = ''
+# */ { pkgs ? import <nixpkgs> }: /*
+# */ rec { buildInputs = [     /*
+# */   pkgs.jsonnet pkgs.jsonnet-bundler                           /*
+# */ ]; shellHook = ''
 
 _GLOBAL_JSONNET_VENDOR_PATH=$USERCACHE/jsonnet-libs
 

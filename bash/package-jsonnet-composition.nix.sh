@@ -26,16 +26,17 @@
 #     append-prompt-command check-package-template  # requires shell_shortcuts.sh
 #     echo-shortcuts ${jsonGenerationShortcutsPath} # requires nix_shortcuts.sh
 # 
-# */ let placeholder = 1; in rec { buildInputs = (with import <nixpkgs>{}; [     /*
-# */   pastel gron fswatch icdiff jsonnet watchexec                              /*
-# */   (vimHugeX.customize {                                                     /*
-# */     name = "vim-with-jsonnet";                                              /*
-# */     vimrcConfig.packages.myVimPackage = with vimPlugins; {                  /*
-# */       start = [ vim-jsonnet ];                                              /*
-# */     };                                                                      /*
-# */     vimrcConfig.customRC = "set tabstop=2 | set shiftwidth=2 | syntax on";  /*
-# */   })                                                                        /*
-# */ ]); shellHook = ''
+# */ { pkgs ? import <nixpkgs> }: /*
+# */ let placeholder = 1; in rec { buildInputs = [     /*
+# */   pkgs.pastel pkgs.gron pkgs.fswatch pkgs.icdiff pkgs.jsonnet pkgs.watchexec /*
+# */   (pkgs.vimHugeX.customize {                                                 /*
+# */     name = "vim-with-jsonnet";                                               /*
+# */     vimrcConfig.packages.myVimPackage = with pkgs.vimPlugins; {              /*
+# */       start = [ vim-jsonnet ];                                               /*
+# */     };                                                                       /*
+# */     vimrcConfig.customRC = "set tabstop=2 | set shiftwidth=2 | syntax on";   /*
+# */   })                                                                         /*
+# */ ]; shellHook = ''
 
 ICON_OK="🆗"
 ICON_WARN="⚠️"
