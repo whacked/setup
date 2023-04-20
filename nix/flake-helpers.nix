@@ -38,28 +38,44 @@ let
             rhsEnv.nativeBuildInputs or []
           );
           shellHook = "
-          " + (builtins.toString (lhsEnv.shellHook or "")) + "
-          " + (builtins.toString (rhsEnv.shellHook or "")) + (
+          " + (builtins.toString (lhsEnv.shellHook or "")) + (
             if ((builtins.typeOf lhsArg) == "path" || (builtins.typeOf lhsArg) == "string") then ''
+              . ${lhsArg}
               echo-shortcuts ${lhsArg}
             '' else ""
+          ) + "
+          " + (builtins.toString (rhsEnv.shellHook or "")
           );
         }
     )
-
   );
 in {
-  mkShell = deps: env: (
+  # config:
+  # {
+  #   flakeFile = __curPos.file;  # should ALWAYS be this, just so we can call echo-shorcuts
+  #   includeScripts: [...];      # paths to any shell scripts to load
+  # }
+  mkShell = config: env: (
     # to debug:
-    # (builtins.trace deps) (builtins.trace env) 
-    pkgs.mkShell (composeEnvs [
-      {
-        buildInputs = nixShortcuts.buildInputs;
-        shellHook = nixShortcuts.shellHook;
-      }
-      jsonnetShortcutsPath
-      packageJsonnetCompositionShortcutsPath
-      env
-    ])
+    # (builtins.trace (builtins.typeOf deps)) (builtins.trace env) 
+    pkgs.mkShell (composeEnvs (
+      [
+        # manually stuff nixShortcuts to skip auto echo-shortcuts
+        {
+          buildInputs = nixShortcuts.buildInputs;
+          shellHook = nixShortcuts.shellHook;
+        }
+        jsonnetShortcutsPath
+        packageJsonnetCompositionShortcutsPath
+      ] ++ config.includeScripts ++ [
+        env 
+        {
+          shellHook = ''
+            echo-shortcuts ${config.flakeFile}
+            echo
+          '';
+        }
+      ]
+    ))
   );
 }
