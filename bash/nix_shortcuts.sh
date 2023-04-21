@@ -231,7 +231,7 @@ function create-nix-flake-skeleton() {
 
         shellHook = $II
           alias dev='npm dev'
-        $II;
+        $II;  # join strings with +
       };
     };
 }

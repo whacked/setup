@@ -37,7 +37,10 @@ if [ ! -e $_GLOBAL_JSONNET_VENDOR_PATH ]; then
     mkdir -p $_GLOBAL_JSONNET_VENDOR_PATH
 fi
 
-\ls $_GLOBAL_JSONNET_VENDOR_PATH/github.com/*
+
+jsonnet-bundler-list() {
+    \ls $_GLOBAL_JSONNET_VENDOR_PATH/github.com/*
+}
 
 jsonnet-bundler-install() {  # install to global vendor path using jsonnet-bundler
     # this hacks jsonnet-bundler to install everything into our designated
