@@ -212,12 +212,14 @@ function create-nix-flake-skeleton() {
       flake = false;
     };
   };
-  outputs = { self, nixpkgs, whacked-setup }:
+  outputs = { self, nixpkgs, flake-utils, whacked-setup }:
+    flake-utils.lib.eachDefaultSystem
+    (system:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux.pkgs;
       whacked-helpers = import (whacked-setup + /nix/flake-helpers.nix) { inherit pkgs; };
     in {
-      devShells.x86_64-linux.default = whacked-helpers.mkShell {
+      devShell = whacked-helpers.mkShell {
         flakeFile = __curPos.file;  # used to forward current file to echo-shortcuts
         includeScripts = [
           # e.g. for node shortcuts
@@ -226,14 +228,16 @@ function create-nix-flake-skeleton() {
       } {
         buildInputs = [
           # e.g.
-          # pkgs.nodejs
+          pkgs.nodejs
         ];
 
         shellHook = $II
+          # e.g.
           alias dev='npm dev'
         $II;  # join strings with +
       };
-    };
+    }
+  );
 }
 EOF
 }
