@@ -19,11 +19,12 @@
     - libusb-dev
     - libusb-1.0-0-dev
     - libopencv-dev
+    - linux-libc-dev  # needed for linux/limits.h in libseek build
 
 - git:
-    # repo: https://github.com/maartenvds/libseek-thermal
     dest: /opt/libseek-thermal
-    repo: https://github.com/hoehermann/libseek-thermal
+    # upstream repo: https://github.com/OpenThermal/libseek-thermal
+    repo: https://github.com/whacked/libseek-thermal
     version: temp-info_compact
 
 - name: chown -R
@@ -40,7 +41,7 @@
   become: yes
   become_user: pi
   with_items:
-    - mkdir build
+    - mkdir -p build
     - cd build && cmake ..
     - cd build && make
 
