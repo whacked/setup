@@ -1,0 +1,11 @@
+- shell: pip3 install "{{ item }}"
+  with_items:
+  - bluepy
+  - requests
+  become: true
+
+- git:
+    dest: /opt/MiTemperature2
+    repo: https://github.com/JsBergbau/MiTemperature2
+    version: master
+
