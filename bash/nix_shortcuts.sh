@@ -216,7 +216,7 @@ function create-nix-flake-skeleton() {
     flake-utils.lib.eachDefaultSystem
     (system:
     let
-      pkgs = nixpkgs.legacyPackages.x86_64-linux.pkgs;
+      pkgs = nixpkgs.legacyPackages.\${system};
       whacked-helpers = import (whacked-setup + /nix/flake-helpers.nix) { inherit pkgs; };
     in {
       devShell = whacked-helpers.mkShell {
