@@ -198,6 +198,10 @@ function create-nix-flake-skeleton() {
         echo "ERROR: flake.nix already exists; doing nothing"
         return
     fi
+    # HACK: bash variable substitution + nix import compat
+    # this ensures that the outputted template script works in bash
+    # but also that the .sh file can be imported in nix
+    dollar_system=$(echo '$\{system\}'|tr -d '\\')
     II="'""'"
     cat > flake.nix<<EOF
 {
@@ -216,7 +220,7 @@ function create-nix-flake-skeleton() {
     flake-utils.lib.eachDefaultSystem
     (system:
     let
-      pkgs = nixpkgs.legacyPackages.\${system};
+      pkgs = nixpkgs.legacyPackages.$dollar_system;
       whacked-helpers = import (whacked-setup + /nix/flake-helpers.nix) { inherit pkgs; };
     in {
       devShell = whacked-helpers.mkShell {
