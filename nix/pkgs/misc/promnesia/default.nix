@@ -2,61 +2,57 @@ with import <nixpkgs> {};
 
 let
 
-  # thanks https://lazamar.co.uk/nix-versions/?package=python3.9-falcon&version=2.0.0&fullName=python3.9-falcon-2.0.0&keyName=python39Packages.falcon&revision=2cdd608fab0af07647da29634627a42852a8c97f&channel=nixpkgs-unstable#instructions
-  old_pkgs = import (builtins.fetchTarball {
-	  url = "https://github.com/NixOS/nixpkgs/archive/2cdd608fab0af07647da29634627a42852a8c97f.tar.gz";
-  }) {};
+  # NOTE:
+  # 2023-05-20
+  #   for older revision including pinned upstream packages building hug internally,
+  #   see rev e8e2a06c84783017d49e4fdc3fdb54c5d88e35a5
 
-  # not working well
-  old_pkgs_ = import (builtins.fetchGit {
-      # Descriptive name to make the store path easier to identify                
-      name = "my-old-revision";                                                 
-      url = "https://github.com/NixOS/nixpkgs/";                       
-      ref = "refs/heads/nixpkgs-unstable";                     
-      rev = "2cdd608fab0af07647da29634627a42852a8c97f";                                           
-  }) {};                                                                           
-
-  python39Packages_falcon = old_pkgs.python39Packages.falcon;
-  python39Packages_hug = old_pkgs.python39Packages.hug;
-
-  python39Packages_cachew = pkgs.python39.pkgs.buildPythonPackage rec {
+  python310Packages_cachew = pkgs.python310.pkgs.buildPythonPackage rec {
     pname = "cachew";
     version = "0.9.0";
-    src = pkgs.python39.pkgs.fetchPypi {
+    src = pkgs.python310.pkgs.fetchPypi {
       inherit pname version;
       sha256 = "19yqnm0rawg23d7m7rv7lz0f4gzz8r60bj7g4yf8xi1m1qk84awd";
     };
 
     buildInputs = [
-      old_pkgs.python39Packages.urlextract
-      old_pkgs.python39Packages.setuptools-scm
-      old_pkgs.python39Packages.appdirs
-      old_pkgs.python39Packages.sqlalchemy
+      pkgs.python310Packages.appdirs
+      pkgs.python310Packages.setuptools-scm
+      pkgs.python310Packages.sqlalchemy
+      pkgs.python310Packages.urlextract
     ];
   };
-  python39Packages_promnesia = pkgs.python39.pkgs.buildPythonPackage rec {
+  python310Packages_promnesia = pkgs.python310.pkgs.buildPythonPackage rec {
     pname = "promnesia";
-    version = "1.0.20210415";
-    src = pkgs.python39.pkgs.fetchPypi {
+    version = "1.2.20230515";
+    src = pkgs.python310.pkgs.fetchPypi {
       inherit pname version;
-      sha256 = "08vgcnz8j9ni3lwl8lbmnxmk9p3bp8ir8llakj9ckr1w1ljvlv7p";
+      sha256 = "JmcHEnhrMXyUAV5JH4m50xN7rctCYd1qAH+yE042cSA=";
     };
 
     buildInputs = [
-      old_pkgs.python39Packages.beautifulsoup4
-      old_pkgs.python39Packages.lxml
-      old_pkgs.python39Packages.mistletoe
-      old_pkgs.python39Packages.logzero
-      old_pkgs.python39Packages.setuptools-scm
-      old_pkgs.python39Packages.setuptools
-      old_pkgs.python39Packages.appdirs
-      old_pkgs.python39Packages.tzlocal
-      old_pkgs.python39Packages.more-itertools old_pkgs.python39Packages.pytz
-      old_pkgs.python39Packages.sqlalchemy
-      old_pkgs.python39Packages.urlextract
       sqlitebrowser
-      python39Packages_hug
-      python39Packages_cachew
+      pkgs.python310Packages.appdirs
+      pkgs.python310Packages.beautifulsoup4
+      pkgs.python310Packages.fastapi
+      pkgs.python310Packages.httptools
+      pkgs.python310Packages.logzero
+      pkgs.python310Packages.lxml
+      pkgs.python310Packages.mistletoe
+      pkgs.python310Packages.more-itertools
+      pkgs.python310Packages.python-dotenv
+      pkgs.python310Packages.pytz
+      pkgs.python310Packages.setuptools
+      pkgs.python310Packages.setuptools-scm
+      pkgs.python310Packages.sqlalchemy
+      pkgs.python310Packages.tzlocal
+      pkgs.python310Packages.urlextract
+      pkgs.python310Packages.uvicorn
+      pkgs.python310Packages.uvloop
+      pkgs.python310Packages.watchfiles
+      pkgs.python310Packages.watchfiles
+      pkgs.python310Packages.websockets
+      python310Packages_cachew
     ];
   };
 in stdenv.mkDerivation rec {
@@ -66,9 +62,9 @@ in stdenv.mkDerivation rec {
     paths = buildInputs;
   };
   buildInputs = [
-    python39
-    python39Packages_promnesia
-  ] ++ python39Packages_promnesia.buildInputs;  # join lists with ++
+    python310
+    python310Packages_promnesia
+  ] ++ python310Packages_promnesia.buildInputs;  # join lists with ++
   nativeBuildInputs = [
     ~/setup/bash/nix_shortcuts.sh
   ];
