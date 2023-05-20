@@ -9,10 +9,10 @@ let
 
   python310Packages_cachew = pkgs.python310.pkgs.buildPythonPackage rec {
     pname = "cachew";
-    version = "0.9.0";
+    version = "0.11.0";
     src = pkgs.python310.pkgs.fetchPypi {
       inherit pname version;
-      sha256 = "19yqnm0rawg23d7m7rv7lz0f4gzz8r60bj7g4yf8xi1m1qk84awd";
+      sha256 = "4qjgvffInKRpKST9xbwwC2+m8h3ups0ZePyJLUU+KhA=";
     };
 
     buildInputs = [
