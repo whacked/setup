@@ -16,6 +16,15 @@ activate-yarn-env() {
     fi
 }
 
+activate-pnpm-env() {
+    export PATH=$(pnpm bin):$PATH
+    if ! [ -e node_modules ]; then
+        if [ -e package.json ]; then
+            pnpm install
+        fi
+    fi
+}
+
 diff-package-json() {
     assert-nargs 1+ $* || return
     # diff current package.json against the output of a package.json generator jsonnet file
