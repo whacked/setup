@@ -20,10 +20,15 @@
 #     echo-shortcuts ${jsonnetShortcutsPath} # requires nix_shortcuts.sh
 # 
 # DEPENDENCES DECLARATION | NIX EXPRESSION:
-# */ { pkgs ? import <nixpkgs> }: /*
-# */ rec { buildInputs = [     /*
+# */ { pkgs ? import <nixpkgs> }:                                  /*
+# */ rec { buildInputs = [                                         /*
 # */   pkgs.jsonnet pkgs.jsonnet-bundler                           /*
+# */   pkgs.coreutils                                              /*
 # */ ]; shellHook = ''
+
+if [ "x$USERCACHE" == "x" ]; then
+    export USERCACHE=$(mktemp -d)
+fi
 
 _GLOBAL_JSONNET_VENDOR_PATH=$USERCACHE/jsonnet-libs
 
