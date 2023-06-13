@@ -212,7 +212,7 @@ function create-nix-flake-skeleton() {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/23.05-pre";
     whacked-setup = {
-      url = "github:whacked/setup/6b73eed531bdf4fde58a8214a94d11c4e024082e";
+      url = "github:whacked/setup/2e4dddabe0d82671305c3fa0cf97822664963936";
       flake = false;
     };
   };
