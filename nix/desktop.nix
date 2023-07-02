@@ -32,4 +32,6 @@ with import <nixpkgs> {};
     cinnamon.nemo
     wmctrl
     xfce.thunar
+
+    wl-clipboard
 ]

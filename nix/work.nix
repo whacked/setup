@@ -9,26 +9,27 @@ with import <nixpkgs> {};
     # desktop
     anki
     audacity
-    sqliteman
+    calibre
     chromium
-    gnome3.eog
-    remmina
-    pdfarranger
-    scrot
-    pinta
-    inkscape
+    firefox
     gimp
     git-cola
+    gnome3.eog
+    inkscape
     keepassxc
+    pdfarranger
+    pinta
     qjackctl
+    remmina
+    sc-im
+    scrot
+    sqliteman
     supercollider
     terminator
-    xournal
-    wireshark
     thunderbird
-    firefox
-    calibre
     visidata
+    wireshark
+    xournal
     zotero
     # this has a surprisingly large dependency tree
     # tortoisehg

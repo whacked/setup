@@ -210,7 +210,7 @@ function create-nix-flake-skeleton() {
   nixConfig.bash-prompt = $II\033[1;32m\[[nix-develop:\[\033[36m\]\w\[\033[32m\]]\$\033[0m $II;
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/23.05-pre";
+    nixpkgs.url = "github:nixos/nixpkgs/23.11-pre";
     whacked-setup = {
       url = "github:whacked/setup/2e4dddabe0d82671305c3fa0cf97822664963936";
       flake = false;

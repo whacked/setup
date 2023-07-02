@@ -84,13 +84,13 @@ in
     websocat
     wget
     which
-    wuzz
+    # wuzz  # broken at 2023-02-06 14:00:33+08:00
     yq-go
     zsh
 ] ++ (
   if stdenv.isLinux then [
     atop
-    bpytop
+    btop
     glibcLocales
     iotop
     iputils

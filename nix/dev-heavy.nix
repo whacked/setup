@@ -2,5 +2,5 @@ with import <nixpkgs> {};
 [
     hdfview
     keybase
-    tabula
+    tabula-java
 ]
