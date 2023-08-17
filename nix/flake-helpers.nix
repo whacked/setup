@@ -94,4 +94,28 @@ in {
       ]
     ))
   );
+  loadFlakeDerivation = pkgs: flakeExpressionFile: (
+    let
+      # HACK! but due to https://github.com/NixOS/nix/issues/3966
+      # it is not straightforward to extract attributes from the imported flake
+      flake-utils-repo = import (pkgs.fetchFromGitHub {
+        owner = "numtide";
+        repo = "flake-utils";
+        rev = "main";
+        hash = "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=";
+      });
+    in
+      ((import flakeExpressionFile).outputs {
+          self = null;
+          nixpkgs = {
+            legacyPackages = {
+              ${pkgs.system} = pkgs;
+            };
+          };
+          flake-utils = {
+            lib = flake-utils-repo;
+          };
+          whacked-setup = ./..;
+        }).devShell.${pkgs.system}
+  );
 }
