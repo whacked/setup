@@ -97,12 +97,13 @@ in {
   loadFlakeDerivation = pkgs: flakeExpressionFile: (
     let
       # HACK! but due to https://github.com/NixOS/nix/issues/3966
-      # it is not straightforward to extract attributes from the imported flake
+      # it is not straightforward to extract attributes from the imported flake;
+      # can't use flake-utils.url because the library arg needs `lib`
       flake-utils-repo = import (pkgs.fetchFromGitHub {
         owner = "numtide";
         repo = "flake-utils";
-        rev = "main";
-        hash = "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=";
+        rev = "919d646de7be200f3bf08cb76ae1f09402b6f9b4";  # 2023-07-11
+        hash = "sha256-6ixXo3wt24N/melDWjq70UuHQLxGV8jZvooRanIHXw0=";
       });
     in
       ((import flakeExpressionFile).outputs {
