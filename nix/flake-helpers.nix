@@ -94,29 +94,34 @@ in {
       ]
     ))
   );
-  loadFlakeDerivation = pkgs: flakeExpressionFile: (
+  loadFlakeDerivation = flakeExpressionFile: flakeOutputRequires: (
+    # MINIMUM REQUIREMENTS:
+    # (loadFlakeDerivation ./path/to/flake.nix { inherit pkgs; })
+    # (loadFlakeDerivation ./path/to/flake.nix { pkgs = other-pkgs; })
     let
       # HACK! but due to https://github.com/NixOS/nix/issues/3966
       # it is not straightforward to extract attributes from the imported flake;
       # can't use flake-utils.url because the library arg needs `lib`
-      flake-utils-repo = import (pkgs.fetchFromGitHub {
+      flake-utils-repo = import (flakeOutputRequires.pkgs.fetchFromGitHub {
         owner = "numtide";
         repo = "flake-utils";
         rev = "919d646de7be200f3bf08cb76ae1f09402b6f9b4";  # 2023-07-11
         hash = "sha256-6ixXo3wt24N/melDWjq70UuHQLxGV8jZvooRanIHXw0=";
       });
+      system = flakeOutputRequires.pkgs.system;
+      mergedOutputRequires = (builtins.removeAttrs flakeOutputRequires ["pkgs"]) // {
+        self = null;
+        nixpkgs = {
+          legacyPackages = {
+            ${pkgs.system} = flakeOutputRequires.pkgs;
+          };
+        };
+        flake-utils = {
+          lib = flake-utils-repo;
+        };
+        whacked-setup = ./..;
+      };
     in
-      ((import flakeExpressionFile).outputs {
-          self = null;
-          nixpkgs = {
-            legacyPackages = {
-              ${pkgs.system} = pkgs;
-            };
-          };
-          flake-utils = {
-            lib = flake-utils-repo;
-          };
-          whacked-setup = ./..;
-        }).devShell.${pkgs.system}
+      ((import flakeExpressionFile).outputs mergedOutputRequires).devShell.${system}
   );
 }
