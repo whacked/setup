@@ -10,9 +10,9 @@ let
     ) else {}
   );
 
-  nixShortcutsPath = builtins.toPath (myDir + "/bash/nix_shortcuts.sh");
+  nixShortcutsPath = builtins.toPath (myDir + "/bash/nix_shortcuts.nix.sh");
   nixShortcuts = import nixShortcutsPath { inherit pkgs; };
-  jsonnetShortcutsPath = builtins.toPath (myDir + "/bash/jsonnet_shortcuts.sh");
+  jsonnetShortcutsPath = builtins.toPath (myDir + "/bash/jsonnet_shortcuts.nix.sh");
   jsonnetShortcuts = import jsonnetShortcutsPath { inherit pkgs; };
   packageJsonnetCompositionShortcutsPath = builtins.toPath (myDir + "/bash/package-jsonnet-composition.nix.sh");
   packageJsonnetCompositionShortcuts = import packageJsonnetCompositionShortcutsPath { inherit pkgs; };
