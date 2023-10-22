@@ -50,7 +50,7 @@ let
           " + (builtins.toString (lhsEnv.shellHook or "")) + (
             if ((builtins.typeOf lhsArg) == "path" || (builtins.typeOf lhsArg) == "string") then ''
               . ${lhsArg}
-              echo-shortcuts ${lhsArg}
+              read-shortcuts ${lhsArg}
             '' else ""
           ) + "
           " + (builtins.toString (rhsEnv.shellHook or "")
@@ -87,6 +87,9 @@ in {
         env 
         {
           shellHook = ''
+            _ENTRYPOINT_ENV_FILE=${config.flakeFile}
+            _ENTRYPOINT_ENV_DIR=$(dirname $_ENTRYPOINT_ENV_FILE)
+            _print-shortcuts-header ${config.flakeFile}
             echo-shortcuts ${config.flakeFile}
             echo
           '';

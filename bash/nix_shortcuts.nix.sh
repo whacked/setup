@@ -28,12 +28,21 @@
 # */ rec { buildInputs = [ pkgs.unixtools.column ]; shellHook = ". ${__curPos.file};"; ignore = ''
 
 DEBUG_LEVEL=''${DEBUG_LEVEL-0}
-if [ "$DEBUG_LEVEL" -gt 0 ]; then
+if [ "$DEBUG_LEVEL" -gt 0 ] && [ "x$@" != "x" ]; then
     echo "[level:$DEBUG_LEVEL] SOURCING $BASH_SOURCE FROM $@..."
 fi
 
 _SHORTCUTS_HELP=''${_SHORTCUTS_HELP-}
 declare -A -g _SHORTCUTS_PATHS  # -g (global) makes the array available in functions
+
+function _denixify_escape() {
+    # prettification hack for bash, because nix needs to escape dollar curly
+    sed -e "s|^'\+||"
+}
+
+function _print-shortcuts-header() {
+    echo -e "=== shortcuts from \e[94;2m$*\e[0m ==="
+}
 
 function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
     if [ "x$SHOULD_SILENCE_SHORTCUTS" != "x" ]; then
@@ -57,14 +66,11 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
         show_path="$target_file"
     fi
 
-    if [ $(echo x''${_SHORTCUTS_PATHS[$show_path]}) != "x" ]; then
+    if [ "$(echo x''${_SHORTCUTS_PATHS[$show_path]})" != "x" ]; then
         return
     fi
-    _next_number=''${#_SHORTCUTS_PATHS[@]}
-    _SHORTCUTS_PATHS["$show_path"]=$(( $_next_number + 1 ))
 
     help_string=
-    help_string="$help_string=== shortcuts from $show_path ===\n"
     help_string="$help_string"'\033[0;33m'$(
         cat "$target_file" |
         grep --color '^\s*\([a-z][-a-zA-Z0-9]*()\|function [a-zA-Z]\).\+' |
@@ -78,6 +84,7 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
         sed 's/^\s*alias\s*\([^=]\+\)/  \\033[0;35malias \\033[0;36m\1\\033[0m/'
     )'\033[0m'
     _SHORTCUTS_HELP=''${_SHORTCUTS_HELP}"$help_string\n"
+    _SHORTCUTS_PATHS["$show_path"]="$help_string"
     echo -e "$help_string"
 }
 
@@ -86,7 +93,43 @@ function read-shortcuts() {
 }
 
 function shortcuts() {
-    echo -e "$_SHORTCUTS_HELP"
+    # Set the flag based on a string comparison
+    if [ "$1" == "--all" ]; then
+        _should_show_all_shortcuts=true
+    else
+        _should_show_all_shortcuts=false
+    fi
+
+    _num_printed=0
+    _num_skipped=0
+    for nix_escaped_key in "''${!_SHORTCUTS_PATHS[@]}"; do
+        key=$(echo $nix_escaped_key | _denixify_escape)
+        _shortcut_path=$(echo "''${_SHORTCUTS_PATHS[$key]}")
+        _should_print=false
+        # assume files within the same entrypoint dir are "main" files
+        # that are most central to the current repository's operation
+        if [[ $key == $_ENTRYPOINT_ENV_DIR* ]]; then
+            _should_print=true
+        elif $_should_show_all_shortcuts; then
+            _should_print=true
+        fi
+        
+        if $_should_print; then
+            _print-shortcuts-header $key
+            # prettification hack for bash, because nix needs to escape dollar curly
+            echo -e "''${_SHORTCUTS_PATHS[$key]}" | _denixify_escape
+            _num_printed=$(( $_num_printed + 1 ))
+        else
+            _num_skipped=$(( $_num_skipped + 1 ))
+        fi
+    done
+    if [ $_num_skipped -gt 0 ]; then
+        echo -en "\n\e[93;2monly shortcuts within $_ENTRYPOINT_ENV_DIR are shown.\nto show $_num_skipped more, use\e[0m" "\e[96mshortcuts-all\e[0m\n\n"
+    fi
+}
+
+function shortcuts-all() {
+    shortcuts --all
 }
 
 function ensure-usercache() {

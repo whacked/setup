@@ -3,9 +3,11 @@
 let
   pkgs = import <nixpkgs> {};
   getEnvSet = envOrPath: (
-    if (builtins.typeOf envOrPath) == "set" then envOrPath else (
+    if (builtins.typeOf envOrPath) == "set" then
+      envOrPath
+    else if (builtins.typeOf envOrPath) == "path" then (
       import envOrPath
-    )
+    ) else {}
   );
   composeEnvs = envs: (
     /*
@@ -61,6 +63,7 @@ let
   };
 in {
   composeEnvs = composeEnvs;
+  getEnvSet = getEnvSet;
   mkShell = deps: env: helpers.mkShell (
     helpers.composeEnvs (deps ++ [
       env
