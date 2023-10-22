@@ -34,7 +34,7 @@ let
           buildInputs = [
           ] ++ (lhsEnv.buildInputs or []) ++ (rhsEnv.buildInputs or []);
           nativeBuildInputs = [
-            ~/setup/bash/nix_shortcuts.sh  # provides echo-shortcuts
+            ~/setup/bash/nix_shortcuts.nix.sh  # provides echo-shortcuts
           ] ++ (
             # ref https://discourse.nixos.org/t/debug-a-nix-expression-with-debug-trace-statements/691
             lhsEnv.nativeBuildInputs or []
@@ -56,7 +56,7 @@ let
   helpers = {
     composeEnvs = composeEnvs;
     mkShell = env: pkgs.mkShell (helpers.composeEnvs [
-      ~/setup/bash/jsonnet_shortcuts.sh
+      ~/setup/bash/jsonnet_shortcuts.nix.sh
       ~/setup/bash/package-jsonnet-composition.nix.sh
       env
     ]);
