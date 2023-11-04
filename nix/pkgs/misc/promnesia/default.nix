@@ -66,7 +66,7 @@ in stdenv.mkDerivation rec {
     python310Packages_promnesia
   ] ++ python310Packages_promnesia.buildInputs;  # join lists with ++
   nativeBuildInputs = [
-    ~/setup/bash/nix_shortcuts.sh
+    ~/setup/bash/nix_shortcuts.nix.sh
   ];
   shellHook = ''
     alias demo='promnesia demo'
