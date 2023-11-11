@@ -1,12 +1,14 @@
 activate-node-env() {
     if [ -e yarn.lock ]; then
         PM=yarn
+        export PATH=$($PM bin):$PATH
     elif [ -e pnpm-lock.yaml ]; then
         PM=pnpm
+        export PATH=$($PM bin):$PATH
     else
         PM=npm
+        export PATH=$(npm prefix)/node_modules/.bin:$PATH
     fi
-    export PATH=$($PM bin):$PATH
     if ! [ -e node_modules ]; then
         if [ -e package.json ]; then
             $PM install
