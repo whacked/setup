@@ -14,7 +14,7 @@
 # the declared dependencies
 # 
 # TO USE:
-#   let nixShortcutsPath = path/to/nix_shortcuts.sh;
+#   let nixShortcutsPath = path/to/nix_shortcuts.nix.sh;
 #   let nixShortcuts = (import nixShortcutsPath);
 # THEN:
 # buildInputs = [ ... ] ++ nixShortcuts.buildInputs;
@@ -196,7 +196,7 @@ in stdenv.mkDerivation rec {
     lorri
   ];  # join lists with ++
   nativeBuildInputs = [
-    ~/setup/bash/nix_shortcuts.sh
+    ~/setup/bash/nix_shortcuts.nix.sh
   ];
   shellHook = $II
     eval "\$(direnv hook bash)"
@@ -225,7 +225,7 @@ in helpers.mkShell [
   ];  # join lists with ++
 
   nativeBuildInputs = [
-    ~/setup/bash/nix_shortcuts.sh
+    ~/setup/bash/nix_shortcuts.nix.sh
   ];
 
   shellHook = $II
