@@ -38,7 +38,10 @@ let
       in
         rhsEnv // {
           buildInputs = []
-          ++ (lhsEnv.buildInputs or []) ++ (rhsEnv.buildInputs or []);
+          # reverse the inclusion order of buildInputs because
+          # higher precedence in PATH is given to earlier packages;
+          # this means the later envs (RHS) need to come first
+          ++ (rhsEnv.buildInputs or []) ++ (lhsEnv.buildInputs or []);
           nativeBuildInputs = []
           ++ (
             # ref https://discourse.nixos.org/t/debug-a-nix-expression-with-debug-trace-statements/691
