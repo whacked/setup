@@ -8,7 +8,7 @@ function _read_gitignore_source() {
 function generate-gitignore() {
     LOCAL_GITIGNORE_FILE=.gitignore.local
     touch .gitignore
-    existing_sources=($(cat .gitignore | grep '^#\+ src: ' | sort -u | sed -e 's|^#\+ src: ||'))
+    existing_sources=($(cat .gitignore | grep '^#\+ src: ' | sort -u | sed -E 's|^#+ src: ||'))
     echo $existing_sources
     \rm .gitignore
     echo '### AUTO-POPULATED. DO NOT EDIT' > .gitignore
