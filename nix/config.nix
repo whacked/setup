@@ -1,6 +1,8 @@
 # ~/.nixpkgs/config.nix
 with import <nixpkgs> {};
-{
+
+let
+in {
   includeDefaultPackages = (import ./util.nix)
   ++ (if stdenv.isLinux then (
     []
@@ -15,7 +17,6 @@ with import <nixpkgs> {};
     ++ [
       (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
       (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
-      (callPackage (import ./pkgs/development/tools/gitwatch/default.nix) {})
       (callPackage (import ./pkgs/development/tools/jet/default.nix) {})
       (callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
     ])

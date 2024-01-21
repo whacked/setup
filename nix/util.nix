@@ -1,8 +1,23 @@
 with import <nixpkgs> {};
 let
   vim = (vim_configurable.override {
-    python = python3; # remove for remote
+    python3 = python3; # remove for remote
   });
+  gitwatchSrc = pkgs.fetchFromGitHub {
+    owner = "gitwatch";
+    repo = "gitwatch";
+    rev = "master";  # or a specific commit or tag
+    hash = "sha256-K0UpyJJQD385too1IAdLPA84Rk3EY6QM+ndE7naQNVA=";  # Replace with the correct SHA256
+  };
+
+  gitwatch = import "${gitwatchSrc}/gitwatch.nix" {
+    runCommandNoCC = pkgs.runCommandNoCC;
+    lib = pkgs.lib;
+    makeWrapper = pkgs.makeWrapper;
+    git = pkgs.git;
+    openssh = pkgs.openssh;
+    inotify-tools = pkgs.inotify-tools;
+  };
 in
 [
     ansible
@@ -34,6 +49,7 @@ in
     git
     gitAndTools.diff-so-fancy
     gitAndTools.gitui
+    gitwatch
     glances
     gnumake
     grc
