@@ -13,7 +13,9 @@ with import <nixpkgs> {};
     ## order is important :-(
     # cabal install alex happy c2hs
     alsaLib
-    xlibsWrapper
+    # error: 'xlibsWrapper' has been replaced by its constituents
+    # but this most likely is needed somewhere; keeping for reference
+    # xlibsWrapper
     pkgconfig
     xorg.libXext
     xorg.libXrandr
