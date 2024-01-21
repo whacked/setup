@@ -46,7 +46,9 @@ in
     ffmpeg
     file
     findutils
+    fzf
     git
+    git-lfs
     gitAndTools.diff-so-fancy
     gitAndTools.gitui
     gitwatch
@@ -57,9 +59,12 @@ in
     httpie
     icdiff
     imagemagick
+    jiq
     jq
     jsonnet
+    just
     keychain
+    lazygit
     libtool
     lsd
     mc
@@ -102,6 +107,7 @@ in
     which
     # wuzz  # broken at 2023-02-06 14:00:33+08:00
     yq-go
+    zoxide
     zsh
 ] ++ (
   if stdenv.isLinux then [

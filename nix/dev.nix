@@ -13,30 +13,33 @@ in
 [
     R
     babashka
-    cairo
-    cmake
-    gcc
+    delta
+    dos2unix
     go
-    hy
-    jdk11
     leiningen
     libpng
+    lorri
+    maven
+    niv
+    nodejs
+    python3
+    python3Packages.ipython
+    watchexec
+    zlib
+] ++ (if stdenv.isLinux then [
+    cairo
+    cargo
+    cmake
+    gcc
+    hy
+    jdk11
     # contains a newer version of libvterm
     # in particular, the base "libvterm" cannot build vterm for emacs
     libvterm-neovim
-    lorri
-    maven
     meld
-    nodejs
     poppler
-
-    python3Full
-    python39Packages.ipython
-
-    swftools
-    dos2unix
-    cargo
     rustc
-    watchexec
-    zlib
-]
+    swftools
+] else if stdenv.isDarwin then [
+] else [
+])
