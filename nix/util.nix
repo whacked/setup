@@ -40,7 +40,6 @@ in
     dos2unix
     emacs
     expect
-    fasd
     fd
     fdupes
     ffmpeg
