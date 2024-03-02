@@ -1,0 +1,6 @@
+- name: ensure /opt is writable by pi
+  file:
+    path: /opt
+    owner: pi
+    group: pi
+    state: directory
