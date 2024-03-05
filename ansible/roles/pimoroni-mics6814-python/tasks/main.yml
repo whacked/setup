@@ -1,0 +1,20 @@
+- stat:
+    path: "{{ install_dir }}"
+  register: mics6814
+
+- name: install i2c-tools
+  shell: sudo apt-get install i2c-tools
+  
+- name: enable i2c
+  shell: sudo raspi-config nonint do_i2c 0
+  
+- when: mics6814.stat.exists == False
+  become: true
+  become_user: pi
+  block: 
+
+  # get examples
+  - git:
+      repo: https://github.com/pimoroni/mics6814-python
+      dest: "{{ install_dir }}"
+  

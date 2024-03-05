@@ -1,0 +1,46 @@
+- stat:
+    path: "{{ luma_oled_dir }}"
+  register: luma_oled
+
+- when: luma_oled.stat.exists == False
+  name: install luma
+  block: 
+  - name: download luma installer
+    git:
+      repo: https://github.com/rm-hull/luma.oled.git
+      dest: "{{ luma_oled_dir }}"
+
+  - name: install luma dependencies
+    shell: sudo apt-get install -y libjpeg-dev
+
+  - name: update pip
+    shell: sudo pip3 install --force-reinstall Pillow cbor==5.1.2  # for python 3.7 compat
+
+  - name: install luma
+    shell: sudo python3 setup.py install
+    args:
+      chdir: "{{ install_dir }}"
+
+- stat:
+    path: "{{ install_dir }}"
+  register: rmhull
+
+- when: rmhull.stat.exists == False
+  become: true
+  become_user: pi
+  block: 
+
+  - name: get examples
+    git:
+      repo: https://github.com/rm-hull/luma.examples
+      dest: "{{ install_dir }}"
+  
+
+# test
+#  With the SPI version, you can run an example like so:
+#  python3 bounce.py \
+#    --display sh1106 \
+#    --height 128 \
+#    --rotate 2 \
+#    --interface spi \
+#    --gpio-data-command 9 (add --spi-device 0 for the back slot, or --spi-device 1 for the front slot)
