@@ -1,5 +1,5 @@
 - stat:
-    path: "/opt/plantgateway"
+    path: "{{ install_dir }}"
   register: plantgateway
 
 - when: plantgateway.stat.exists == False
@@ -9,17 +9,17 @@
 
   - git:
       repo: https://github.com/ChristianKuehnel/plantgateway
-      dest: "/opt/plantgateway"
+      dest: "{{ install_dir }}"
   
   - name: create venv
     shell: python3 -m venv venv
     args:
-      chdir: "/opt/plantgateway"
+      chdir: "{{ install_dir }}"
   
   - name: install requirements
     shell: ./venv/bin/pip install -r requirements.txt
     args:
-      chdir: "/opt/plantgateway"
+      chdir: "{{ install_dir }}"
   
   - name: add cron job for plantgateway exists for user pi
     ansible.builtin.cron:
@@ -35,5 +35,5 @@
     - typing-extensions  # needed for python <3.8
     - paho-mqtt==1.6.1   # fixes "Unsupported callback API version, from installing the default version == 2.0.0 as of this commit"
     args:
-      chdir: "/opt/plantgateway"
+      chdir: "{{ install_dir }}"
   
