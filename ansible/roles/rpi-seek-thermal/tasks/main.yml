@@ -1,18 +1,15 @@
-- shell: pip install "{{ item }}"
-  with_items:
-  - pyusb
-  become: true
 
 - package:
     name: "{{ item }}"
     state: latest
   with_items:
-    - python-libusb1
-    - python-opencv
-    - python-numpy
-    - python-scipy
-    - python-matplotlib
-    - python-imaging-tk
+    - python3-usb
+    - python3-libusb1
+    - python3-opencv
+    - python3-numpy
+    - python3-scipy
+    - python3-matplotlib
+    - python3-pil.imagetk
     - imagemagick
     - cmake
     - libboost-program-options-dev
