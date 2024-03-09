@@ -1,3 +1,4 @@
 build_path: /opt/enviroplus-python
 install_path: /home/pi/Pimoroni
 getdata_path: "{{ build_path }}/getdata.py"
+breakout_garden_path: /opt/breakout-garden

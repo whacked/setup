@@ -2,6 +2,10 @@
     path: "{{ install_path }}"
   register: enviroplus
 
+- stat:
+    path: "{{ breakout_garden_path }}"
+  register: breakout_garden
+
 - file:
     path: "{{ build_path }}"
     owner: pi
@@ -9,7 +13,7 @@
     state: directory
 
 - when: enviroplus.stat.exists == False
-  become: yes
+  become: true
   become_user: pi
   block: 
 
@@ -35,3 +39,18 @@
     hour: "*/4"
     user: pi
     job: "cd /home/pi/Desktop; python {{ getdata_path }}"
+
+- when: true #breakout_garden.stat.exists == False
+  become: true
+  become_user: pi
+  block: 
+
+  - git:
+      repo: https://github.com/pimoroni/breakout-garden
+      dest: "{{ breakout_garden_path }}"
+  
+# - shell: sudo FORCE='-y' ./install.sh
+#   args:
+#     chdir: "{{ breakout_garden_path }}"
+
+
