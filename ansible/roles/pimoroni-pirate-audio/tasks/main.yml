@@ -1,0 +1,40 @@
+- name: Create backup of /boot/config.txt
+  ansible.builtin.command:
+    cmd: cp /boot/config.txt "/boot/config.txt.backup.{{ ansible_date_time.iso8601_basic_short }}"
+  args:
+    creates: "/boot/config.txt.backup.{{ ansible_date_time.iso8601_basic_short }}"
+  register: backup_result
+
+- name: Add lines to /boot/config.txt
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /boot/config.txt
+    line: "{{ item }}"
+    create: yes
+  loop:
+    - "dtoverlay=hifiberry-dac"
+    - "gpio=25=op,dh"
+
+- name: enable spi
+  shell: sudo raspi-config nonint do_spi 0
+  
+- name: install dependencies
+  shell: sudo apt-get install -y python3-rpi.gpio python3-spidev python3-pil python3-numpy
+
+- name: install dependencies
+  shell: sudo pip3 install st7789
+  
+- stat:
+    path: "{{ install_dir }}"
+  register: install
+
+- when: install.stat.exists == False
+  become: true
+  become_user: pi
+  block: 
+
+  # get examples
+  - git:
+      repo: https://github.com/pimoroni/pirate-audio
+      dest: "{{ install_dir }}"
+

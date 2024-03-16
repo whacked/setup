@@ -18,3 +18,40 @@
       repo: https://github.com/pimoroni/mics6814-python
       dest: "{{ install_dir }}"
   
+- block:
+  - name: Create a virtual environment in /opt/mics6814-python/.venv
+    ansible.builtin.shell:
+      cmd: python3 -m venv /opt/mics6814-python/.venv
+      creates: "{{ install_dir }}/.venv"
+  
+  - name: Install mics6814 package + deps in the virtual environment
+    ansible.builtin.shell:
+      cmd: "{{ install_dir }}/.venv/bin/pip install pimoroni-mics6814 psutil smbus2 paho-mqtt==1.6.1"
+  
+  - name: Copy main.py and Makefile to install dir
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "{{ install_dir }}"
+      owner: pi
+      group: pi
+    loop:
+      - main.py
+  
+  - name: Copy mics6814-monitor.service to /etc/systemd/system/
+    ansible.builtin.copy:
+      src: mics6814-monitor.service
+      dest: /etc/systemd/system/mics6814-monitor.service
+      owner: root
+      group: root
+      mode: '0644'
+  
+  - name: Reload systemd daemon
+    ansible.builtin.systemd:
+      daemon_reload: yes
+  
+  #- name: Enable and start mics6814-monitor.service
+  #  ansible.builtin.systemd:
+  #    name: mics6814-monitor.service
+  #    enabled: yes
+  #    state: started
+  #
