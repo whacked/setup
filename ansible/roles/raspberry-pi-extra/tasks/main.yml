@@ -1,0 +1,39 @@
+- name: install veracrypt
+  block:
+
+  - name: install veracrypt dependencies
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      # this wasn't a smooth one-shot install;
+      # i had to first run apt-get install --fix-broken
+      - pcscd
+
+  - name: download installer
+    get_url:
+      url: https://launchpad.net/veracrypt/trunk/1.26.7/+download/veracrypt-console-1.26.7-Debian-11-arm64.deb
+      dest: /tmp/veracrypt-installer.deb
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  
+  - name: install the deb package
+    shell: sudo dpkg -i ./veracrypt-installer.deb
+    args:
+      chdir: "/tmp"
+
+- name: install resilio sync
+  block:
+
+  - name: download installer
+    get_url:
+      url: https://download-cdn.resilio.com/2.7.3.1381/Debian/resilio-sync_2.7.3.1381-1_arm64.deb
+      dest: /tmp/resilio-installer.deb
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  
+  - name: install the deb package
+    shell: sudo dpkg -i ./resilio-installer.deb
+    args:
+      chdir: "/tmp"
+
