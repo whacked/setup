@@ -11,9 +11,9 @@
 (def formatter (DateTimeFormatter/ofPattern "yyyy-MM-dd HH:mm:ss.SSSXXXXX"))
 
 
-(defn timestamp-string []
+(defn timestamp-string ^String []
   ;; => "2020-07-18 18:04:04"
   (.format (ZonedDateTime/now) formatter))
 
-(defn ->html [hiccup]
+(defn ->html ^String [^objects hiccup]
   (str (h/html {:escape-strings? false} hiccup)))
