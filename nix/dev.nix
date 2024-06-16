@@ -31,6 +31,7 @@ in
     cargo
     cmake
     gcc
+    gnuplot
     hy
     jdk11
     # contains a newer version of libvterm
