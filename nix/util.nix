@@ -7,7 +7,7 @@ let
     owner = "gitwatch";
     repo = "gitwatch";
     rev = "master";  # or a specific commit or tag
-    hash = "sha256-K0UpyJJQD385too1IAdLPA84Rk3EY6QM+ndE7naQNVA=";  # Replace with the correct SHA256
+    hash = "sha256-Kw2Qc9LCRNd0jc6XjjhluAsk6f4q9KwYSyW5CSR7FMQ=";  # Replace with the correct SHA256
   };
 
   gitwatch = import "${gitwatchSrc}/gitwatch.nix" {
