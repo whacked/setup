@@ -16,7 +16,7 @@ with import <nixpkgs> {};
     # error: 'xlibsWrapper' has been replaced by its constituents
     # but this most likely is needed somewhere; keeping for reference
     # xlibsWrapper
-    pkgconfig
+    pkg-config
     xorg.libXext
     xorg.libXrandr
     xorg.libXinerama

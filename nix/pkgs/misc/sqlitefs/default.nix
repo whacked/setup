@@ -7,12 +7,12 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     pkgs.fuse
-    pkgs.pkgconfig
+    pkgs.pkg-config
   ];  # join lists with ++
 
   nativeBuildInputs = [
     pkgs.fuse
-    pkgs.pkgconfig
+    pkgs.pkg-config
   ];
 
   src = pkgs.fetchFromGitHub {
