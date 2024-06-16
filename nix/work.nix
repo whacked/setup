@@ -23,7 +23,8 @@ with import <nixpkgs> {};
     remmina
     sc-im
     scrot
-    sqliteman
+    # sqliteman  # removed in https://github.com/NixOS/nixpkgs/pull/174634 :-(((
+    sqlitebrowser  # sqliteman conceptual successor, 3x slower :-(((
     supercollider
     terminator
     thunderbird
