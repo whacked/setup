@@ -38,6 +38,7 @@ with pkgs; [
     direnv
     dnsutils
     dos2unix
+    dua
     emacs
     expect
     fd
@@ -50,7 +51,6 @@ with pkgs; [
     git-lfs
     gitAndTools.diff-so-fancy
     gitAndTools.gitui
-    gitwatch
     glances
     gnumake
     grc
@@ -71,13 +71,13 @@ with pkgs; [
     moreutils
     mosh
     navi
-    ncdu
+    # ncdu  # use dua for now; zig failing on macos
     netcat
     nettools
     nix-index
     nmap
     nnn
-    oh-my-zsh
+    # oh-my-zsh  # handoff to home-manager?
     # pdfdiff  # now marked insecure
     pigz
     procs
@@ -107,11 +107,12 @@ with pkgs; [
     # wuzz  # broken at 2023-02-06 14:00:33+08:00
     yq-go
     zoxide
-    zsh
+    # zsh  # handoff to system/home-manager?
 ] ++ (
   if stdenv.isLinux then [
     atop
     btop
+    gitwatch
     glibcLocales
     iotop
     iputils
