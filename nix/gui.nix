@@ -1,6 +1,6 @@
 # desktop
-with import <nixpkgs> {};
-[
+{ pkgs, ... }:
+with pkgs; [
     conky
     hack-font
     gnome3.eog

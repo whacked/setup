@@ -1,3 +1,4 @@
+{ pkgs, ... }:
 let
   pinned = builtins.fetchTarball {
     name = "nixpkgs-electron-3.0.5";
@@ -7,6 +8,6 @@ let
     # nix-prefetch-url --unpack $(cat electron.nix|grep 'url = '|tr -d ';'|awk '{print $NF}')
     sha256 = "0rziswwjspj6w6b2v61xbhl8l1csi33djc78jx0fwc15saj55hhz";
   };
-  pkgs = import pinned {};
+  pinnedPkgs = import pinned {};
 in
-  [ pkgs.electron ]
+  [ pinnedPkgs.electron ]

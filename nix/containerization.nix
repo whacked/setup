@@ -1,6 +1,7 @@
 # other
-with import <nixpkgs> {};
-[
+{ pkgs, ... }:
+
+with pkgs; [
     # containerization
     singularity
     # daemonless docker

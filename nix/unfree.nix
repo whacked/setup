@@ -1,8 +1,9 @@
-with import <nixpkgs> {};
-[
+{ pkgs, ... }:
+
+with pkgs; [
     vscode
 ] ++ (
-  if stdenv.isLinux then [
+  if pkgs.stdenv.isLinux then [
     google-chrome
     sublime3
     resilio-sync

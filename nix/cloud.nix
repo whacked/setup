@@ -1,6 +1,6 @@
 # cloud
-with import <nixpkgs> {};
-[
+{ pkgs, ... }:
+with pkgs; [
     awscli
     doctl
 ]

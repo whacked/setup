@@ -1,29 +1,29 @@
 # ~/.nixpkgs/config.nix
-with import <nixpkgs> {};
+{ pkgs, ... }:
 
 let
 in {
-  includeDefaultPackages = (import ./util.nix)
-  ++ (if stdenv.isLinux then (
+  includeDefaultPackages = (import ./util.nix) { inherit pkgs; }
+  ++ (if pkgs.stdenv.isLinux then (
     []
-    ++ (import ./dev.nix)
-    ++ (import ./cloud.nix)
-    ++ (import ./gui.nix)
-    ++ (import ./dev-heavy.nix)
-    ++ (import ./electron.nix)
-    ++ (import ./desktop.nix)
-    ++ (import ./work.nix)
-    ++ (import ./containerization.nix)
+    ++ (import ./dev.nix) { inherit pkgs; }
+    ++ (import ./cloud.nix) { inherit pkgs; }
+    ++ (import ./gui.nix) { inherit pkgs; }
+    ++ (import ./dev-heavy.nix) { inherit pkgs; }
+    ++ (import ./electron.nix) { inherit pkgs; }
+    ++ (import ./desktop.nix) { inherit pkgs; }
+    ++ (import ./work.nix) { inherit pkgs; }
+    ++ (import ./containerization.nix) { inherit pkgs; }
     ++ [
-      (callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
-      (callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
-      (callPackage (import ./pkgs/development/tools/jet/default.nix) {})
-      (callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
+      (pkgs.callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
+      (pkgs.callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
+      (pkgs.callPackage (import ./pkgs/development/tools/jet/default.nix) {})
+      (pkgs.callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
     ])
     else
     [
     ]);
-  includeUnfreePackages = (import ./unfree.nix)
+  includeUnfreePackages = (import ./unfree.nix) { inherit pkgs; }
                           ;
   packageOverrides = defaultPkgs: with defaultPkgs; {
     # To install below "pseudo-package", run:

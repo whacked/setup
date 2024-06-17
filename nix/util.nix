@@ -1,7 +1,7 @@
-with import <nixpkgs> {};
+{ pkgs, ... }:
 let
-  vim = (vim_configurable.override {
-    python3 = python3; # remove for remote
+  vim = (pkgs.vim_configurable.override {
+    python3 = pkgs.python3; # remove for remote
   });
   gitwatchSrc = pkgs.fetchFromGitHub {
     owner = "gitwatch";
@@ -19,7 +19,7 @@ let
     inotify-tools = pkgs.inotify-tools;
   };
 in
-[
+with pkgs; [
     ansible
     ansifilter
     autoconf

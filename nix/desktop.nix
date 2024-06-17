@@ -1,5 +1,6 @@
-with import <nixpkgs> {};
-[
+{ pkgs, ... }:
+
+with pkgs; [
     # fixes Gtk-WARNING "Locale not supported by C library"
     glibcLocales
 

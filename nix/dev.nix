@@ -1,8 +1,8 @@
 # dev
-with import <nixpkgs> {};
+{ pkgs, ... }:
 
 let
-  pinnedNixPkgs = import (fetchFromGitHub {
+  pinnedNixPkgs = import (pkgs.fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
     rev = "8c5d37129fc5097d9fb52e95fb07de75392d1c3c";
@@ -10,7 +10,7 @@ let
   }) {};
   swftools = pinnedNixPkgs.swftools;
 in
-[
+with pkgs; [
     R
     babashka
     delta
@@ -26,7 +26,7 @@ in
     python3Packages.ipython
     watchexec
     zlib
-] ++ (if stdenv.isLinux then [
+] ++ (if pkgs.stdenv.isLinux then [
     cairo
     cargo
     cmake
@@ -41,6 +41,6 @@ in
     poppler
     rustc
     swftools
-] else if stdenv.isDarwin then [
+] else if pkgs.stdenv.isDarwin then [
 ] else [
 ])
