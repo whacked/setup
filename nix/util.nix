@@ -101,6 +101,7 @@ with pkgs; [
     ttyplot
     unzip
     vim
+    watchexec
     websocat
     wget
     which
