@@ -6,53 +6,66 @@ let
   # 2023-05-20
   #   for older revision including pinned upstream packages building hug internally,
   #   see rev e8e2a06c84783017d49e4fdc3fdb54c5d88e35a5
+  # 2024-06-19
+  #   new setting required to make this run:
+  #   pyproject = true;  # money line! false makes the thing build, and not run!
 
-  python310Packages_cachew = pkgs.python310.pkgs.buildPythonPackage rec {
+  python3Packages_cachew = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "cachew";
     version = "0.11.0";
-    src = pkgs.python310.pkgs.fetchPypi {
+    src = pkgs.python3.pkgs.fetchPypi {
       inherit pname version;
       sha256 = "4qjgvffInKRpKST9xbwwC2+m8h3ups0ZePyJLUU+KhA=";
     };
 
     buildInputs = [
-      pkgs.python310Packages.appdirs
-      pkgs.python310Packages.setuptools-scm
-      pkgs.python310Packages.sqlalchemy
-      pkgs.python310Packages.urlextract
+      pkgs.python3Packages.appdirs
+      pkgs.python3Packages.setuptools-scm
+      pkgs.python3Packages.sqlalchemy
+      pkgs.python3Packages.urlextract
     ];
   };
-  python310Packages_promnesia = pkgs.python310.pkgs.buildPythonPackage rec {
+  python3Packages_promnesia = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "promnesia";
     version = "1.2.20230515";
-    src = pkgs.python310.pkgs.fetchPypi {
+    pyproject = true;
+
+    src = pkgs.python3.pkgs.fetchPypi {
       inherit pname version;
       sha256 = "JmcHEnhrMXyUAV5JH4m50xN7rctCYd1qAH+yE042cSA=";
     };
 
+    # for reference; this does exactly the same thing as the pip install;
+    # even the rev tag is identical
+    # src = pkgs.fetchFromGitHub {
+    #    owner = "karlicoss";
+    #    repo = "promnesia";
+    #    rev = "v1.2.20230515";
+    #    hash = "sha256-m+H47FyaRslROPAKCpjA9t8kI3qVBoqDKBFkPnDOTCk=";
+    # };
+
     buildInputs = [
       sqlitebrowser
-      pkgs.python310Packages.appdirs
-      pkgs.python310Packages.beautifulsoup4
-      pkgs.python310Packages.fastapi
-      pkgs.python310Packages.httptools
-      pkgs.python310Packages.logzero
-      pkgs.python310Packages.lxml
-      pkgs.python310Packages.mistletoe
-      pkgs.python310Packages.more-itertools
-      pkgs.python310Packages.python-dotenv
-      pkgs.python310Packages.pytz
-      pkgs.python310Packages.setuptools
-      pkgs.python310Packages.setuptools-scm
-      pkgs.python310Packages.sqlalchemy
-      pkgs.python310Packages.tzlocal
-      pkgs.python310Packages.urlextract
-      pkgs.python310Packages.uvicorn
-      pkgs.python310Packages.uvloop
-      pkgs.python310Packages.watchfiles
-      pkgs.python310Packages.watchfiles
-      pkgs.python310Packages.websockets
-      python310Packages_cachew
+      pkgs.python3Packages.appdirs
+      pkgs.python3Packages.beautifulsoup4
+      pkgs.python3Packages.fastapi
+      pkgs.python3Packages.httptools
+      pkgs.python3Packages.logzero
+      pkgs.python3Packages.lxml
+      pkgs.python3Packages.mistletoe
+      pkgs.python3Packages.more-itertools
+      pkgs.python3Packages.python-dotenv
+      pkgs.python3Packages.pytz
+      pkgs.python3Packages.setuptools
+      pkgs.python3Packages.setuptools-scm
+      pkgs.python3Packages.sqlalchemy
+      pkgs.python3Packages.tzlocal
+      pkgs.python3Packages.urlextract
+      pkgs.python3Packages.uvicorn
+      pkgs.python3Packages.uvloop
+      pkgs.python3Packages.watchfiles
+      pkgs.python3Packages.websockets
+      python3Packages_cachew
     ];
   };
 in stdenv.mkDerivation rec {
@@ -62,9 +75,9 @@ in stdenv.mkDerivation rec {
     paths = buildInputs;
   };
   buildInputs = [
-    python310
-    python310Packages_promnesia
-  ] ++ python310Packages_promnesia.buildInputs;  # join lists with ++
+    python3
+    python3Packages_promnesia
+  ] ++ python3Packages_promnesia.buildInputs;  # join lists with ++
   nativeBuildInputs = [
     ~/setup/bash/nix_shortcuts.nix.sh
   ];
