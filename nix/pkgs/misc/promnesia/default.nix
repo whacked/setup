@@ -10,6 +10,40 @@ let
   #   new setting required to make this run:
   #   pyproject = true;  # money line! false makes the thing build, and not run!
 
+  custom_python3Packages = pkgs.python3Packages.override {
+    overrides = self: super: {
+      pydantic = super.pydantic.overrideAttrs (oldAttrs: rec {
+        version = "1.10.16";
+        pyproject = false;
+        src = self.fetchPypi {
+          pname = "pydantic";
+          inherit version;
+          hash = "sha256-i7OI9iRICa9p7jhJALELZ3pp8ZgP3GVepBlxDP/LVhA=";
+        };
+        patches = [];
+        propagatedBuildInputs = [
+          pkgs.python3Packages.poetry-core
+          pkgs.python3Packages.setuptools
+          pkgs.python3Packages.typing-extensions
+        ];
+        # Disable tests and other non-essential phases if they are problematic
+        doCheck = false;
+        doInstallCheck = false;
+        pythonRemoveTestsDir = false;
+        pythonCatchConflicts = false;
+        pythonRemoveBinBytecodePhase = false;
+        # Specifically ensure no pytest phase is executed
+        pytestCheckPhase = null;
+      });
+    };
+  };
+
+  custom_fastApi = custom_python3Packages.fastapi.overrideAttrs (oldAttrs: {
+    propagatedBuildInputs = (oldAttrs.propagatedBuildInputs or []) ++ [
+      custom_python3Packages.pydantic
+    ];
+  });
+
   python3Packages_cachew = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "cachew";
     version = "0.11.0";
@@ -25,6 +59,7 @@ let
       pkgs.python3Packages.urlextract
     ];
   };
+
   python3Packages_promnesia = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "promnesia";
     version = "1.2.20230515";
@@ -47,8 +82,8 @@ let
     buildInputs = [
       sqlitebrowser
       pkgs.python3Packages.appdirs
+      pkgs.python3Packages.pipdeptree
       pkgs.python3Packages.beautifulsoup4
-      pkgs.python3Packages.fastapi
       pkgs.python3Packages.httptools
       pkgs.python3Packages.logzero
       pkgs.python3Packages.lxml
@@ -66,6 +101,7 @@ let
       pkgs.python3Packages.watchfiles
       pkgs.python3Packages.websockets
       python3Packages_cachew
+      custom_fastApi
     ];
   };
 in stdenv.mkDerivation rec {
