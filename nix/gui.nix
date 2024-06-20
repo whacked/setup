@@ -23,6 +23,7 @@ with pkgs; [
     tilix
     veracrypt
     vlc
+    wezterm
     xclip
     xsel
 ]
