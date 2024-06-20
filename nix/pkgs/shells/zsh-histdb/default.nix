@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
   src = fetchgit {
     url="https://github.com/larkery/zsh-histdb";
     rev="refs/heads/master";
-    sha256="1f7xz4ykbdhmjwzcc3yakxwjb0bkn2zlm8lmk6mbdy9kr4bha0ix";
+    hash="sha256-vtG1poaRVbfb/wKPChk1WpPgDq+7udLqLfYfLqap4Vg=";
   };
 
   installPhase = ''
