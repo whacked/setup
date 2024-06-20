@@ -20,6 +20,9 @@ in {
       (pkgs.callPackage (import ./pkgs/development/tools/jet/default.nix) {})
       (pkgs.callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
     ])
+    else if pkgs.stdenv.isDarwin then [
+    ]
+    ++ (import ./dev.nix) { inherit pkgs; }
     else
     [
     ]);
