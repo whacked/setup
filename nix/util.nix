@@ -34,7 +34,8 @@ with pkgs; [
     croc  # machine to machine secure file transfer
     crudini  # ini file CRUD
     curlie
-    difftastic
+    delta
+    # difftastic  # supersede by delta
     direnv
     dnsutils
     dos2unix
@@ -76,12 +77,12 @@ with pkgs; [
     nettools
     nix-index
     nmap
-    nnn
+    # nnn  # supercede with lf
     # oh-my-zsh  # handoff to home-manager?
     # pdfdiff  # now marked insecure
     pigz
     procs
-    ranger
+    # ranger  # supercede with lf
     rclone
     ripgrep
     rlwrap
@@ -107,6 +108,7 @@ with pkgs; [
     which
     # wuzz  # broken at 2023-02-06 14:00:33+08:00
     yq-go
+    zellij
     zoxide
     # zsh  # handoff to system/home-manager?
 ] ++ (
@@ -121,7 +123,7 @@ with pkgs; [
     nfs-utils
     pdftk
     sysstat  # provides sar
-    vifm
+    # vifm  # supercede with lf
     xdotool
   ] else [
 
