@@ -122,6 +122,7 @@ with pkgs; [
     kpcli
     nfs-utils
     pdftk
+    psmisc  # provides killall
     sysstat  # provides sar
     # vifm  # supercede with lf
     xdotool

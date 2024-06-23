@@ -103,6 +103,11 @@ in {
     packages = with pkgs; [
       fira-code
       fira-code-nerdfont
+
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+
     ];
   };
 
@@ -190,6 +195,16 @@ in {
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = false;
+
+  # ref https://discourse.nixos.org/t/japanese-input-in-2023-2024/37274/13
+  i18n.inputMethod = {
+    enabled = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-chewing
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
