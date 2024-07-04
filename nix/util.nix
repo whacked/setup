@@ -66,6 +66,7 @@ with pkgs; [
     keychain
     lazygit
     libtool
+    lf
     lsd
     mc
     mercurial
