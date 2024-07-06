@@ -129,7 +129,7 @@ in {
   services.xserver.xkb = {
     layout = "us";
     variant = "";
-    options = "ctrl:nocaps";
+    options = "ctrl:nocaps";  # set caps as ctrl
   };
 
   # Enable CUPS to print documents.
