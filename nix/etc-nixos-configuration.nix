@@ -26,8 +26,10 @@ in {
 
   boot.loader.grub.enableCryptodisk=true;
 
-  boot.initrd.luks.devices.${userConfig.luksDeviceId}.keyFile = "/crypto_keyfile.bin";
-  networking.hostName = "nixos"; # Define your hostname.
+  # boot.initrd.luks.devices.${userConfig.luksDeviceId}.keyFile = "/crypto_keyfile.bin";
+  boot.initrd.luks.devices.${userConfig.luksDeviceId}.device = "/dev/disk/by-uuid/" + (builtins.replaceStrings ["luks-"] [""] userConfig.luksDeviceId);
+
+  networking.hostName = userConfig.localHostName; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
