@@ -60,6 +60,7 @@ in {
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
+    dpi = 300;  # this affects the login screen ONLY
     desktopManager = {
       xterm.enable = false;
       xfce = {
@@ -69,6 +70,16 @@ in {
         enableXfwm = true;
       };
     };
+    # this affects the desktop environment (terminal, UI, status bar, conky)
+    displayManager.sessionCommands = ''
+      # disable screen blank and screen off
+      ${pkgs.xorg.xset}/bin/xset s off
+      ${pkgs.xorg.xset}/bin/xset s noblank
+      ${pkgs.xorg.xset}/bin/xset r rate 200 30
+      ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+      Xft.dpi: 160
+      EOF
+    '';
     windowManager = {
       i3 = {
         enable = true;
@@ -145,6 +156,16 @@ in {
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
+  };
+
+  environment.variables = {
+    GDK_SCALE = "1.5";      # affects sizing of GDK apps: firefox, thunar, etc
+    # GDK_DPI_SCALE = "0.6";
+    XCURSOR_SIZE = "64";  # makes mouse cursor bigger
+    # QT
+    # QT_SCALE_FACTOR="1.5";
+    # QT_AUTO_SCREEN_SCALE_FACTOR="0";
+    # QT_FONT_DPI="144";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
