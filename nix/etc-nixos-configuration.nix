@@ -117,6 +117,8 @@ in {
       fira-code
       fira-code-nerdfont
 
+      font-awesome
+
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
