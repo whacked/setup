@@ -25,8 +25,12 @@ with pkgs; [
     haskellPackages.cabal-install
     nerdfonts
 
-    rofi
+    arandr
+    autorandr
+    # handled by home-manager
+    # rofi
     shutter
+    xorg.xev
     xorg.xkbcomp
     xorg.xmodmap
     xorg.xmessage
