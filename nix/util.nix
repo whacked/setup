@@ -55,6 +55,7 @@ with pkgs; [
     glances
     gnumake
     grc
+    hashdeep
     htop
     httpie
     icdiff
@@ -121,10 +122,13 @@ with pkgs; [
     iotop
     iputils
     kpcli
+    lm_sensors
     nfs-utils
     pdftk
     psmisc  # provides killall
+    pulseaudio  # provides pactl
     sysstat  # provides sar
+    util-linux  # provides cal
     # vifm  # supercede with lf
     xdotool
   ] else [
