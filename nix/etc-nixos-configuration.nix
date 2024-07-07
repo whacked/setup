@@ -94,7 +94,7 @@ in {
     };
   };
   services.displayManager = {
-    defaultSession = "xfce+i3";
+    defaultSession = "xfce+i3";  # "none+i3";
   };
   # enable compositor
   services.picom = {
@@ -136,6 +136,8 @@ in {
     variant = "";
     options = "ctrl:nocaps";  # set caps as ctrl
   };
+
+  # services.xserver.videoDrivers = [ "intel" ];
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
