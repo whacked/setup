@@ -73,16 +73,17 @@ in {
         enableXfwm = true;
       };
     };
-    # this affects the desktop environment (terminal, UI, status bar, conky)
-    displayManager.sessionCommands = ''
-      # disable screen blank and screen off
-      ${pkgs.xorg.xset}/bin/xset s off
-      ${pkgs.xorg.xset}/bin/xset s noblank
-      ${pkgs.xorg.xset}/bin/xset r rate 200 30
-      ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
-      Xft.dpi: 160
-      EOF
-    '';
+    # deprecate? moved to home-manager
+    # # this affects the desktop environment (terminal, UI, status bar, conky)
+    # displayManager.sessionCommands = ''
+    #   # disable screen blank and screen off
+    #   ${pkgs.xorg.xset}/bin/xset s off
+    #   ${pkgs.xorg.xset}/bin/xset s noblank
+    #   ${pkgs.xorg.xset}/bin/xset r rate 200 30
+    #   ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+    #   Xft.dpi: 160
+    #   EOF
+    # '';
     windowManager = {
       i3 = {
         enable = true;
