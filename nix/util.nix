@@ -80,6 +80,7 @@ with pkgs; [
     nix-index
     nmap
     # nnn  # supercede with lf
+    neovim
     # oh-my-zsh  # handoff to home-manager?
     # pdfdiff  # now marked insecure
     pigz

@@ -24,6 +24,7 @@ with pkgs; [
     xorg.libXScrnSaver
     haskellPackages.cabal-install
     nerdfonts
+    neovim-qt
 
     arandr
     autorandr
