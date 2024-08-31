@@ -31,7 +31,7 @@ with pkgs; [
     broot
     bzip2
     coreutils
-    croc  # machine to machine secure file transfer
+    # croc  # no longer easy to use, back to wormhole
     crudini  # ini file CRUD
     curlie
     delta
@@ -69,6 +69,7 @@ with pkgs; [
     libtool
     lf
     lsd
+    magic-wormhole
     mc
     mercurial
     moreutils
