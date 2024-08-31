@@ -13,6 +13,7 @@ let
   veracrypt = pinnedNixPkgs.veracrypt;
 in
 with pkgs; [
+    baobab
     conky
     hack-font
     gnome3.eog
