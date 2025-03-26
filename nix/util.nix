@@ -111,7 +111,6 @@ with pkgs; [
     # zsh  # handoff to system/home-manager?
 ] ++ (
   if stdenv.isLinux then [
-    atop
     btop
     gitwatch
     glibcLocales
