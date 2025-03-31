@@ -56,6 +56,7 @@ with pkgs; [
     grc
     htop
     httpie
+    hwatch
     icdiff
     imagemagick
     jiq
@@ -72,6 +73,7 @@ with pkgs; [
     mosh
     navi
     # ncdu  # use dua for now; zig failing on macos
+    neovim
     netcat
     nettools
     nix-index
@@ -101,6 +103,7 @@ with pkgs; [
     ttyplot
     unzip
     vim
+    watch
     watchexec
     websocat
     wget
