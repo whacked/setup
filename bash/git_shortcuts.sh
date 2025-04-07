@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-function generate-gitignore() {
+function generate-gitignore() {  # e.g. "generate-gitignore Python Global/Vim" :: (re)generate gitignore using directives and .gitignore.local / .gitignore.custom
     USER_GITIGNORE_FILES=(".gitignore.custom" ".gitignore.local")
     touch .gitignore
     existing_sources=($(cat .gitignore | grep '^#\+ src:\+ h' | sort -u | sed -E 's|^#+ src: ||'))
