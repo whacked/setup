@@ -143,7 +143,12 @@ function ensure-usercache() {
 
 function ensure-venv() {
     _initializer=$1
-    export VIRTUAL_ENV=''${VIRTUAL_ENV-$USERCACHE/$name-venv}
+    if [ "$name" == "nix-shell" ]; then
+        _project_name=$(basename "$PWD")
+    else
+        _project_name="$name"
+    fi
+    export VIRTUAL_ENV=''${VIRTUAL_ENV-$USERCACHE/$_project_name-venv}
     if [ -e $VIRTUAL_ENV ]; then
         echo " - using existing virtualenv in $VIRTUAL_ENV..."
         _new_venv=false
