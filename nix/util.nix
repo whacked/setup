@@ -57,6 +57,7 @@ with pkgs; [
     htop
     httpie
     hwatch
+    hyperfine
     icdiff
     imagemagick
     jiq
