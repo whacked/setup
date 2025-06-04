@@ -149,7 +149,7 @@ function ensure-venv() {
         _project_name="$name"
     fi
     export VIRTUAL_ENV=''${VIRTUAL_ENV-$USERCACHE/$_project_name-venv}
-    if [ -e $VIRTUAL_ENV ]; then
+    if [ -e $VIRTUAL_ENV/bin/activate ]; then
         echo " - using existing virtualenv in $VIRTUAL_ENV..."
         _new_venv=false
     else
