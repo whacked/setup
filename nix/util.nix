@@ -22,6 +22,7 @@ in
 with pkgs; [
     ansible
     ansifilter
+    atuin
     autoconf
     automake
     bashplotlib
