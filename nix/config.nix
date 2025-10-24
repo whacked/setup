@@ -1,9 +1,9 @@
 # ~/.nixpkgs/config.nix
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 let
 in {
-  includeDefaultPackages = (import ./util.nix) { inherit pkgs; }
+  includeDefaultPackages = (import ./util.nix) { inherit pkgs inputs; }
   ++ (if pkgs.stdenv.isLinux then (
     []
     ++ (import ./dev.nix) { inherit pkgs; }
