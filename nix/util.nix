@@ -40,7 +40,7 @@ with pkgs; [
     dnsutils
     dos2unix
     dua
-    emacs
+    emacs30
     expect
     fd
     fdupes
@@ -127,8 +127,9 @@ with pkgs; [
     sysstat  # provides sar
     vifm
     xdotool
+  ] else if stdenv.isDarwin then [
+    pngpaste
   ] else [
-
   ]
 )
 
