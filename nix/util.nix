@@ -26,6 +26,7 @@ with pkgs; [
     autoconf
     automake
     bashplotlib
+    bash
     bat
     # bazaarTools  # deprecated
     binutils
