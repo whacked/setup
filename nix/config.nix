@@ -22,7 +22,10 @@ in {
     ])
     else
     [
-    ]);
+    ])
+  ++ [
+    (pkgs.callPackage (import ./pkgs/development/tools/ck/default.nix) {})
+  ];
   includeUnfreePackages = (import ./unfree.nix) { inherit pkgs; }
                           ;
   packageOverrides = defaultPkgs: with defaultPkgs; {
