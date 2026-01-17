@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  vim = (pkgs.vim_configurable.override {
+  vim = (pkgs.vim-full.override {
     python3 = pkgs.python3; # remove for remote
   });
   gitwatchSrc = pkgs.fetchFromGitHub {
@@ -51,8 +51,8 @@ with pkgs; [
     fzf
     git
     git-lfs
-    gitAndTools.diff-so-fancy
-    gitAndTools.gitui
+    diff-so-fancy
+    gitui
     glances
     gnumake
     grc
