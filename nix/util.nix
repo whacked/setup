@@ -49,6 +49,7 @@ with pkgs; [
     file
     findutils
     fzf
+    fx
     git
     git-lfs
     diff-so-fancy
@@ -71,6 +72,7 @@ with pkgs; [
     libtool
     lsd
     mc
+    mdfried
     mercurial
     moreutils
     mosh
