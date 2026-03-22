@@ -19,12 +19,13 @@ in {
       (pkgs.callPackage (import ./pkgs/development/tools/jet/default.nix) {})
       (pkgs.callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
     ])
+    else if pkgs.stdenv.isDarwin then
+    [
+      (pkgs.callPackage (import ./pkgs/development/tools/ck/default.nix) {})
+    ]
     else
     [
-    ])
-  ++ [
-    (pkgs.callPackage (import ./pkgs/development/tools/ck/default.nix) {})
-  ];
+    ]);
   includeUnfreePackages = (import ./unfree.nix) { inherit pkgs; }
                           ;
   packageOverrides = defaultPkgs: with defaultPkgs; {
