@@ -14,16 +14,16 @@ let
 in
 with pkgs; [
     conky
-    hack-font
-    gnome3.eog
-    graphviz
+    eog
     evince
     firefox
+    ghostty
     git-cola
+    graphviz
+    hack-font
     tilix
     veracrypt
     vlc
-    wezterm
     xclip
     xsel
 ]

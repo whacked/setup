@@ -8,7 +8,7 @@ let
   platforms = {
     "x86_64-linux" = {
       asset = "ck-${version}-x86_64-unknown-linux-gnu.tar.gz";
-      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; 
+      hash = "sha256-Bmt/PnRIYI4215JhWhfNwajszmXb2LURYhyVlNQ7jPE="; 
     };
     "aarch64-darwin" = {
       asset = "ck-${version}-aarch64-apple-darwin.tar.gz";

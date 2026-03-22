@@ -11,7 +11,7 @@ let
   };
 
   gitwatch = import "${gitwatchSrc}/gitwatch.nix" {
-    runCommandNoCC = pkgs.runCommandNoCC;
+    runCommandNoCC = pkgs.runCommand;
     lib = pkgs.lib;
     makeWrapper = pkgs.makeWrapper;
     git = pkgs.git;
