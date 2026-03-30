@@ -1,0 +1,63 @@
+# /etc/nix/user-config.nix — machine-specific configuration
+#
+# This file is NOT version-controlled. Copy this example to /etc/nix/user-config.nix
+# on each machine and fill in the values appropriate for that machine.
+#
+# Shared by both:
+#   - /etc/nixos/configuration.nix  (NixOS system config)
+#   - ~/setup/home-manager/home.nix (standalone home-manager)
+
+{
+  # ---------------------------------------------------------------------------
+  # User identity
+  # ---------------------------------------------------------------------------
+  username      = "someUser";
+  homeDirectory = "/home/someUser";   # optional — defaults to /home/${username}
+
+  # Path to the cloned setup repo on this machine.
+  # Must be cloned before running: sudo nixos-rebuild switch
+  setupPath = "/home/someUser/setup";
+
+  # ---------------------------------------------------------------------------
+  # System locale & timezone
+  # ---------------------------------------------------------------------------
+  locale   = "en_US.UTF-8";          # sets i18n.defaultLocale
+  timeZone = "Region/City";          # sets time.timeZone
+
+  # ---------------------------------------------------------------------------
+  # Hostname (optional)
+  # ---------------------------------------------------------------------------
+  # hostName = "something-box";
+
+  # ---------------------------------------------------------------------------
+  # Git — used by SSH key bootstrap (github.com/${git.userName}.keys)
+  #        and by home-manager for .gitconfig substitution
+  # ---------------------------------------------------------------------------
+  git = {
+    userName  = "someUser";
+    userEmail = "someUser@users.noreply.github.com";
+  };
+
+  # ---------------------------------------------------------------------------
+  # VPN services
+  # ---------------------------------------------------------------------------
+  tailscaleEnabled  = true;
+  wireguardEnabled  = false;
+
+  # ---------------------------------------------------------------------------
+  # Package modules — list the .nix files to include.
+  # Packages are installed at the system level (environment.systemPackages).
+  # home-manager will add user-level packages and dotfile management on top.
+  #
+  # util.nix is always included (base CLI utilities).
+  # ---------------------------------------------------------------------------
+  includePackages = [
+    "nix/dev.nix"             # Go, Python, Node, Rust, R, etc.
+    "nix/cloud.nix"           # AWS CLI, doctl, etc.
+    # "nix/gui.nix"           # xmonad, rofi, fonts, etc.
+    # "nix/desktop.nix"       # GNOME apps, veracrypt, wezterm, etc.
+    # "nix/work.nix"          # anki, calibre, chromium, inkscape, etc.
+    # "nix/containerization.nix"  # podman, buildah, skopeo, etc.
+    # "nix/unfree.nix"        # vscode, google-chrome, jetbrains IDEs, etc.
+  ];
+}
