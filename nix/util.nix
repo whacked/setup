@@ -7,11 +7,11 @@ let
     owner = "gitwatch";
     repo = "gitwatch";
     rev = "master";  # or a specific commit or tag
-    hash = "sha256-KREIAuUP7DQvlw1eLksfSQqBHpkKih53jtW3n3HDOSA=";  # updated 2026-03-19
+    hash = "sha256-Kw2Qc9LCRNd0jc6XjjhluAsk6f4q9KwYSyW5CSR7FMQ=";  # Replace with the correct SHA256
   };
 
   gitwatch = import "${gitwatchSrc}/gitwatch.nix" {
-    runCommandNoCC = pkgs.runCommand;
+    runCommandNoCC = pkgs.runCommandNoCC;
     lib = pkgs.lib;
     makeWrapper = pkgs.makeWrapper;
     git = pkgs.git;
@@ -26,22 +26,22 @@ with pkgs; [
     autoconf
     automake
     bashplotlib
-    bash
     bat
     # bazaarTools  # deprecated
     binutils
     broot
     bzip2
     coreutils
-    croc  # machine to machine secure file transfer
+    # croc  # no longer easy to use, back to wormhole
     crudini  # ini file CRUD
     curlie
-    difftastic
+    delta
+    # difftastic  # supersede by delta
     direnv
     dnsutils
     dos2unix
     dua
-    emacs30
+    emacs
     expect
     fd
     fdupes
@@ -49,18 +49,16 @@ with pkgs; [
     file
     findutils
     fzf
-    fx
     git
     git-lfs
-    diff-so-fancy
-    gitui
+    # gitAndTools.diff-so-fancy
+    # gitAndTools.gitui
     glances
     gnumake
     grc
+    hashdeep
     htop
     httpie
-    hwatch
-    hyperfine
     icdiff
     imagemagick
     jiq
@@ -70,25 +68,26 @@ with pkgs; [
     keychain
     lazygit
     libtool
+    lf
     lsd
+    magic-wormhole
     mc
-    mdfried
     mercurial
     moreutils
     mosh
     navi
     # ncdu  # use dua for now; zig failing on macos
-    neovim
     netcat
     nettools
     nix-index
     nmap
-    nnn
+    # nnn  # supercede with lf
+    neovim
     # oh-my-zsh  # handoff to home-manager?
     # pdfdiff  # now marked insecure
     pigz
     procs
-    ranger
+    # ranger  # supercede with lf
     rclone
     ripgrep
     rlwrap
@@ -105,34 +104,39 @@ with pkgs; [
     tmux
     tmux-xpanes
     tokei
+    tree
     ttyplot
     unzip
     vim
-    watch
     watchexec
     websocat
     wget
     which
     # wuzz  # broken at 2023-02-06 14:00:33+08:00
     yq-go
+    zellij
     zoxide
     # zsh  # handoff to system/home-manager?
 ] ++ (
   if stdenv.isLinux then [
+    atop
     btop
     gitwatch
     glibcLocales
     iotop
     iputils
     kpcli
+    lm_sensors
     nfs-utils
     pdftk
+    psmisc  # provides killall
+    pulseaudio  # provides pactl
     sysstat  # provides sar
-    vifm
+    util-linux  # provides cal
+    # vifm  # supercede with lf
     xdotool
-  ] else if stdenv.isDarwin then [
-    pngpaste
   ] else [
+
   ]
 )
 

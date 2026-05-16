@@ -18,23 +18,29 @@ with pkgs; [
     # but this most likely is needed somewhere; keeping for reference
     # xlibsWrapper
     pkg-config
-    libxext
-    libxrandr
-    libxinerama
-    libxscrnsaver
+    xorg.libXext
+    xorg.libXrandr
+    xorg.libXinerama
+    xorg.libXScrnSaver
     haskellPackages.cabal-install
-    nerd-fonts.hack
+    # separated into individual packages under nerd-fonts namespace
+    # nerdfonts
+    neovim-qt
 
-    rofi
+    arandr
+    autorandr
+    # handled by home-manager
+    # rofi
     shutter
-    xkbcomp
-    xmodmap
-    xmessage
+    xorg.xev
+    xorg.xkbcomp
+    xorg.xmodmap
+    xorg.xmessage
 
     acpi
-    nemo
+    # cinnamon.nemo
     wmctrl
-    thunar
+    xfce.thunar
 
     wl-clipboard
 ]

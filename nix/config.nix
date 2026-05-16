@@ -2,35 +2,30 @@
 { pkgs, inputs, ... }:
 
 let
-  lib        = pkgs.lib;
-  userConfig = import /etc/nix/user-config.nix;
-
-  tagMap = {
-    dev              = (import ./dev.nix)              { inherit pkgs; };
-    cloud            = (import ./cloud.nix)            { inherit pkgs; };
-    gui              = (import ./gui.nix)              { inherit pkgs; };
-    desktop          = (import ./desktop.nix)          { inherit pkgs; };
-    work             = (import ./work.nix)             { inherit pkgs; };
-    dev-heavy        = (import ./dev-heavy.nix)        { inherit pkgs; };
-    electron         = (import ./electron.nix)         { inherit pkgs; };
-    containerization = (import ./containerization.nix) { inherit pkgs; };
-    unfree           = (import ./unfree.nix)           { inherit pkgs; };
-    misc-utils       = [
+in {
+  includeDefaultPackages = (import ./util.nix) { inherit pkgs; }
+  ++ (if pkgs.stdenv.isLinux then (
+    []
+    ++ (import ./dev.nix) { inherit pkgs; inherit inputs; }
+    ++ (import ./cloud.nix) { inherit pkgs; }
+    ++ (import ./gui.nix) { inherit pkgs; }
+    ++ (import ./dev-heavy.nix) { inherit pkgs; }
+    ++ (import ./electron.nix) { inherit pkgs; }
+    ++ (import ./desktop.nix) { inherit pkgs; }
+    ++ (import ./work.nix) { inherit pkgs; }
+    ++ (import ./containerization.nix) { inherit pkgs; }
+    ++ [
+      (pkgs.callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
       (pkgs.callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
       (pkgs.callPackage (import ./pkgs/development/tools/jet/default.nix) {})
-      (pkgs.callPackage (import ./pkgs/development/tools/ck/default.nix) {})
       (pkgs.callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
-    ];
-  };
-
-  unknownTags = builtins.filter (tag: !(tagMap ? ${tag})) (userConfig.tags or []);
-  taggedPkgs  = if unknownTags != []
-    then builtins.throw "Unknown tags in user-config: ${lib.concatStringsSep ", " unknownTags}"
-    else lib.concatMap (tag: tagMap.${tag}) (userConfig.tags or []);
-
-in {
-  includeDefaultPackages = (import ./util.nix) { inherit pkgs inputs; }
-  ++ taggedPkgs;
+    ])
+    else if pkgs.stdenv.isDarwin then [
+    ]
+    ++ (import ./dev.nix) { inherit pkgs; }
+    else
+    [
+    ]);
   includeUnfreePackages = (import ./unfree.nix) { inherit pkgs; }
                           ;
   packageOverrides = defaultPkgs: with defaultPkgs; {

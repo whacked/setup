@@ -16,12 +16,12 @@ in stdenv.mkDerivation {
   name = "vnc-with-wm-env";
 
   buildInputs = [
-    cinnamon.nemo
+    # cinnamon.nemo
     evince
     firefox
     git-cola
     glibcLocales
-    gnome3.eog
+    gnome.eog
     gnome3.file-roller
     graphviz
     i3

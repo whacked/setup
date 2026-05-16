@@ -13,17 +13,19 @@ let
   veracrypt = pinnedNixPkgs.veracrypt;
 in
 with pkgs; [
+    baobab
     conky
+    hack-font
     eog
+    graphviz
     evince
     firefox
-    ghostty
     git-cola
-    graphviz
-    hack-font
+    mpv
     tilix
     veracrypt
     vlc
+    wezterm
     xclip
     xsel
 ]
