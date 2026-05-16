@@ -31,7 +31,8 @@ let
     dev-heavy        = import (toPath "nix/dev-heavy.nix")        { inherit pkgs; };
     electron         = import (toPath "nix/electron.nix")         { inherit pkgs; };
     containerization = import (toPath "nix/containerization.nix") { inherit pkgs; };
-    unfree           = import (toPath "nix/unfree.nix")           { inherit pkgs; };
+    unfree              = import (toPath "nix/unfree.nix")              { inherit pkgs; };
+    extended-text-utils = import (toPath "nix/extended-text-utils.nix") { inherit pkgs; };
     misc-utils       = [
       (pkgs.callPackage (import (toPath "nix/pkgs/development/tools/bootleg-prebuilt/default.nix")) {})
       (pkgs.callPackage (import (toPath "nix/pkgs/development/tools/jet/default.nix")) {})

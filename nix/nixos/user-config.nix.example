@@ -59,5 +59,6 @@
     # "nix/work.nix"          # anki, calibre, chromium, inkscape, etc.
     # "nix/containerization.nix"  # podman, buildah, skopeo, etc.
     # "nix/unfree.nix"        # vscode, google-chrome, jetbrains IDEs, etc.
+    # "nix/extended-text-utils.nix"  # ck, tuitab, tidy-viewer, beads_rust (br)
   ];
 }

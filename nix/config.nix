@@ -23,6 +23,7 @@ in {
     else if pkgs.stdenv.isDarwin then [
     ]
     ++ (import ./dev.nix) { inherit pkgs; }
+    ++ (import ./extended-text-utils.nix) { inherit pkgs; }
     else
     [
     ]);
