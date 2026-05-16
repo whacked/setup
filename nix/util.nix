@@ -87,6 +87,7 @@ with pkgs; [
     # pdfdiff  # now marked insecure
     pigz
     procs
+    qsv  # data wrangler
     # ranger  # supercede with lf
     rclone
     ripgrep
