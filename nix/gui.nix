@@ -17,6 +17,7 @@ with pkgs; [
     conky
     hack-font
     eog
+    ghostty
     graphviz
     evince
     firefox
@@ -25,7 +26,6 @@ with pkgs; [
     tilix
     veracrypt
     vlc
-    wezterm
     xclip
     xsel
 ]
