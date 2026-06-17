@@ -1,0 +1,10 @@
+---
+# Map Ansible's detected CPU architecture to the Debian package arch suffix used
+# in the veracrypt / resilio .deb download URLs. Lets a 32-bit Zero (armv6l/armv7l)
+# get the armhf build instead of a broken arm64 install on a 64-bit-only URL.
+deb_arch:
+  armv6l: armhf
+  armv7l: armhf
+  aarch64: arm64
+  arm64: arm64
+  x86_64: amd64

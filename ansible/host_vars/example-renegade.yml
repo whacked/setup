@@ -1,0 +1,7 @@
+---
+# Example: Libre Computer Renegade (Rockchip rk3228, armv7). Pi-compatible board,
+# driven by the same play. Base setup only here. Its default login user may not
+# be "pi" -- override per host, e.g.:
+#   ansible_user: libre
+model: renegade
+capabilities: []

@@ -1,0 +1,5 @@
+---
+# Example: Pi 3 (armv7/aarch64, 1GB RAM) with a single USB capability.
+model: pi-3
+capabilities:
+  - seek-thermal

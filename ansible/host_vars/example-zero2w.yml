@@ -1,0 +1,7 @@
+---
+# Example: Pi Zero 2 W (512MB RAM -> docker is skipped automatically) with two
+# stacked Pimoroni HATs.
+model: pi-zero-2-w
+capabilities:
+  - pimoroni-enviro
+  - mics6814
