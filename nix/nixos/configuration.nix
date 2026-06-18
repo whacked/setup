@@ -34,10 +34,10 @@ let
     unfree              = import (toPath "nix/unfree.nix")              { inherit pkgs; };
     extended-text-utils = import (toPath "nix/extended-text-utils.nix") { inherit pkgs; };
     misc-utils       = [
+      pkgs.jet
+      pkgs.ruffle
       (pkgs.callPackage (import (toPath "nix/pkgs/development/tools/bootleg-prebuilt/default.nix")) {})
-      (pkgs.callPackage (import (toPath "nix/pkgs/development/tools/jet/default.nix")) {})
       (pkgs.callPackage (import (toPath "nix/pkgs/development/tools/ck/default.nix")) {})
-      (pkgs.callPackage (import (toPath "nix/pkgs/misc/ruffle-prebuilt/default.nix")) {})
     ];
   };
 
