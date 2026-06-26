@@ -1,3 +1,7 @@
+# - shell: pip install "{{ item }}"
+#   with_items:
+#   - pyusb
+#   become: true
 
 - package:
     name: "{{ item }}"

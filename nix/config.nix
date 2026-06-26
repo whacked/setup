@@ -15,10 +15,9 @@ in {
     ++ (import ./work.nix) { inherit pkgs; }
     ++ (import ./containerization.nix) { inherit pkgs; }
     ++ [
-      (pkgs.callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
+      pkgs.zsh-histdb
+      pkgs.ruffle
       (pkgs.callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
-      (pkgs.callPackage (import ./pkgs/development/tools/jet/default.nix) {})
-      (pkgs.callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
     ])
     else if pkgs.stdenv.isDarwin then [
     ]

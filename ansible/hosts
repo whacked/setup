@@ -1,5 +1,11 @@
+# NOTE: Raspberry Pi / single-board-computer hosts have moved to per-network
+# inventory files under ./inventory/ (e.g. inventory/home.ini) with identity in
+# ./host_vars/. See ./README.md. This file remains for the non-Pi playbooks
+# (standard-with-nix.yml, vnc-box.yml, ubuntu-touch.yml).
+
 [all]
 vagrant-box
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
+
