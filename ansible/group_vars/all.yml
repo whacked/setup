@@ -18,6 +18,9 @@ capability_roles:
   co2meter:        [rpi-co2meter]
   onewire:         [onewire]
   rm-hull:         [rm-hull]
+  # --- IR transmit ---
+  ir-blaster:      [ir-blaster]   # discrete 38kHz IR LED on GPIO12 (pigpio); replays Flipper .ir files
+  ir-d068:         [ir-d068]      # DORMANT: D068 serial NEC encode/decode module (not for arbitrary protocols)
   # --- Bluetooth / network services ---
   plantgateway:        [plantgateway]
   xiaomi-hygrometer:   [xiaomi-mijia-hygrometer]

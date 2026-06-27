@@ -1,0 +1,53 @@
+# Raw IR transmitter: a discrete 38 kHz IR LED on a GPIO (default GPIO12, which
+# is the Pi's hardware-PWM0 channel), driven through the pigpio daemon. Replays
+# Flipper .ir captures with flipper_ir_blast.py (raw + parsed-NEC signals).
+#
+# Wiring: IR-LED module signal -> GPIO12 (BCM, header pin 32); 5V/GND as needed.
+
+- name: ensure apt cache is up to date
+  apt:
+    update_cache: yes
+
+- name: install pigpio daemon and Python binding
+  package:
+    name:
+      - pigpio          # transitional -> pulls in the pigpiod daemon
+      - python3-pigpio  # Python module that talks to the daemon
+    state: present
+
+- name: enable and start pigpiod (GPIO access; must be up at boot)
+  systemd:
+    name: pigpiod
+    enabled: yes
+    state: started
+
+- name: create install dir
+  file:
+    path: "{{ install_dir }}"
+    state: directory
+    owner: pi
+    group: pi
+    mode: '0755'
+
+- name: install the blaster CLI
+  copy:
+    src: flipper_ir_blast.py
+    dest: "{{ install_dir }}/flipper_ir_blast.py"
+    owner: pi
+    group: pi
+    mode: '0755'
+
+- name: install Flipper .ir captures
+  copy:
+    src: remotes/
+    dest: "{{ install_dir }}/remotes/"
+    owner: pi
+    group: pi
+    mode: '0644'
+
+- name: provide a convenience launcher on PATH
+  file:
+    src: "{{ install_dir }}/flipper_ir_blast.py"
+    dest: /usr/local/bin/flipper-ir-blast
+    state: link
+    force: yes        # create the link even if the target stat can't be read yet

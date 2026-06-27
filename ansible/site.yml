@@ -23,6 +23,11 @@
     - name: apply roles for declared capabilities
       include_role:
         name: "{{ item }}"
+        # Propagate the tag to the included role's own tasks so a tag-scoped run
+        # (`--tags capabilities`) actually executes them, not just the include.
+        apply:
+          tags:
+            - capabilities
       # Iterate capability_roles key order (not the host's list order) so role
       # application order is deterministic and identical across hosts. select('in')
       # keeps that order; unknown capabilities are filtered out (warned above).
@@ -30,3 +35,7 @@
         {{ capability_roles.keys() | list
            | select('in', capabilities)
            | map('extract', capability_roles) | flatten | unique | list }}
+      # Tagged so capability roles can be (re)applied without the base role, e.g.
+      #   ansible-playbook -i inventory/<net>.ini site.yml -l <host> --tags capabilities
+      tags:
+        - capabilities

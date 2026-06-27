@@ -1,0 +1,43 @@
+# DORMANT role -- not mapped to any active host capability.
+#
+# The D068 IR-RX-TX module (STC11F04E MCU) is a 9600-baud UART NEC encode/decode
+# board, NOT a raw IR blaster. It can only emit/decode NEC-family codes, so it
+# cannot replay arbitrary appliance protocols (e.g. AC long-frames). It is kept
+# here as an initializer in case the D068 is used again; for general IR transmit
+# use the `ir-blaster` role (discrete IR LED) instead.
+#
+# Wiring (BCM): module TXD -> GPIO12 (Pi reads decoded IR),
+#               module RXD -> GPIO24 (Pi writes commands). Module is 5V.
+
+- name: ensure apt cache is up to date
+  apt:
+    update_cache: yes
+
+- name: install pigpio daemon and Python binding (software serial via bit-bang)
+  package:
+    name:
+      - pigpio
+      - python3-pigpio
+    state: present
+
+- name: enable and start pigpiod (GPIO access; must be up at boot)
+  systemd:
+    name: pigpiod
+    enabled: yes
+    state: started
+
+- name: create install dir
+  file:
+    path: "{{ install_dir }}"
+    state: directory
+    owner: pi
+    group: pi
+    mode: '0755'
+
+- name: install the D068 serial controller
+  copy:
+    src: ir_d068.py
+    dest: "{{ install_dir }}/ir_d068.py"
+    owner: pi
+    group: pi
+    mode: '0755'

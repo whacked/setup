@@ -1,0 +1,3 @@
+---
+# Where the blaster CLI and its .ir captures are installed on the Pi.
+install_dir: "/opt/ir-blaster"

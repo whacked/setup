@@ -6,3 +6,7 @@ inventory/*.ini
 
 host_vars/*
 !host_vars/example-*.yml
+
+# Captured IR remotes (.ir) are appliance-specific local data; keep them local.
+# The ir-blaster role deploys whatever .ir files exist here at run time.
+roles/*/files/remotes/*.ir
