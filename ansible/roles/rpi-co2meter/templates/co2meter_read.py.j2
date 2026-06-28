@@ -1,0 +1,51 @@
+#!{{ co2meter_dir }}/venv/bin/python3
+"""Print one CO2 (ppm) + temperature (degC) reading from the USB-zyTemp CO2
+monitor (USB 04d9:a052), using the `co2meter` library installed in this venv.
+
+The monitor streams CO2 and temperature in separate HID frames, so the first
+reads can come back without a CO2 value yet -- retry briefly until both arrive.
+"""
+import sys
+import time
+
+import co2meter
+
+
+def _extract(data):
+    # co2meter versions differ: read_data() returns either a
+    # (timestamp, co2, temp) tuple or a 1-row pandas DataFrame.
+    if data is None:
+        return None
+    try:
+        import pandas as pd
+        if isinstance(data, pd.DataFrame):
+            if data.empty:
+                return None
+            row = data.iloc[-1]
+            return float(row["co2"]), float(row["temp"])
+    except Exception:
+        pass
+    try:
+        _, co2, temp = data
+        if co2 is None:
+            return None
+        return float(co2), float(temp)
+    except Exception:
+        return None
+
+
+def main():
+    mon = co2meter.CO2monitor()
+    for _ in range(15):
+        got = _extract(mon.read_data())
+        if got:
+            co2, temp = got
+            print("%.0f ppm  %.1f C" % (co2, temp))
+            return 0
+        time.sleep(1)
+    sys.stderr.write("no reading from CO2 monitor\n")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

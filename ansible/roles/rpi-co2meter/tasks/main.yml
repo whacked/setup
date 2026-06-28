@@ -1,30 +1,67 @@
-- apt: update_cache=yes
+# CO2 monitor: Holtek / Zytemp "USB-zyTemp" mini monitor (USB 04d9:a052), read
+# via the `co2meter` Python library. On Bookworm a system-wide `pip install` is
+# refused by PEP 668 (externally-managed-environment), so the library lives in a
+# dedicated venv ({{ co2meter_dir }}/venv) and a launcher (`co2meter`) on PATH
+# prints one CO2(ppm)+temperature(C) reading.
 
-- package:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - libudev-dev
-    - libusb-dev
-    - libusb-1.0-0-dev
-    - libhidapi-dev
-    - libhidapi-libusb0
+- name: ensure apt cache is up to date
+  apt:
+    update_cache: yes
 
-- name: create udev rule for Seek Thermal Compact
-  become: yes
+- name: install USB/HID libs and venv tooling
+  package:
+    name:
+      - libudev-dev
+      - libusb-dev
+      - libusb-1.0-0-dev
+      - libhidapi-dev
+      - libhidapi-libusb0
+      - python3-venv
+      - python3-dev
+      - pkg-config
+    state: present
+
+- name: udev rule so non-root can read the CO2 monitor (04d9:a052)
   copy:
     dest: /etc/udev/rules.d/98-co2mon.rules
     content: |
       KERNEL=="hidraw*", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052", GROUP="plugdev", MODE="0666"
       SUBSYSTEM=="usb", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052", GROUP="plugdev", MODE="0666"
+  register: co2_udev
 
-- name: reload udev rules
-  become: yes
+- name: reload udev rules when the rule changed
+  when: co2_udev.changed
   shell: udevadm control --reload-rules && udevadm trigger
 
-- shell: pip install "{{ item }}"
-  with_items:
-  - hidapi
-  - co2meter
-  become: true
+- name: create install dir
+  file:
+    path: "{{ co2meter_dir }}"
+    state: directory
+    mode: '0755'
 
+- name: create the venv (idempotent)
+  command: python3 -m venv "{{ co2meter_dir }}/venv"
+  args:
+    creates: "{{ co2meter_dir }}/venv/bin/python"
+
+# piwheels supplies a prebuilt armhf hidapi wheel, so this does not compile.
+- name: install the co2meter library into the venv (PEP 668-safe)
+  pip:
+    name:
+      - hidapi
+      - co2meter
+    state: present
+    virtualenv: "{{ co2meter_dir }}/venv"
+
+- name: install the one-shot reader CLI
+  template:
+    src: co2meter_read.py.j2
+    dest: "{{ co2meter_dir }}/co2meter_read.py"
+    mode: '0755'
+
+- name: provide a convenience launcher on PATH
+  file:
+    src: "{{ co2meter_dir }}/co2meter_read.py"
+    dest: /usr/local/bin/co2meter
+    state: link
+    force: yes
