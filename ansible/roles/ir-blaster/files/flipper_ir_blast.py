@@ -135,24 +135,48 @@ def build_pulses(gpio, timings, freq):
 
 
 def send_raw(pi, gpio, timings, freq):
-    """Transmit a frame as a single seamless waveform (wave-chained if large)."""
+    """Transmit a frame as ONE seamless waveform.
+
+    Earlier this chunked the pulses into 2000-pulse waves and wave_chain()ed
+    them. But chunk boundaries land *inside* carrier marks (a mark is ~34
+    pulses, so it dominates the pulse count), and any gap pigpio inserts between
+    chained waves splits that mark in two -> a corrupted/variable frame. That is
+    fatal for checksummed protocols like Mitsubishi AC, which silently drop any
+    frame with a single bad bit (hence "works up close, fails farther away").
+
+    A whole frame fits comfortably in one wave (pigpio allows ~12000 pulses /
+    ~25000 CBs; a 165 ms AC frame is ~5100 pulses / ~10000 CBs), so emit a
+    single wave for a glitch-free, repeatable carrier. Chunk+chain is kept only
+    as a fallback for a pathologically long capture that overflows one wave.
+    """
     pi.set_mode(gpio, pigpio.OUTPUT)
     pi.write(gpio, 0)
     pi.wave_clear()
     pulses = build_pulses(gpio, timings, freq)
+
+    pi.wave_add_generic(pulses)
+    wid = pi.wave_create()                           # one seamless wave
+    if wid >= 0:
+        pi.wave_send_once(wid)
+        while pi.wave_tx_busy():
+            time.sleep(0.002)
+        pi.wave_delete(wid)
+        return
+
+    # Frame too large for a single wave: fall back to chunk + chain.
+    pi.wave_clear()
     CHUNK = 2000                                    # under PI_WAVE_MAX_PULSES
     wids = []
     for off in range(0, len(pulses), CHUNK):
         pi.wave_add_generic(pulses[off:off + CHUNK])
-        wids.append(pi.wave_create())
-    if len(wids) == 1:
-        pi.wave_send_once(wids[0])
-    else:
-        pi.wave_chain(wids)                         # back-to-back, gapless
+        w = pi.wave_create()
+        if w >= 0:
+            wids.append(w)
+    pi.wave_chain(wids)                             # back-to-back (may glitch at seams)
     while pi.wave_tx_busy():
         time.sleep(0.002)
-    for wid in wids:
-        pi.wave_delete(wid)
+    for w in wids:
+        pi.wave_delete(w)
 
 
 # --------------------------------------------------------------------------
@@ -188,7 +212,14 @@ def play(pi, gpio, freq_override, sig, repeat, gap, loop):
     timings, freq = signal_timings(sig)
     if freq_override:
         freq = freq_override
-    label = "%s (%d edges @%d Hz)" % (sig["name"], len(timings), freq)
+    # Report the carrier we'll actually emit (integer-us pulses, so freq/duty
+    # land on the nearest achievable value -- handy when tuning for range).
+    cyc = 1_000_000.0 / freq
+    on = int(round(cyc * DUTY))
+    off = int(round(cyc - on))
+    label = "%s (%d edges, carrier %d Hz / %.0f%% duty [on=%dus off=%dus])" % (
+        sig["name"], len(timings), 1_000_000.0 / (on + off),
+        100.0 * on / (on + off), on, off)
     if loop:
         print("LOOP playing %s every %.2fs. Ctrl-C/kill to stop." % (label, gap), flush=True)
         n = 0
@@ -251,6 +282,7 @@ def run_nec(pi, gpio, freq, addr, cmd, repeat, gap, loop):
 
 # --------------------------------------------------------------------------
 def main(argv=None):
+    global DUTY
     p = argparse.ArgumentParser(
         description="Replay IR signals from a Flipper .ir file via a GPIO IR LED.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -263,6 +295,9 @@ def main(argv=None):
                    help="name of the signal to play (omit to list)")
     p.add_argument("--gpio", type=int, default=TX_GPIO)
     p.add_argument("--freq", type=int, default=None, help="override carrier Hz")
+    p.add_argument("--duty", type=float, default=None,
+                   help="override carrier duty cycle 0-1 (default %.2f); higher = "
+                        "more optical power/range, up to ~0.5" % DUTY)
     p.add_argument("--repeat", type=int, default=1)
     p.add_argument("--gap", type=float, default=0.2, help="seconds between sends")
     p.add_argument("--loop", action="store_true", help="repeat until killed")
@@ -274,6 +309,8 @@ def main(argv=None):
     p.add_argument("--off", type=float, default=0.25, help="blink off-time (s)")
 
     args = p.parse_args(argv)
+    if args.duty is not None:
+        DUTY = args.duty
     pi = connect()
     try:
         if args.blink:
