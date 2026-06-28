@@ -68,7 +68,6 @@ with pkgs; [
     keychain
     lazygit
     libtool
-    lf
     lsd
     magic-wormhole
     mc
@@ -88,7 +87,7 @@ with pkgs; [
     pigz
     procs
     qsv  # data wrangler
-    # ranger  # supercede with lf
+    # ranger  # supercede with yazi
     rclone
     ripgrep
     rlwrap
@@ -114,6 +113,7 @@ with pkgs; [
     wget
     which
     # wuzz  # broken at 2023-02-06 14:00:33+08:00
+    yazi
     yq-go
     zellij
     zoxide
