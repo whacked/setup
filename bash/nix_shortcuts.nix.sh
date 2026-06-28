@@ -70,6 +70,8 @@ function echo-shortcuts() {  # usually: echo-shortcuts ''${__curPos.file}
         return
     fi
 
+    # TODO: update function name getter to include underscores
+    # you can exclude leading underscore
     help_string=
     help_string="$help_string"'\033[0;33m'$(
         cat "$target_file" |
@@ -143,8 +145,13 @@ function ensure-usercache() {
 
 function ensure-venv() {
     _initializer=$1
-    export VIRTUAL_ENV=''${VIRTUAL_ENV-$USERCACHE/$name-venv}
-    if [ -e $VIRTUAL_ENV ]; then
+    if [ "$name" == "nix-shell" ]; then
+        _project_name=$(basename "$PWD")
+    else
+        _project_name="$name"
+    fi
+    export VIRTUAL_ENV=''${VIRTUAL_ENV-$USERCACHE/$_project_name-venv}
+    if [ -e $VIRTUAL_ENV/bin/activate ]; then
         echo " - using existing virtualenv in $VIRTUAL_ENV..."
         _new_venv=false
     else
@@ -218,17 +225,20 @@ function create-nix-shell-skeleton() {
     cat > shell.nix<<EOF
 { pkgs ? import <nixpkgs> {} }:
 let
-  helpers = import ~/setup/nix/helpers.nix;
-in helpers.mkShell [
-] {
+  # provides "echo-shortcuts"
+  nix_shortcuts = import (pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/whacked/setup/ce9fe9be8e42db9ce003772099d08395358efe8c/bash/nix_shortcuts.nix.sh";
+    hash = "sha256-uK+Fgwr6iWXbfi/itJGELzkWqGZsQ8HFpfc+ztGSF98=";
+  }) { inherit pkgs; };
+in pkgs.mkShell {
   buildInputs = [
   ];  # join lists with ++
 
   nativeBuildInputs = [
-    ~/setup/bash/nix_shortcuts.nix.sh
   ];
 
-  shellHook = $II
+  shellHook = nix_shortcuts.shellHook + $II
+  $II + $II
     echo-shortcuts \${__curPos.file}
   $II;  # join strings with +
 }

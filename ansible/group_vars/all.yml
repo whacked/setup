@@ -1,0 +1,33 @@
+---
+# Default so hosts that declare no capabilities don't error in site.yml.
+# Real values live per-host in host_vars/<host>.yml.
+capabilities: []
+
+# capability -> list of roles to apply for that capability.
+# Adding a sensor/HAT to a board = add the capability to its host_vars file.
+# Adding a brand-new capability type = add one line here too.
+# A capability may map to multiple roles; they are applied in listed order.
+capability_roles:
+  # --- Pimoroni HATs ---
+  pimoroni-enviro: [pimoroni]
+  mics6814:        [pimoroni-mics6814-python]
+  pirate-audio:    [pimoroni-pirate-audio]
+  # --- USB / GPIO sensors ---
+  temper:          [temper]
+  seek-thermal:    [rpi-seek-thermal]
+  co2meter:        [rpi-co2meter]
+  onewire:         [onewire]
+  rm-hull:         [rm-hull]
+  # --- IR transmit ---
+  ir-blaster:      [ir-blaster]   # discrete 38kHz IR LED on GPIO12 (pigpio); replays Flipper .ir files
+  ir-d068:         [ir-d068]      # DORMANT: D068 serial NEC encode/decode module (not for arbitrary protocols)
+  # --- Bluetooth / network services ---
+  plantgateway:        [plantgateway]
+  xiaomi-hygrometer:   [xiaomi-mijia-hygrometer]
+  python-miio:         [python-miio]
+  home-assistant:      [home-assistant]
+  grove:               [grove-py]
+  datahub:             [python-datahub]
+  tailscale:           [tailscale-enabled]
+  # --- Extra desktop/storage tooling (veracrypt + resilio sync) ---
+  extras:              [raspberry-pi-extra]

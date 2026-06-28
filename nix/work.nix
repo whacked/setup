@@ -15,7 +15,7 @@ with pkgs; [
     firefox
     gimp
     git-cola
-    gnome3.eog
+    eog
     inkscape
     keepassxc
     pdfarranger
@@ -31,7 +31,7 @@ with pkgs; [
     thunderbird
     visidata
     wireshark
-    xournal
+    xournalpp
     zotero
     # this has a surprisingly large dependency tree
     # tortoisehg

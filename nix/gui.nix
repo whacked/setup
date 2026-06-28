@@ -16,15 +16,16 @@ with pkgs; [
     baobab
     conky
     hack-font
-    gnome3.eog
+    eog
+    ghostty
     graphviz
     evince
     firefox
     git-cola
+    mpv
     tilix
     veracrypt
     vlc
-    wezterm
     xclip
     xsel
 ]

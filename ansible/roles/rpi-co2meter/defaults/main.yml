@@ -1,0 +1,3 @@
+---
+# Where the CO2 meter venv + launcher are installed on the Pi.
+co2meter_dir: /opt/co2meter

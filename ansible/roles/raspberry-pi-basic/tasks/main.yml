@@ -7,25 +7,21 @@
   with_items:
     - bluetooth
     - build-essential
-    - cargo
-    - clojure
-    - default-jdk
     - emacs
     - gnuplot
     - golang
     - htop
     - jq
     - moreutils
-    - nodejs
-    - python-pexpect  # note on rpi3 this is python2
-    - rustc
     - sqlite3
     - tcpdump
-    - terminator
     - tmux
     - vim
+    - mosquitto-clients  # TODO: consider also doing pip: install paho-mqtt
+    - uhubctl
 
-- block:
+- name: install ripgrep
+  block:
   - shell: apt list ripgrep | grep ripgrep | wc -l
     register: rg_match
   
@@ -42,7 +38,8 @@
 # for 4GB RAM, ansible returns
 # 3906, which is 4096*1024^2/1000^2;
 # so 1GB is 1024*0.9765625^2 = 976
-- when: ansible_memtotal_mb >= 976
+- name: install docker if enough memory
+  when: ansible_memtotal_mb >= 976
   block:
   - group:
       name: docker

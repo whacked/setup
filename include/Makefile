@@ -12,7 +12,7 @@ print_var=$(info $(info $1 has $(words $($1)) values:) $(foreach F,$($1), $(info
 ### make: *** [.../Makefile:11: help] Error 1
 ### to make a comment invisible to help, use ###
 help:
-	@grep -B1 -h -E "^[a-zA-Z0-9_-]+\:([^\=]|$$)" $(MAKEFILE_LIST) \
+	@grep -B1 -h -E "^[a-zA-Z0-9_-]+:([^\=]|$$)" $(MAKEFILE_LIST) \
      | grep -v -- -- \
      | sed 'N;s/\n/###/' \
      | sed -n 's/^# \(.*\)###\(.*\):.*/\2###\1/p' \

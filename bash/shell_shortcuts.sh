@@ -183,3 +183,14 @@ function pip-add-require() {
         echo "ERROR: failed to install package $package"
     fi
 }
+
+
+function create-makefile-skeleton() {
+    if [ -e Makefile ]; then
+        echo "ERROR: Makefile already exists; doing nothing"
+        return
+    fi
+    cat > Makefile<<EOF
+include \$(HOME)/setup/include/Makefile
+EOF
+}

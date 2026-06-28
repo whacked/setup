@@ -1,0 +1,3 @@
+---
+# Where the D068 serial controller is installed on the Pi.
+install_dir: "/opt/ir-d068"

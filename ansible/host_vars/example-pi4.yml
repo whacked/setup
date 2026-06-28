@@ -1,0 +1,13 @@
+---
+# Example identity file. Copy to host_vars/<your-host>.yml (name must match the
+# host in inventory/<network>.ini) and edit. model is metadata only; runtime
+# decisions use Ansible facts (arch, OS release, RAM).
+#
+# Pi 4 (aarch64, >=1GB RAM -> docker installs via raspberry-pi-basic).
+model: pi-4
+capabilities:
+  - temper
+  - pimoroni-enviro
+  - seek-thermal
+  - co2meter
+  - home-assistant

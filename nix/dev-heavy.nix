@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
 with pkgs; [
-    hdfview
+    # currently marked as broken
+    # hdfview
     keybase
     tabula-java
 ]

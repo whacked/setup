@@ -1,12 +1,12 @@
 # ~/.nixpkgs/config.nix
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 let
 in {
   includeDefaultPackages = (import ./util.nix) { inherit pkgs; }
   ++ (if pkgs.stdenv.isLinux then (
     []
-    ++ (import ./dev.nix) { inherit pkgs; }
+    ++ (import ./dev.nix) { inherit pkgs; inherit inputs; }
     ++ (import ./cloud.nix) { inherit pkgs; }
     ++ (import ./gui.nix) { inherit pkgs; }
     ++ (import ./dev-heavy.nix) { inherit pkgs; }
@@ -15,14 +15,14 @@ in {
     ++ (import ./work.nix) { inherit pkgs; }
     ++ (import ./containerization.nix) { inherit pkgs; }
     ++ [
-      (pkgs.callPackage (import ./pkgs/shells/zsh-histdb/default.nix) {})
+      pkgs.zsh-histdb
+      pkgs.ruffle
       (pkgs.callPackage (import ./pkgs/development/tools/bootleg-prebuilt/default.nix) {})
-      (pkgs.callPackage (import ./pkgs/development/tools/jet/default.nix) {})
-      (pkgs.callPackage (import ./pkgs/misc/ruffle-prebuilt/default.nix) {})
     ])
     else if pkgs.stdenv.isDarwin then [
     ]
     ++ (import ./dev.nix) { inherit pkgs; }
+    ++ (import ./extended-text-utils.nix) { inherit pkgs; }
     else
     [
     ]);

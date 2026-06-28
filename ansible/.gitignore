@@ -1,0 +1,12 @@
+# Deployment-specific data stays local; only the example templates are tracked.
+# Real per-network inventories (host -> IP) and per-host identities contain
+# hostnames/IPs and should not be committed.
+inventory/*.ini
+!inventory/example.ini
+
+host_vars/*
+!host_vars/example-*.yml
+
+# Captured IR remotes (.ir) are appliance-specific local data; keep them local.
+# The ir-blaster role deploys whatever .ir files exist here at run time.
+roles/*/files/remotes/*.ir

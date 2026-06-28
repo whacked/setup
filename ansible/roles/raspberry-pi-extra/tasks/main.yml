@@ -1,3 +1,10 @@
+- name: fail early on an unmapped architecture
+  fail:
+    msg: >-
+      No Debian package arch mapping for ansible_architecture={{ ansible_architecture }}.
+      Add it to roles/raspberry-pi-extra/vars/main.yml (deb_arch) before installing.
+  when: ansible_architecture not in deb_arch
+
 - name: install veracrypt
   block:
 
@@ -12,7 +19,8 @@
 
   - name: download installer
     get_url:
-      url: https://launchpad.net/veracrypt/trunk/1.26.7/+download/veracrypt-console-1.26.7-Debian-11-arm64.deb
+      # NOTE: the "Debian-11" build is pinned; bump it if the target release needs a newer one.
+      url: "https://launchpad.net/veracrypt/trunk/1.26.7/+download/veracrypt-console-1.26.7-Debian-11-{{ deb_arch[ansible_architecture] }}.deb"
       dest: /tmp/veracrypt-installer.deb
       owner: "{{ ansible_user }}"
       group: "{{ ansible_user }}"
@@ -27,7 +35,7 @@
 
   - name: download installer
     get_url:
-      url: https://download-cdn.resilio.com/2.7.3.1381/Debian/resilio-sync_2.7.3.1381-1_arm64.deb
+      url: "https://download-cdn.resilio.com/2.7.3.1381/Debian/resilio-sync_2.7.3.1381-1_{{ deb_arch[ansible_architecture] }}.deb"
       dest: /tmp/resilio-installer.deb
       owner: "{{ ansible_user }}"
       group: "{{ ansible_user }}"

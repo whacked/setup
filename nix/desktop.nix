@@ -13,7 +13,7 @@ with pkgs; [
     ## these are required to build xmonad from cabal
     ## order is important :-(
     # cabal install alex happy c2hs
-    alsaLib
+    alsa-lib
     # error: 'xlibsWrapper' has been replaced by its constituents
     # but this most likely is needed somewhere; keeping for reference
     # xlibsWrapper
@@ -23,7 +23,8 @@ with pkgs; [
     xorg.libXinerama
     xorg.libXScrnSaver
     haskellPackages.cabal-install
-    nerdfonts
+    # separated into individual packages under nerd-fonts namespace
+    # nerdfonts
     neovim-qt
 
     arandr
@@ -37,7 +38,7 @@ with pkgs; [
     xorg.xmessage
 
     acpi
-    cinnamon.nemo
+    # cinnamon.nemo
     wmctrl
     xfce.thunar
 
