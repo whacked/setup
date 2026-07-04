@@ -35,12 +35,12 @@ with pkgs; [
     # croc  # no longer easy to use, back to wormhole
     crudini  # ini file CRUD
     curlie
+    dust  # supersedes dua
     delta
     # difftastic  # supersede by delta
     direnv
     dnsutils
     dos2unix
-    dua
     emacs
     expect
     fd
@@ -118,6 +118,7 @@ with pkgs; [
     zellij
     zoxide
     # zsh  # handoff to system/home-manager?
+    zstd
 ] ++ (
   if stdenv.isLinux then [
     atop
