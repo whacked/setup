@@ -86,7 +86,7 @@ with pkgs; [
     # pdfdiff  # now marked insecure
     pigz
     procs
-    qsv  # data wrangler
+    qsv  # data wrangler, but 108MB
     # ranger  # supercede with yazi
     rclone
     ripgrep
@@ -113,6 +113,7 @@ with pkgs; [
     wget
     which
     # wuzz  # broken at 2023-02-06 14:00:33+08:00
+    xan  # consider using this instead of qsv? xan is 14MB
     yazi
     yq-go
     zellij
