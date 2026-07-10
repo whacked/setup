@@ -35,7 +35,8 @@ with pkgs; [
     # croc  # no longer easy to use, back to wormhole
     crudini  # ini file CRUD
     curlie
-    dust  # supersedes dua
+    dua
+    dust  # supersedes dua?
     delta
     # difftastic  # supersede by delta
     direnv
