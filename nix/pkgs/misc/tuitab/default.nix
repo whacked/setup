@@ -4,24 +4,24 @@
 
 let
   inherit (pkgs.stdenv.hostPlatform) system;
-  version = "0.9.3";
+  version = "0.9.4";
 
   platforms = {
     "x86_64-linux" = {
       asset = "tuitab-v${version}-x86_64-unknown-linux-gnu.tar.gz";
-      hash = "sha256-9+M7bf34SLOT/SCn6/750JT5FR392+qynHCrnZJ+/L8=";
+      hash = "sha256-Aw6LGm4YbwHkmpNHVJMucF2qNZz6rw13bSV/TQCDKmc=";
     };
     "aarch64-linux" = {
       asset = "tuitab-v${version}-aarch64-unknown-linux-gnu.tar.gz";
-      hash = "sha256-UW7R0LJw2O+IC7sD92BrEXvMPy5guNobUFxw1GEhUMY=";
+      hash = "sha256-euJYOtbSF2sBL/1IU1vpmohgpBog4MDPMRItlGxmiKA=";
     };
     "x86_64-darwin" = {
       asset = "tuitab-v${version}-x86_64-apple-darwin.tar.gz";
-      hash = "sha256-i4X3GTbLj5cXPpJ+Sl8Wa6J1ehGHHknjPk8LZYfu0pU=";
+      hash = "sha256-3YiILCRNcpuaEA755XCSfBY4BP40ZRUn3UvTlx0cGc4=";
     };
     "aarch64-darwin" = {
       asset = "tuitab-v${version}-aarch64-apple-darwin.tar.gz";
-      hash = "sha256-LstKaWFEYl5f0TEVACU+Gs1bNJpazEAQKrQ43jN+pas=";
+      hash = "sha256-VoRra29GkguFFMb9yV4svS5C1HekvhoWnDwGllV/jY0=";
     };
   };
 
