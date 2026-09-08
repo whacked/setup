@@ -15,6 +15,7 @@ with pkgs; [
     firefox
     gimp
     git-cola
+    gnuplot
     eog
     inkscape
     keepassxc

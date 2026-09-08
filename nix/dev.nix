@@ -15,6 +15,8 @@ with pkgs; [
     babashka
     delta
     dos2unix
+    herdr
+    gnuplot
     go
     leiningen
     libpng
@@ -31,7 +33,6 @@ with pkgs; [
     cargo
     cmake
     gcc
-    gnuplot
     hy
     jdk11
     # contains a newer version of libvterm
